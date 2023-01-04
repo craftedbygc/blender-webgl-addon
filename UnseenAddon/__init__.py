@@ -12,7 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 bl_info = {
-    "name" : "Blender Webgl Exporter",
+    "name" : "Unseen BWE",
     "author" : "Tiago Andrade",
     "description" : "",
     "blender" : (3, 4, 0),
