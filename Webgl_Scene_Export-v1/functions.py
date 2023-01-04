@@ -2,13 +2,14 @@ import bpy
 import time
 import json
 import math
+import os
 from mathutils import Quaternion
 
 #------------ SPACER ---------------------
 
 #Round Values
 def rd(e):
-    return round(e, 5)
+    return round(e, bpy.context.scene.precision)
 
 #------------ SPACER ---------------------
 
@@ -57,3 +58,24 @@ def findCollection(collName):
     for coll in bpy.data.collections:
         if (coll.name == collName):
             return coll
+
+#------------ SPACER ---------------------
+
+def setFolderStructure():
+        folderpath = bpy.context.scene.saveFolderPath
+        folderName = "models"
+        modelsFolder =os.path.join(folderpath, folderName)
+        folderName = "texture"
+        textFolder =os.path.join(folderpath, folderName)
+
+        check = os.path.exists(modelsFolder)
+        
+        if(check == False):
+            os.mkdir(modelsFolder)
+            os.mkdir(textFolder)
+
+#------------ SPACER ---------------------
+    
+
+
+

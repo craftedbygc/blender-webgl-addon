@@ -48,6 +48,12 @@ def register():
     des = "Define precision of data file - higher values will increase the data file size but match position better"
     bpy.types.Scene.precision = bpy.props.IntProperty(name="",description=des,default=4)
 
+    des = "Remove indentation from export"
+    bpy.types.Scene.minify = bpy.props.BoolProperty(name="Minify",description=des, default = True)
+
+    des = "Website Preview Version Is Open - Untick if you need open a new tab and Preview Scene Site Again"
+    bpy.types.Scene.previewOn = bpy.props.BoolProperty(name="Site Preview On",description=des, default = False)
+
     #------------ SPACER ---------------------
 
 
@@ -61,6 +67,9 @@ def unregister():
     
     del bpy.types.Scene.saveFolderPath
     del bpy.types.Scene.precision
+    del bpy.types.Scene.minify
+    del bpy.types.Scene.previewOn
+
 
 
 
