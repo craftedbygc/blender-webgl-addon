@@ -11,14 +11,28 @@ class TOPBAR_MT_custom_menu(bpy.types.Menu):
         row.operator("wm.projectsettings",icon="SETTINGS")
         row.scale_y = 1.75
         row = layout.row()
+        row.separator()
+        row = layout.row()
+        row.label(text="Design",icon ="SHADERFX")
+        row.scale_y = 1.25
+        row = layout.row()
+        row.operator("object.chromepreview",icon='URL')
+        row.scale_y = 1.5
+        row = layout.row()
+        row.separator()
+        row = layout.row()
+        row.label(text="Development",icon ="TOOL_SETTINGS")
+        row.scale_y = 1.25
+        row = layout.row()
+        row.operator("object.exportscenematerials",icon="SHADING_TEXTURE")
+        row.scale_y = 1.75
+        row = layout.row()
         row.operator("object.exportscene",icon="SHADING_RENDERED")
         row.scale_y = 1.75
         row = layout.row()
         row.operator("object.exportcompscene",icon="MESH_UVSPHERE")
         row.scale_y = 1.5
-        row = layout.row()
-        row.operator("object.chromepreview",icon='URL')
-        row.scale_y = 1.5
+        
 
     def menu_draw(self, context):
         layout = self.layout

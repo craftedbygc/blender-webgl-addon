@@ -62,11 +62,23 @@ class TBA_OT_save_dialog(bpy.types.Operator):
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
 
+
+class TBA_OT_export_scene_materials(Operator):
+    bl_idname = "object.exportscenematerials"
+    bl_label ="Export Width Materials"
+    bl_description = "Export All Scene Uncompreesed And With Materials"
+
+    def execute(self, context):
+        functions.setFolderStructure()
+        batch_export.glbExp(draco=False,material=True)
+        set_data_file.exportData()
+        return {"FINISHED"}
+
 #------------ SPACER ---------------------
 
 class TBA_OT_export_scene(Operator):
     bl_idname = "object.exportscene"
-    bl_label ="Export Scene"
+    bl_label ="Export Uncompressed"
     bl_description = "Export All Scene"
 
     def execute(self, context):
@@ -79,7 +91,7 @@ class TBA_OT_export_scene(Operator):
 
 class TBA_OT_export_comp_scene(Operator):
     bl_idname = "object.exportcompscene"
-    bl_label ="Export Scene Draco Compressed"
+    bl_label ="Export Draco Compressed"
     bl_description = "Export Scene With Draco Compression"
 
     def execute(self, context):
@@ -92,7 +104,7 @@ class TBA_OT_export_comp_scene(Operator):
 
 class TBA_OT_open_chrome_preview(Operator):
     bl_idname = "object.chromepreview"
-    bl_label ="Preview Scene Site"
+    bl_label ="Preview Scene Online"
     bl_description = "Export and Preview Scene With Materials"
 
     def execute(self, context):

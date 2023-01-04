@@ -27,12 +27,12 @@ import bpy
 #------------ SPACER ---------------------
 
 #Import classes
-from .op import (TBA_OT_export_scene,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview)
+from .op import (TBA_OT_export_scene,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
 from .ui import (TOPBAR_MT_custom_menu)           
 
 #Classes list for register
 #List of all classes that will be registered
-classes = (TBA_OT_export_scene, TOPBAR_MT_custom_menu,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview)
+classes = (TBA_OT_export_scene, TOPBAR_MT_custom_menu,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
 
 
 def register():
