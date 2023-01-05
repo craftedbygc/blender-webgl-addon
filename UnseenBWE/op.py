@@ -10,7 +10,7 @@ from sys import platform
 #------------ SPACER ---------------------
 
 class TBA_OT_save_dialog(bpy.types.Operator):
-    bl_label = "Projects Settings"
+    bl_label = "Project Settings"
     bl_idname = "wm.projectsettings"
 
     def execute(self, context):
