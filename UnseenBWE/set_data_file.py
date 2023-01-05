@@ -91,4 +91,5 @@ def exportData():
             #open and read the file after the appending:
             f = open(filepath, "r")
             #print(f.read())
+            bpy.context.scene.frame_set(1)
             return
