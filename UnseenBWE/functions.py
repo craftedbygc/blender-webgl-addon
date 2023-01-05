@@ -118,7 +118,8 @@ def getunic(mylist):
     seen = set()
     dupes = [x for x in mylist if x in seen or seen.add(x)]  
     srtDupes = sorted(list(set(dupes)))
-    return srtDupes
+    revDup = list(dict.fromkeys(mylist))
+    return revDup
 
 
 #------------ SPACER ---------------------
@@ -130,15 +131,31 @@ def getAniAtt(cam):
     camLens = []
     cam_stops = []
     tgt_stops = []
+    prevLens = -1
+    prevCam = -1
+    prevTgt = -1
     #------------ SPACER ---------------------
     for f in range(frame_start, frame_end+1):
         sce.frame_set(f)
         getCamStop = bpy.data.objects["cam_pos"].constraints["Follow Path"].offset_factor
         getTgtStop = bpy.data.objects["cam_tgt"].constraints["Follow Path"].offset_factor
         getLens = cam.lens
-        cam_stops.append(getCamStop)
-        tgt_stops.append(getTgtStop)
-        camLens.append(getLens)
+        #------------ SPACER ---------------------
+        if(prevLens == getLens):
+            camLens.append(getLens)
+            
+        if(prevCam == getCamStop):
+            cam_stops.append(getCamStop)
+
+        if(prevTgt == getCamStop):
+            tgt_stops.append(getTgtStop)
+        #------------ SPACER ---------------------
+        prevLens = getLens
+        prevCam = getCamStop
+        prevTgt = getTgtStop
+        print("TBA_CHECK",prevLens)
+
+        
     
     cam_stops = getunic(cam_stops)
     tgt_stops = getunic(tgt_stops)

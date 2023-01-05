@@ -8,7 +8,7 @@ class TOPBAR_MT_custom_menu(bpy.types.Menu):
     def draw(self, context):
         layout = self.layout
         row = layout.row()
-        row.label(text="Version 1.1.0",icon ="CONSOLE")
+        row.label(text="Version 1.1.1",icon ="CONSOLE")
         row.scale_y = 1.25
         row = layout.row()
         row.operator("wm.projectsettings",icon="SETTINGS")
