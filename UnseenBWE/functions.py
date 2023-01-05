@@ -86,11 +86,11 @@ def pollcheckExport():
     check = ["Scene Objects","Scene Instances"]
     for name in check:
         coll = findCollection(name)
-        collName = coll.name
-        path = bpy.context.scene.saveFolderPath
-        #!= 0 and path !="Set Folder Path" and path !=""
-        if(name == collName and len(coll.objects) != 0 and path !=""):
-            return True
+        if(coll):
+            collName = coll.name
+            path = bpy.context.scene.saveFolderPath
+            if(name == collName and len(coll.objects) != 0 and path !=""):
+                return True
        
         return False    
 
