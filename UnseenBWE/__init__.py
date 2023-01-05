@@ -43,7 +43,7 @@ def register():
     #------------ SPACER ---------------------
 
     des = "Folder path to export scene assets to"
-    bpy.types.Scene.saveFolderPath = bpy.props.StringProperty(name="", description=des, default="Set Path To Folder", subtype = 'DIR_PATH')
+    bpy.types.Scene.saveFolderPath = bpy.props.StringProperty(name="", description=des, default="", subtype = 'DIR_PATH')
 
     des = "Define precision of data file - higher values will increase the data file size but match position better"
     bpy.types.Scene.precision = bpy.props.IntProperty(name="",description=des,default=4)

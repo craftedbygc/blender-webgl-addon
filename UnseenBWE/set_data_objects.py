@@ -26,11 +26,10 @@ def create(objects,object,name,check):
             data.append(settings)
             
             #------------ SPACER ---------------------
-
+            name = functions.namingConvention(name)
             if(check):
                 objects["objects"][name] = []
                 objects["objects"][name].append(data)
             else:
-                objects["instances"][name] = []
                 objects["instances"][name].append(data)
                 
