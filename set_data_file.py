@@ -70,8 +70,7 @@ def exportData():
             
             oblist = [obj.name for obj in collmain.all_objects]
             oblist = sorted(oblist)
-            
-            print("TBA LIST LEN",len(oblist))
+
             for name in oblist:
                 ob = collmain.all_objects[name]
                 set_data_obpaths.create(jsonObject,ob)

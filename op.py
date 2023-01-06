@@ -58,6 +58,10 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         row.scale_y = 1.5
         #------------
         row = layout.row()
+        row.prop(sce,'expOnSave')
+        row.scale_y = 1.5
+        #------------
+        row = layout.row()
         row.label(text="")
         row.scale_y = spacer*3
 
