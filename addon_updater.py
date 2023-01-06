@@ -87,11 +87,11 @@ class SingletonUpdater:
         self._auto_reload_post_update = False
 
         # Settings for the frequency of automated background checks.
-        self._check_interval_enabled = False
+        self._check_interval_enabled = True
         self._check_interval_months = 0
-        self._check_interval_days = 7
+        self._check_interval_days = 0
         self._check_interval_hours = 0
-        self._check_interval_minutes = 0
+        self._check_interval_minutes = 1
 
         # runtime variables, initial conditions
         self._verbose = False
@@ -546,8 +546,8 @@ class SingletonUpdater:
             tag_names.append(tag["name"])
         return tag_names
 
-    def set_check_interval(self, enabled=False,
-                           months=0, days=14, hours=0, minutes=0):
+    def set_check_interval(self, enabled=True,
+                           months=0, days=0, hours=0, minutes=1):
         """Set the time interval between automated checks, and if enabled.
 
         Has enabled = False as default to not check against frequency,

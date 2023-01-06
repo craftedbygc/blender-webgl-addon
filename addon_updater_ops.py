@@ -255,11 +255,11 @@ class AddonUpdaterCheckNow(bpy.types.Operator):
             return {'CANCELLED'}
 
         updater.set_check_interval(
-            enabled=settings.auto_check_update,
-            months=settings.updater_interval_months,
-            days=settings.updater_interval_days,
-            hours=settings.updater_interval_hours,
-            minutes=settings.updater_interval_minutes)
+            enabled=True,
+            months=0,
+            days=0,
+            hours=0,
+            minutes=1)
 
         # Input is an optional callback function. This function should take a
         # bool input. If true: update ready, if false: no update ready.
@@ -791,11 +791,11 @@ def check_for_update_background():
     settings = get_user_preferences(bpy.context)
     if not settings:
         return
-    updater.set_check_interval(enabled=settings.auto_check_update,
-                               months=settings.updater_interval_months,
-                               days=settings.updater_interval_days,
-                               hours=settings.updater_interval_hours,
-                               minutes=settings.updater_interval_minutes)
+    updater.set_check_interval(enabled=True,
+                               months=0,
+                               days=0,
+                               hours=0,
+                               minutes=1)
 
     # Input is an optional callback function. This function should take a bool
     # input, if true: update ready, if false: no update ready.
@@ -816,11 +816,11 @@ def check_for_update_nonthreaded(self, context):
             print("Could not get {} preferences, update check skipped".format(
                 __package__))
         return
-    updater.set_check_interval(enabled=settings.auto_check_update,
-                               months=settings.updater_interval_months,
-                               days=settings.updater_interval_days,
-                               hours=settings.updater_interval_hours,
-                               minutes=settings.updater_interval_minutes)
+    updater.set_check_interval(enabled=True,
+                               months=0,
+                               days=0,
+                               hours=0,
+                               minutes=1)
 
     (update_ready, version, link) = updater.check_for_update(now=False)
     if update_ready:
@@ -976,21 +976,21 @@ def update_settings_ui(self, context, element=None):
                          icon="ERROR")
             return
 
-    split = layout_split(row, factor=0.4)
-    sub_col = split.column()
-    sub_col.prop(settings, "auto_check_update")
-    sub_col = split.column()
+    # split = layout_split(row, factor=0.4)
+    # sub_col = split.column()
+    # sub_col.prop(settings, "auto_check_update")
+    # sub_col = split.column()
 
-    if not settings.auto_check_update:
-        sub_col.enabled = False
-    sub_row = sub_col.row()
-    sub_row.label(text="Interval between checks")
-    sub_row = sub_col.row(align=True)
-    check_col = sub_row.column(align=True)
-    check_col.prop(settings, "updater_interval_months")
-    check_col = sub_row.column(align=True)
-    check_col.prop(settings, "updater_interval_days")
-    check_col = sub_row.column(align=True)
+    # if not settings.auto_check_update:
+    #     sub_col.enabled = False
+    # sub_row = sub_col.row()
+    # sub_row.label(text="Interval between checks")
+    # sub_row = sub_col.row(align=True)
+    # check_col = sub_row.column(align=True)
+    # check_col.prop(settings, "updater_interval_months")
+    # check_col = sub_row.column(align=True)
+    # check_col.prop(settings, "updater_interval_days")
+    # check_col = sub_row.column(align=True)
 
     # Consider un-commenting for local dev (e.g. to set shorter intervals)
     # check_col.prop(settings,"updater_interval_hours")

@@ -46,9 +46,10 @@ classes = (DemoPreferences,TBA_PT_AutoUpdater,TBA_OT_export_scene, TOPBAR_MT_cus
 # Set option to Update on save file
 def exportOnSave(dummy):
     check = functions.pollcheckExport() == True
-    checkP = bpy.context.scene.previewOn == True
+    checkP = bpy.context.scene.expOnSave == True
+    print("TBA_PreSave")
     if(check and checkP):
-        print("TBA_REFRESHED")
+        print("TBA_Saved")
         batch_export.glbExp(draco=False,material=True)
         set_data_file.exportData()
 
@@ -77,6 +78,9 @@ def register():
 
     des = "Remove indentation from export"
     bpy.types.Scene.minify = bpy.props.BoolProperty(name="Minify",description=des, default = True)
+    
+    des = "Set Out Export On Save"
+    bpy.types.Scene.expOnSave = bpy.props.BoolProperty(name="Export On Save",description=des, default = True)
 
     des = "Website Preview Version Is Open - Untick if you need open a new tab and Preview Scene Site Again"
     bpy.types.Scene.previewOn = bpy.props.BoolProperty(name="Site Preview On",description=des, default = False)
@@ -101,6 +105,7 @@ def unregister():
     del bpy.types.Scene.precision
     del bpy.types.Scene.minify
     del bpy.types.Scene.previewOn
+    del bpy.types.Scene.expOnSave
 
     #------------ SPACER ---------------------  
 
