@@ -6,6 +6,7 @@ from . import set_data_file
 from bpy.props import *
 import webbrowser
 from sys import platform
+from . import addon_updater_ops
 #------------ SPACER ---------------------
 
 class TBA_OT_save_dialog(bpy.types.Operator):
@@ -20,6 +21,10 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         sce = context.scene
         spacer = 1
         #------------
+        row = layout.row()
+        row.label(text="Addon Updates",icon ="SCRIPT")
+        addon_updater_ops.check_for_update_background()
+        addon_updater_ops.update_notice_box_ui(self, context)
         row = layout.row()
         row.label(text="")
         row.scale_y = spacer*0.5
@@ -36,19 +41,12 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         row.scale_y = spacer*0.5
         #------------
         row = layout.row()
-        row.label(text="Precision",icon ="VIEWZOOM")
+        row.label(text="Data File Options",icon ="OPTIONS")
         #------------
         row = layout.row()
         row.prop(sce,'precision')
         row.scale_y = 1.5
-        #------------
-        row = layout.row()
-        row.label(text="")
-        row.scale_y = spacer*0.5
-        #------------
-        row = layout.row()
-        row.label(text="Data File Options",icon ="OPTIONS")
-        #------------
+         #------------
         row = layout.row()
         row.prop(sce,'minify')
         row.scale_y = 1.5
@@ -61,9 +59,10 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         row.prop(sce,'expOnSave')
         row.scale_y = 1.5
         #------------
+        
         row = layout.row()
         row.label(text="")
-        row.scale_y = spacer*3
+        row.scale_y = spacer*2
 
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)

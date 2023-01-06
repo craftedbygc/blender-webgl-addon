@@ -38,11 +38,11 @@ from .set_addon_preferences import (DemoPreferences)
 
 #Import classes
 from .op import (TBA_OT_export_scene,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
-from .ui import (TOPBAR_MT_custom_menu,TBA_PT_AutoUpdater)           
+from .ui import (TOPBAR_MT_custom_menu)           
 
 #Classes list for register
 #List of all classes that will be registered
-classes = (DemoPreferences,TBA_PT_AutoUpdater,TBA_OT_export_scene, TOPBAR_MT_custom_menu,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
+classes = (DemoPreferences,TBA_OT_export_scene, TOPBAR_MT_custom_menu,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
 
 
 #------------ SPACER ---------------------
@@ -78,7 +78,7 @@ def register():
     bpy.types.Scene.saveFolderPath = bpy.props.StringProperty(name="", description=des, default="", subtype = 'DIR_PATH')
 
     des = "Define precision of data file - higher values will increase the data file size but match position better"
-    bpy.types.Scene.precision = bpy.props.IntProperty(name="",description=des,default=4)
+    bpy.types.Scene.precision = bpy.props.IntProperty(name="Precision",description=des,default=4)
 
     des = "Remove indentation from export"
     bpy.types.Scene.minify = bpy.props.BoolProperty(name="Minify",description=des, default = True)

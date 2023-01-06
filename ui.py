@@ -2,22 +2,6 @@ import bpy
 from bpy.props import *
 from bpy.types import Panel
 from bpy.types import Menu
-from . import addon_updater_ops
-
-
-class TBA_PT_AutoUpdater(Panel):
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_label = "TBA AUTO UPDATER"
-    bl_category = "TBA-AUP"
-    
-    def draw(self, context):
-        layout = self.layout
-        addon_updater_ops.check_for_update_background()
-        addon_updater_ops.update_notice_box_ui(self, context)
-
-
-
 
 class TOPBAR_MT_custom_menu(Menu):
     bl_label = "UNSEEN"

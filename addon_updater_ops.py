@@ -907,6 +907,13 @@ def update_notice_box_ui(self, context):
     if "ignore" in updater.json and updater.json["ignore"]:
         return
     if not updater.update_ready:
+        layout = self.layout
+        box = layout.box()
+        col = box.column(align=True)
+        col.alert = True
+        col.label(text="Your Running The Latest Version", icon="FUND")
+        col.alert = False
+        col.scale_y = 1.5
         return
 
     layout = self.layout
@@ -991,11 +998,9 @@ def update_settings_ui(self, context, element=None):
     check_col = sub_row.column(align=True)
     check_col.prop(settings, "updater_interval_days")
     check_col = sub_row.column(align=True)
-
-    # Consider un-commenting for local dev (e.g. to set shorter intervals)
-    # check_col.prop(settings,"updater_interval_hours")
-    # check_col = sub_row.column(align=True)
-    # check_col.prop(settings,"updater_interval_minutes")
+    check_col.prop(settings,"updater_interval_hours")
+    check_col = sub_row.column(align=True)
+    check_col.prop(settings,"updater_interval_minutes")
 
     # Checking / managing updates.
     row = box.row()
