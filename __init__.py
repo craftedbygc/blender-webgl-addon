@@ -18,7 +18,7 @@ bl_info = {
     "author" : "Tiago Andrade",
     "description" : "",
     "blender" : (3, 4, 0),
-    "version" : (1, 1, 7),
+    "version" : (1, 1, 9),
     "location" : "Topbar",
     "warning" : "",
     "category" : "Object"
@@ -46,7 +46,7 @@ classes = (DemoPreferences,TBA_PT_AutoUpdater,TBA_OT_export_scene, TOPBAR_MT_cus
 
 #------------ SPACER ---------------------
 # Set option to Update on save file
-def exportOnSave(dummy):
+def save_hanfler(dummy):
     check = functions.pollcheckExport() == True
     checkP = bpy.context.scene.expOnSave == True
     print("TBA_Before_Check")
@@ -89,8 +89,8 @@ def register():
 
     #------------ SPACER ---------------------
 
-    if not exportOnSave in bpy.app.handlers.save_pre:
-        bpy.app.handlers.save_pre.append(exportOnSave)
+
+    bpy.app.handlers.save_post.append(save_hanfler)
 
 
 
@@ -107,13 +107,7 @@ def unregister():
     del bpy.types.Scene.precision
     del bpy.types.Scene.minify
     del bpy.types.Scene.previewOn
-    del bpy.types.Scene.exportOnSave
-
-    #------------ SPACER ---------------------  
-
-    if exportOnSave in bpy.app.handlers.save_pre:
-        bpy.app.handlers.save_pre.remove(exportOnSave)
-
+    del bpy.types.Scene.expOnSave
 
 if __name__ == "__main__":
     register()
