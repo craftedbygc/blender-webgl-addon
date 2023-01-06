@@ -9,9 +9,6 @@ class TOPBAR_MT_custom_menu(Menu):
     def draw(self, context):
         layout = self.layout
         row = layout.row()
-        row.label(text="Version 1.2.1",icon ="CONSOLE")
-        row.scale_y = 1.25
-        row = layout.row()
         row.operator("wm.projectsettings",icon="SETTINGS")
         row.scale_y = 1.75
         row = layout.row()

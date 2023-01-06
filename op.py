@@ -1,3 +1,5 @@
+TBA_Version = "1.2.2"
+
 import bpy
 from bpy.types import Operator 
 from . import functions
@@ -24,7 +26,7 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         row = layout.row()
         row.label(text="Addon Updates",icon ="SCRIPT")
         addon_updater_ops.check_for_update_background()
-        addon_updater_ops.update_notice_box_ui(self, context)
+        addon_updater_ops.update_notice_box_ui(self, context,TBA_Version)
         row = layout.row()
         row.label(text="")
         row.scale_y = spacer*0.5
