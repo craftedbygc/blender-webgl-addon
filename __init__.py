@@ -32,11 +32,11 @@ from .set_addon_preferences import (DemoPreferences)
 
 #Import classes
 from .op import (TBA_OT_export_scene,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
-from .ui import (TOPBAR_MT_custom_menu)           
+from .ui import (TOPBAR_MT_custom_menu,TBA_PT_AutoUpdater)           
 
 #Classes list for register
 #List of all classes that will be registered
-classes = (DemoPreferences,TBA_OT_export_scene, TOPBAR_MT_custom_menu,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
+classes = (DemoPreferences,TBA_PT_AutoUpdater,TBA_OT_export_scene, TOPBAR_MT_custom_menu,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
 
 
 
@@ -72,7 +72,7 @@ def register():
 
 
 def unregister():
-    addon_updater_ops.unregister(bl_info)
+    addon_updater_ops.unregister()
 
     bpy.types.TOPBAR_MT_editor_menus.remove(TOPBAR_MT_custom_menu.menu_draw)
     for cls in classes:

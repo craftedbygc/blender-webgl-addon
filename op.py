@@ -6,7 +6,6 @@ from . import set_data_file
 from bpy.props import *
 import webbrowser
 from sys import platform
-
 #------------ SPACER ---------------------
 
 class TBA_OT_save_dialog(bpy.types.Operator):
