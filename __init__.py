@@ -18,7 +18,7 @@ bl_info = {
     "author" : "Tiago Andrade",
     "description" : "",
     "blender" : (3, 4, 0),
-    "version" : (1, 1, 9),
+    "version" : (1, 2, 0),
     "location" : "Topbar",
     "warning" : "",
     "category" : "Object"
@@ -28,6 +28,7 @@ import bpy
 from . import functions
 from . import batch_export
 from . import set_data_file
+from bpy.app.handlers import presistent
 
 #------------ SPACER ---------------------
 from . import addon_updater_ops
@@ -46,6 +47,7 @@ classes = (DemoPreferences,TBA_PT_AutoUpdater,TBA_OT_export_scene, TOPBAR_MT_cus
 
 #------------ SPACER ---------------------
 # Set option to Update on save file
+@presistent
 def save_hanfler(dummy):
     check = functions.pollcheckExport() == True
     checkP = bpy.context.scene.expOnSave == True
