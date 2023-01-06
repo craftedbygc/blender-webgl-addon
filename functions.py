@@ -154,7 +154,6 @@ def getAniAtt(cam):
         prevLens = getLens
         prevCam = getCamStop
         prevTgt = getTgtStop
-        print("TBA_CHECK",prevLens)
 
         
     

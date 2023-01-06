@@ -23,6 +23,9 @@ bl_info = {
 }
 
 import bpy
+from . import functions
+from . import batch_export
+from . import set_data_file
 
 #------------ SPACER ---------------------
 from . import addon_updater_ops
@@ -39,7 +42,18 @@ from .ui import (TOPBAR_MT_custom_menu,TBA_PT_AutoUpdater)
 classes = (DemoPreferences,TBA_PT_AutoUpdater,TBA_OT_export_scene, TOPBAR_MT_custom_menu,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
 
 
+#------------ SPACER ---------------------
+# Set option to Update on save file
+def exportOnSave(dummy):
+    check = functions.pollcheckExport() == True
+    checkP = bpy.context.scene.previewOn == True
+    if(check and checkP):
+        print("TBA_REFRESHED")
+        batch_export.glbExp(draco=False,material=True)
+        set_data_file.exportData()
 
+
+#------------ SPACER ---------------------
 
 
 def register():
@@ -69,6 +83,9 @@ def register():
 
     #------------ SPACER ---------------------
 
+    if not exportOnSave in bpy.app.handlers.save_pre:
+        bpy.app.handlers.save_pre.append(exportOnSave)
+
 
 
 def unregister():
@@ -85,7 +102,10 @@ def unregister():
     del bpy.types.Scene.minify
     del bpy.types.Scene.previewOn
 
+    #------------ SPACER ---------------------  
 
+    if exportOnSave in bpy.app.handlers.save_pre:
+        bpy.app.handlers.save_pre.remove(exportOnSave)
 
 
 if __name__ == "__main__":
