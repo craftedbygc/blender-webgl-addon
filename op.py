@@ -1,4 +1,4 @@
-TBA_Version = "1.2.2"
+TBA_Version = "1.2.3"
 
 import bpy
 from bpy.types import Operator 
