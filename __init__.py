@@ -16,7 +16,7 @@ bl_info = {
     "author" : "Tiago Andrade",
     "description" : "",
     "blender" : (3, 4, 0),
-    "version" : (1, 1, 4),
+    "version" : (1, 1, 6),
     "location" : "Topbar",
     "warning" : "",
     "category" : "Object"
