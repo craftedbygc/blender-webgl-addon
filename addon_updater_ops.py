@@ -1350,19 +1350,19 @@ def register(bl_info):
     # **WARNING** Depending on the engine, this token can act like a password!!
     # Only provide a token if the project is *non-public*, see readme for
     # other considerations and suggestions from a security standpoint.
-    updater.private_token = "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"  # "tokenstring"
+    updater.private_token = ""  # "tokenstring"
 
     # Choose your own username, must match website (not needed for GitLab).
     updater.user = "craftedbygc"
 
-    # Choose your own repository, must match git name for GitHUb and Bitbucket,
+    # Choose your own repository, must match git name for GitHUb and Bitbucket, 
     # for GitLab use project ID (numbers only).
     updater.repo = "blender-webgl-addon"
 
     # updater.addon = # define at top of module, MUST be done first
 
     # Website for manual addon download, optional but recommended to set.
-    updater.website = "https://github.com/craftedbygc/blender-webgl-addon/"
+    updater.website = "https://github.com/craftedbygc/blender-webgl-addon"
 
     # Addon subfolder path.
     # "sample/path/to/addon"
