@@ -909,34 +909,40 @@ def update_notice_box_ui(self, context):
     #     return
 
     if not updater.update_ready:
-        return
-
-    layout = self.layout
-    box = layout.box()
-    col = box.column(align=True)
-    col.alert = True
-    col.label(text="Update ready!", icon="ERROR")
-    col.alert = False
-    col.separator()
-    #row = col.row(align=True)
-    #split = row.split(align=True)
-    #colL = split.column(align=True)
-    #colL.scale_y = 1.5
-    #colL.operator(AddonUpdaterIgnore.bl_idname, icon="X", text="Ignore")
-    colR = split.column(align=True)
-    colR.scale_y = 1.5
-    if not updater.manual_only:
-        colR.operator(AddonUpdaterUpdateNow.bl_idname,
-                      text="Update", icon="LOOP_FORWARDS")
-        col.operator("wm.url_open", text="Open website").url = updater.website
-        # ops = col.operator("wm.url_open",text="Direct download")
-        # ops.url=updater.update_link
-        col.operator(AddonUpdaterInstallManually.bl_idname,
-                     text="Install manually")
+        layout = self.layout
+        box = layout.box()
+        col = box.column()
+        col.alert = True
+        col.label(text="Latest Update Installed", icon="FUND")
+        col.alert = False
+        col.scale_y = 1.25
     else:
-        # ops = col.operator("wm.url_open", text="Direct download")
-        # ops.url=updater.update_link
-        col.operator("wm.url_open", text="Get it now").url = updater.website
+        layout = self.layout
+        box = layout.box()
+        col = box.column()
+        col.alert = True
+        col.label(text="Update ready!", icon="ERROR")
+        col.alert = False
+        col.separator()
+        #row = col.row(align=True)
+        #split = row.split(align=True)
+        #colL = split.column(align=True)
+        #colL.scale_y = 1.5
+        #colL.operator(AddonUpdaterIgnore.bl_idname, icon="X", text="Ignore")
+        row = col.row()
+        row.scale_y = 1.5
+        if not updater.manual_only:
+            row.operator(AddonUpdaterUpdateNow.bl_idname,
+                        text="Update", icon="LOOP_FORWARDS")
+            #col.operator("wm.url_open", text="Open website").url = updater.website
+            # ops = col.operator("wm.url_open",text="Direct download")
+            # ops.url=updater.update_link
+            #col.operator(AddonUpdaterInstallManually.bl_idname,
+                        #text="Install manually")
+        else:
+            # ops = col.operator("wm.url_open", text="Direct download")
+            # ops.url=updater.update_link
+            col.operator("wm.url_open", text="Get it now").url = updater.website
 
 
 def update_settings_ui(self, context, element=None):
