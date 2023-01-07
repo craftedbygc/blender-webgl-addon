@@ -877,7 +877,7 @@ def show_reload_popup():
 # -----------------------------------------------------------------------------
 # Example UI integrations
 # -----------------------------------------------------------------------------
-def update_notice_box_ui(self, context,version):
+def update_notice_box_ui(self, context):
     """Update notice draw, to add to the end or beginning of a panel.
 
     After a check for update has occurred, this function will draw a box
@@ -904,42 +904,37 @@ def update_notice_box_ui(self, context,version):
             return
 
     # If user pressed ignore, don't draw the box.
+    if "ignore" in updater.json and updater.json["ignore"]:
+        return
+    if not updater.update_ready:
+        return
 
-    if not updater.update_ready and "ignore" in updater.json and updater.json["ignore"]:
-        layout = self.layout
-        box = layout.box()
-        col = box.column(align=True)
-        col.alert = True 
-        col.label(text="You Are Running Version: "+version, icon="FUND")
-        col.alert = False
-        col.scale_y = 1.5
+    layout = self.layout
+    box = layout.box()
+    col = box.column(align=True)
+    col.alert = True
+    col.label(text="Update ready!", icon="ERROR")
+    col.alert = False
+    col.separator()
+    row = col.row(align=True)
+    split = row.split(align=True)
+    colL = split.column(align=True)
+    colL.scale_y = 1.5
+    colL.operator(AddonUpdaterIgnore.bl_idname, icon="X", text="Ignore")
+    colR = split.column(align=True)
+    colR.scale_y = 1.5
+    if not updater.manual_only:
+        colR.operator(AddonUpdaterUpdateNow.bl_idname,
+                      text="Update", icon="LOOP_FORWARDS")
+        col.operator("wm.url_open", text="Open website").url = updater.website
+        # ops = col.operator("wm.url_open",text="Direct download")
+        # ops.url=updater.update_link
+        col.operator(AddonUpdaterInstallManually.bl_idname,
+                     text="Install manually")
     else:
-        layout = self.layout
-        box = layout.box()
-        col = box.column(align=True)
-        col.alert = True
-        col.label(text="Update ready!", icon="ERROR")
-        col.alert = False
-        col.separator()
-        row = col.row(align=True)
-        split = row.split(align=True)
-        colL = split.column(align=True)
-        colL.scale_y = 1.5
-        colL.operator(AddonUpdaterIgnore.bl_idname, icon="X", text="Ignore")
-        colR = split.column(align=True)
-        colR.scale_y = 1.5
-        if not updater.manual_only:
-            colR.operator(AddonUpdaterUpdateNow.bl_idname,
-                        text="Update", icon="LOOP_FORWARDS")
-            col.operator("wm.url_open", text="Open website").url = updater.website
-            # ops = col.operator("wm.url_open",text="Direct download")
-            # ops.url=updater.update_link
-            col.operator(AddonUpdaterInstallManually.bl_idname,
-                        text="Install manually")
-        else:
-            # ops = col.operator("wm.url_open", text="Direct download")
-            # ops.url=updater.update_link
-            col.operator("wm.url_open", text="Get it now").url = updater.website
+        # ops = col.operator("wm.url_open", text="Direct download")
+        # ops.url=updater.update_link
+        col.operator("wm.url_open", text="Get it now").url = updater.website
 
 
 def update_settings_ui(self, context, element=None):
@@ -996,9 +991,11 @@ def update_settings_ui(self, context, element=None):
     check_col = sub_row.column(align=True)
     check_col.prop(settings, "updater_interval_days")
     check_col = sub_row.column(align=True)
-    check_col.prop(settings,"updater_interval_hours")
-    check_col = sub_row.column(align=True)
-    check_col.prop(settings,"updater_interval_minutes")
+
+    # Consider un-commenting for local dev (e.g. to set shorter intervals)
+    # check_col.prop(settings,"updater_interval_hours")
+    # check_col = sub_row.column(align=True)
+    # check_col.prop(settings,"updater_interval_minutes")
 
     # Checking / managing updates.
     row = box.row()
@@ -1353,12 +1350,12 @@ def register(bl_info):
     # **WARNING** Depending on the engine, this token can act like a password!!
     # Only provide a token if the project is *non-public*, see readme for
     # other considerations and suggestions from a security standpoint.
-    updater.private_token = ""  # "tokenstring"
+    updater.private_token = None  # "tokenstring"
 
     # Choose your own username, must match website (not needed for GitLab).
     updater.user = "craftedbygc"
 
-    # Choose your own repository, must match git name for GitHUb and Bitbucket, 
+    # Choose your own repository, must match git name for GitHUb and Bitbucket,
     # for GitLab use project ID (numbers only).
     updater.repo = "blender-webgl-addon"
 
