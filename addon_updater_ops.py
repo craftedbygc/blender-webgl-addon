@@ -884,11 +884,12 @@ def update_notice_box_ui(self, context):
     saying an update is ready, and give a button for: update now, open website,
     or ignore popup. Ideal to be placed at the end / beginning of a panel.
     """
-
+    print("TBA_updater",updater.json)
     if updater.invalid_updater:
         return
 
     saved_state = updater.json
+
     if not updater.auto_reload_post_update:
         if "just_updated" in saved_state and saved_state["just_updated"]:
             layout = self.layout
@@ -904,8 +905,9 @@ def update_notice_box_ui(self, context):
             return
 
     # If user pressed ignore, don't draw the box.
-    if "ignore" in updater.json and updater.json["ignore"]:
-        return
+    # if "ignore" in updater.json and updater.json["ignore"]:
+    #     return
+
     if not updater.update_ready:
         return
 
@@ -916,11 +918,11 @@ def update_notice_box_ui(self, context):
     col.label(text="Update ready!", icon="ERROR")
     col.alert = False
     col.separator()
-    row = col.row(align=True)
-    split = row.split(align=True)
-    colL = split.column(align=True)
-    colL.scale_y = 1.5
-    colL.operator(AddonUpdaterIgnore.bl_idname, icon="X", text="Ignore")
+    #row = col.row(align=True)
+    #split = row.split(align=True)
+    #colL = split.column(align=True)
+    #colL.scale_y = 1.5
+    #colL.operator(AddonUpdaterIgnore.bl_idname, icon="X", text="Ignore")
     colR = split.column(align=True)
     colR.scale_y = 1.5
     if not updater.manual_only:

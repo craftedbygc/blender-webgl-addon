@@ -1562,7 +1562,7 @@ class SingletonUpdater:
         self._update_ready = None  # Reset so you could check update again.
 
     def ignore_update(self):
-        self._json["ignore"] = True
+        self._json["ignore"] = False
         self.save_updater_json()
 
     # -------------------------------------------------------------------------
