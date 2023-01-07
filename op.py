@@ -1,5 +1,3 @@
-TBA_Version = "1.2.3"
-
 import bpy
 from bpy.types import Operator 
 from . import functions
@@ -8,67 +6,8 @@ from . import set_data_file
 from bpy.props import *
 import webbrowser
 from sys import platform
-from . import addon_updater_ops
+
 #------------ SPACER ---------------------
-
-class TBA_OT_save_dialog(bpy.types.Operator):
-    bl_label = "Project Settings"
-    bl_idname = "wm.projectsettings"
-
-    def execute(self, context):
-        return {"FINISHED"}
-
-    def draw(self, context):
-        layout = self.layout
-        sce = context.scene
-        spacer = 1
-        #------------
-        row = layout.row()
-        row.label(text="Addon Updates",icon ="SCRIPT")
-        addon_updater_ops.check_for_update_background()
-        addon_updater_ops.update_notice_box_ui(self, context)
-        row = layout.row()
-        row.label(text="")
-        row.scale_y = spacer*0.5
-        #------------
-        row = layout.row()
-        row.label(text="Save To Folder",icon ="FOLDER_REDIRECT")
-        #------------
-        row = layout.row()
-        row.prop(sce,'saveFolderPath')
-        row.scale_y = 1.5
-        #------------
-        row = layout.row()
-        row.label(text="")
-        row.scale_y = spacer*0.5
-        #------------
-        row = layout.row()
-        row.label(text="Data File Options",icon ="OPTIONS")
-        #------------
-        row = layout.row()
-        row.prop(sce,'precision')
-        row.scale_y = 1.5
-         #------------
-        row = layout.row()
-        row.prop(sce,'minify')
-        row.scale_y = 1.5
-        #------------
-        row = layout.row()
-        row.prop(sce,'previewOn')
-        row.scale_y = 1.5
-        #------------
-        row = layout.row()
-        row.prop(sce,'expOnSave')
-        row.scale_y = 1.5
-        #------------
-        
-        row = layout.row()
-        row.label(text="")
-        row.scale_y = spacer*2
-
-    def invoke(self, context, event):
-        return context.window_manager.invoke_props_dialog(self)
-
 
 warn = "1 - If button is greyed out pls check scene structure or if all Projects Settings are defined!"
 warn2 = "2 - If Site does not open pls uncheck the preview on option in Project Settings"

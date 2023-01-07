@@ -5,6 +5,20 @@ import math
 import os
 from mathutils import Quaternion
 
+def arrayToString(ar):
+    str1 = ''
+    for i in ar:
+        str1 += str(i)
+        str1 += "."
+    return str1[:-1]
+
+#------------ SPACER ---------------------
+def tupleToString(tup):
+    str1 = ''
+    for i in tup:
+        str1 += str(i)
+        str1 += "."
+    return str1[:-1]
 #------------ SPACER ---------------------
 
 #Round Values

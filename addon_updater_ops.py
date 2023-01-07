@@ -26,6 +26,7 @@ import traceback
 
 import bpy
 from bpy.app.handlers import persistent
+from . import functions
 
 # Safely import the updater.
 # Prevents popups for users with invalid python installs e.g. missing libraries
@@ -169,7 +170,7 @@ class AddonUpdaterInstallPopup(bpy.types.Operator):
             return
         elif updater.update_ready:
             col = layout.column()
-            col.scale_y = 0.7
+            col.scale_y = 1.25
             col.label(text="Update {} ready!".format(updater.update_version),
                       icon="LOOP_FORWARDS")
             col.label(text="Choose 'Update Now' & press OK to install, ",
@@ -180,7 +181,7 @@ class AddonUpdaterInstallPopup(bpy.types.Operator):
             col.split()
         elif not updater.update_ready:
             col = layout.column()
-            col.scale_y = 0.7
+            col.scale_y = 1.25
             col.label(text="No updates available")
             col.label(text="Press okay to dismiss dialog")
             # add option to force install
@@ -877,7 +878,7 @@ def show_reload_popup():
 # -----------------------------------------------------------------------------
 # Example UI integrations
 # -----------------------------------------------------------------------------
-def update_notice_box_ui(self, context):
+def update_notice_box_ui(self, context,verOld):
     """Update notice draw, to add to the end or beginning of a panel.
 
     After a check for update has occurred, this function will draw a box
@@ -907,8 +908,10 @@ def update_notice_box_ui(self, context):
     # If user pressed ignore, don't draw the box.
     # if "ignore" in updater.json and updater.json["ignore"]:
     #     return
-
-    if not updater.update_ready:
+    verN = saved_state["version_text"]["version"]
+    verN = functions.arrayToString(verN)
+    print(verOld,verN)
+    if not updater.update_ready or verOld == verN:
         layout = self.layout
         box = layout.box()
         col = box.column()
@@ -921,8 +924,11 @@ def update_notice_box_ui(self, context):
         box = layout.box()
         col = box.column()
         col.alert = True
-        col.label(text="Update ready!", icon="ERROR")
+        
+        col.label(text="New Update v"+verN+" Available!",icon="ERROR")
+        #col.label(text="Update ready!", icon="ERROR")
         col.alert = False
+        col.scale_y = 1.25
         col.separator()
         #row = col.row(align=True)
         #split = row.split(align=True)
@@ -933,7 +939,7 @@ def update_notice_box_ui(self, context):
         row.scale_y = 1.5
         if not updater.manual_only:
             row.operator(AddonUpdaterUpdateNow.bl_idname,
-                        text="Update", icon="LOOP_FORWARDS")
+                        text="Update Now")
             #col.operator("wm.url_open", text="Open website").url = updater.website
             # ops = col.operator("wm.url_open",text="Direct download")
             # ops.url=updater.update_link
