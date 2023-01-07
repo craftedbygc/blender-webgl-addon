@@ -908,9 +908,17 @@ def update_notice_box_ui(self, context,verOld):
     # If user pressed ignore, don't draw the box.
     # if "ignore" in updater.json and updater.json["ignore"]:
     #     return
-    verN = saved_state["version_text"]["version"]
-    verN = functions.arrayToString(verN)
-    print(verOld,verN)
+    if not saved_state["version_text"]:
+        verN = None
+    else:
+        verN = saved_state["version_text"]["version"]
+        verN = functions.arrayToString(verN)
+        print(verOld,verN)
+    
+version"]
+        verN = functions.arrayToString(verN)
+        print(verOld,verN)
+    
     if not updater.update_ready or verOld == verN:
         layout = self.layout
         box = layout.box()
@@ -932,13 +940,10 @@ def update_notice_box_ui(self, context,verOld):
         col.separator()
         #row = col.row(align=True)
         #split = row.split(align=True)
-        #colL = split.column(align=True)
-        #colL.scale_y = 1.5
-        #colL.operator(AddonUpdaterIgnore.bl_idname, icon="X", text="Ignore")
-        row = col.row()
-        row.scale_y = 1.5
-        if not updater.manual_only:
-            row.operator(AddonUpdaterUpdateNow.bl_idname,
+        #colL = split.column(a    verN = saved_state["version_text"]["version"]
+    verN = functions.arrayToString(verN)
+    print(verOld,verN)
+       row.operator(AddonUpdaterUpdateNow.bl_idname,
                         text="Update Now")
             #col.operator("wm.url_open", text="Open website").url = updater.website
             # ops = col.operator("wm.url_open",text="Direct download")
