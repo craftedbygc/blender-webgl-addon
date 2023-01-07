@@ -1,5 +1,6 @@
+TBA_Version = "1.2.3"
+
 import bpy
-from . import globals
 from bpy.types import Operator 
 from . import functions
 from . import batch_export
@@ -11,8 +12,8 @@ from . import addon_updater_ops
 #------------ SPACER ---------------------
 
 class TBA_OT_save_dialog(bpy.types.Operator):
-    bl_label = "Settings"
-    bl_idname = "wm.settings"
+    bl_label = "Project Settings"
+    bl_idname = "wm.projectsettings"
 
     def execute(self, context):
         return {"FINISHED"}
@@ -23,10 +24,9 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         spacer = 1
         #------------
         row = layout.row()
-        des = globals.tbaGlobals["version"]
-        row.label(text="Addon v"+des+" Installed",icon ="SCRIPT")
+        row.label(text="Addon Updates",icon ="SCRIPT")
         addon_updater_ops.check_for_update_background()
-        addon_updater_ops.update_notice_box_ui(self, context,globals.tbaGlobals["version"])
+        addon_updater_ops.update_notice_box_ui(self, context,TBA_Version)
         row = layout.row()
         row.label(text="")
         row.scale_y = spacer*0.5

@@ -9,7 +9,7 @@ class TOPBAR_MT_custom_menu(Menu):
     def draw(self, context):
         layout = self.layout
         row = layout.row()
-        row.operator("wm.settings",icon="SETTINGS")
+        row.operator("wm.projectsettings",icon="SETTINGS")
         row.scale_y = 1.75
         row = layout.row()
         row.separator()

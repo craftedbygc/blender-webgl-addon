@@ -889,25 +889,36 @@ def update_notice_box_ui(self, context,version):
         return
 
     saved_state = updater.json
-    upRed = saved_state["update_ready"]
+    if not updater.auto_reload_post_update:
+        if "just_updated" in saved_state and saved_state["just_updated"]:
+            layout = self.layout
+            box = layout.box()
+            col = box.column()
+            alert_row = col.row()
+            alert_row.alert = True
+            alert_row.operator(
+                "wm.quit_blender",
+                text="Restart blender",
+                icon="ERROR")
+            col.label(text="to complete update")
+            return
 
     # If user pressed ignore, don't draw the box.
-    print("TBA",saved_state)
-    if not updater.update_ready and "ignore" in updater.json and updater.json["ignore"] and upRed == False:
+
+    if not updater.update_ready and "ignore" in updater.json and updater.json["ignore"]:
         layout = self.layout
         box = layout.box()
         col = box.column(align=True)
         col.alert = True 
-        col.label(text="Congrats! No Updates Needed", icon="FUND")
+        col.label(text="You Are Running Version: "+version, icon="FUND")
         col.alert = False
         col.scale_y = 1.5
-    else: 
+    else:
         layout = self.layout
         box = layout.box()
         col = box.column(align=True)
         col.alert = True
-        des="v"+updater.json["version_text"]
-        col.label(text="Update Available:"+des, icon="ERROR")
+        col.label(text="Update ready!", icon="ERROR")
         col.alert = False
         col.separator()
         row = col.row(align=True)
