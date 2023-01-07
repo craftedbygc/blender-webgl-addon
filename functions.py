@@ -6,6 +6,11 @@ import os
 from mathutils import Quaternion
 
 #------------ SPACER ---------------------
+def strTuple(st):
+    tup = tuple(map(int,st.split(".")))
+    return tup
+
+#------------ SPACER ---------------------
 
 #Round Values
 def rd(e):

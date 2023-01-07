@@ -12,19 +12,21 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-
 bl_info = {
     "name" : "Unseen BWE",
     "author" : "Tiago Andrade",
     "description" : "",
-    "blender" : (3, 4, 0),
-    "version" : (1, 2, 3),
+    "blender" : (3,4,0),
+    "version" : (1,2,3),
     "location" : "Topbar",
     "warning" : "",
     "category" : "Object"
 }
 
+
+
 import bpy
+from . import globals
 from . import functions
 from . import batch_export
 from . import set_data_file
