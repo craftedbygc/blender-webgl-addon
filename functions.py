@@ -19,6 +19,7 @@ def tupleToString(tup):
         str1 += str(i)
         str1 += "."
     return str1[:-1]
+    
 #------------ SPACER ---------------------
 
 #Round Values
@@ -86,7 +87,6 @@ def setFolderStructure():
     modelsFolder =os.path.join(folderpath, folderName)
     folderName = "texture"
     textFolder =os.path.join(folderpath, folderName)
-
     check = os.path.exists(modelsFolder)
     
     if(check == False):

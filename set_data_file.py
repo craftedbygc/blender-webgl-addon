@@ -26,54 +26,53 @@ def exportData():
 
             collName = "Scene Instances"
             collmain = functions.findCollection(collName)
-            bpy.data.collections[collName].color_tag = 'COLOR_05'
-            
-            for coll in collmain.children:
-                    bpy.data.collections[coll.name].color_tag = 'COLOR_04'
-                    cName = coll.name
-                    myList = [obj.name for obj in coll.all_objects]
-                    myList = sorted(myList)
-                    inName = myList[0]
-                    conName = functions.namingConvention(inName)
-                    jsonObject["instances"][conName] = []
-                    
-                    for name in myList:
-                        ob = coll.all_objects[name] 
-                        set_data_objects.create(jsonObject,ob,inName,False)
+            if(collmain):
+                bpy.data.collections[collName].color_tag = 'COLOR_05'
+                for coll in collmain.children:
+                        bpy.data.collections[coll.name].color_tag = 'COLOR_04'
+                        cName = coll.name
+                        myList = [obj.name for obj in coll.all_objects]
+                        myList = sorted(myList)
+                        inName = myList[0]
+                        conName = functions.namingConvention(inName)
+                        jsonObject["instances"][conName] = []
+                        
+                        for name in myList:
+                            ob = coll.all_objects[name] 
+                            set_data_objects.create(jsonObject,ob,inName,False)
 
 
             #------------ SPACER ---------------------
             collName = "Scene Objects"
             collmain = functions.findCollection(collName)
-            bpy.data.collections[collName].color_tag = 'COLOR_06'
-            
-            oblist = [obj.name for obj in collmain.all_objects]
-            oblist = sorted(oblist)
-                  
-            for name in oblist:
-                ob = collmain.all_objects[name]
-                set_data_objects.create(jsonObject,ob,ob.name,True)
+            if(collmain):
+                bpy.data.collections[collName].color_tag = 'COLOR_06'
+                oblist = [obj.name for obj in collmain.all_objects]
+                oblist = sorted(oblist)
+                for name in oblist:
+                    ob = collmain.all_objects[name]
+                    set_data_objects.create(jsonObject,ob,ob.name,True)
             
             #------------ SPACER ---------------------
             collName = "Scene Camera"
             collmain = functions.findCollection(collName)
-            bpy.data.collections[collName].color_tag = 'COLOR_03'
-            for coll in collmain.children:
-                bpy.data.collections[coll.name].color_tag = 'COLOR_02'
-            set_data_camera.create(jsonObject,collmain)
+            if(collmain):
+                bpy.data.collections[collName].color_tag = 'COLOR_03'
+                for coll in collmain.children:
+                    bpy.data.collections[coll.name].color_tag = 'COLOR_02'
+                set_data_camera.create(jsonObject,collmain)
 
             #------------ SPACER ---------------------
 
             collName = "Scene Objects Paths"
             collmain = functions.findCollection(collName)
-            bpy.data.collections[collName].color_tag = 'COLOR_07'
-            
-            oblist = [obj.name for obj in collmain.all_objects]
-            oblist = sorted(oblist)
-
-            for name in oblist:
-                ob = collmain.all_objects[name]
-                set_data_obpaths.create(jsonObject,ob)
+            if(collmain):
+                bpy.data.collections[collName].color_tag = 'COLOR_07'
+                oblist = [obj.name for obj in collmain.all_objects]
+                oblist = sorted(oblist)
+                for name in oblist:
+                    ob = collmain.all_objects[name]
+                    set_data_obpaths.create(jsonObject,ob)
 
             #------------ SPACER ---------------------
                     
