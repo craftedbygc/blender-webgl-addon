@@ -79,6 +79,11 @@ def findObject(obName):
         if (ob.name == obName):
             return ob
 
+def findCollectionWithString(string):
+    for coll in bpy.data.collections:
+        if (coll.name == collName):
+            return coll
+
 #------------ SPACER ---------------------
 
 def setFolderStructure():
@@ -97,13 +102,13 @@ def setFolderStructure():
 
 
 def pollcheckExport():
-    check = ["Scene Objects","Scene Instances"]
+    check = ["Objects","Instances"]
     for name in check:
         coll = findCollection(name)
         if(coll):
             collName = coll.name
             path = bpy.context.scene.saveFolderPath
-            if(name == collName and len(coll.objects) != 0 and path !=""):
+            if(name in collName and len(coll.objects) != 0 and path !=""):
                 return True
        
         return False    
@@ -198,6 +203,22 @@ def getPathPoints(ob):
 
     return points
 
+
+#------------ Fetch Collections ---------------------
+def getCollections(string):
+    colls = []
+    for coll in  bpy.data.collections:
+        if string in coll.name:
+            colls.append(coll)
+
+    return colls
+       
+#------------ Fetch Collections ---------------------
+
+def nameMatchScene(name,cname):
+    cname = cname[0]
+    name = cname + "-" + name
+    return name
 
 
 

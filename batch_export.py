@@ -32,19 +32,22 @@ def glbExp(draco,material):
 
     #------------ SPACER ---------------------
 
-    colName = "Scene Objects"
-    coll = functions.findCollection(colName)
-    for ob in coll.objects:
-        glbExpOp(folderpath,format,ob,draco,material)
+    # colName = "Objects"
+    # #coll = functions.findCollection(colName)
+    # collArray = functions.getCollections(colName)
+    # for coll in collArray:
+    #     for ob in coll.objects:
+    #         glbExpOp(folderpath,format,ob,draco,material)
 
-    colName = "Scene Instances"
-    collmain = functions.findCollection(colName)
-    for coll in collmain.children:
-        count = 0
-        for ob in coll.objects:
-            if(count == 0):
-                glbExpOp(folderpath,format,ob,draco,material)
-            count += 1
-        
+    
+    # colName = "Instances"
+    # #coll = functions.findCollection(colName)
+    # collArray = functions.getCollections(colName)
+    # for coll in collArray:
+    #     count = 0
+    #     for ob in coll.objects:
+    #         if(count == 0):
+    #             glbExpOp(folderpath,format,ob,draco,material)
+    #         count += 1
 
     return
