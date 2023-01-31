@@ -81,7 +81,7 @@ def findObject(obName):
 
 def findCollectionWithString(string):
     for coll in bpy.data.collections:
-        if (coll.name == collName):
+        if string in coll.name:
             return coll
 
 #------------ SPACER ---------------------
@@ -104,13 +104,12 @@ def setFolderStructure():
 def pollcheckExport():
     check = ["Objects","Instances"]
     for name in check:
-        coll = findCollection(name)
+        coll = findCollectionWithString(name)
         if(coll):
             collName = coll.name
             path = bpy.context.scene.saveFolderPath
             if(name in collName and len(coll.objects) != 0 and path !=""):
                 return True
-       
         return False    
 
 #------------ SPACER ---------------------
@@ -210,7 +209,6 @@ def getCollections(string):
     for coll in  bpy.data.collections:
         if string in coll.name:
             colls.append(coll)
-
     return colls
        
 #------------ Fetch Collections ---------------------

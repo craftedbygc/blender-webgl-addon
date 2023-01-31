@@ -17,7 +17,7 @@ bl_info = {
     "name" : "Unseen BWE",
     "author" : "Tiago Andrade",
     "description" : "",
-    "blender" : (3, 4, 0),
+    "blender" : (3, 4, 1),
     "version" : (1, 3, 1),
     "location" : "Topbar",
     "warning" : "",
@@ -33,52 +33,6 @@ from bpy.app.handlers import persistent
 #------------ SPACER ---------------------
 from . import addon_updater_ops
 #from .set_addon_preferences import (DemoPreferences)
-
-#------------ SPACER ---------------------
-#@addon_updater_ops.make_annotations
-class DemoPreferences(bpy.types.AddonPreferences):
-	"""Demo bare-bones preferences"""
-	bl_idname = __package__
-
-	# Addon updater preferences.
-
-	auto_check_update = bpy.props.BoolProperty(
-		name="Auto-check for Update",
-		description="If enabled, auto-check for updates using an interval",
-		default=True)
-
-	updater_interval_months = bpy.props.IntProperty(
-		name='Months',
-		description="Number of months between checking for updates",
-		default=0,
-		min=0)
-
-	updater_interval_days = bpy.props.IntProperty(
-		name='Days',
-		description="Number of days between checking for updates",
-		default=0,
-		min=0,
-		max=31)
-
-	updater_interval_hours = bpy.props.IntProperty(
-		name='Hours',
-		description="Number of hours between checking for updates",
-		default=8,
-		min=0,
-		max=23)
-
-	updater_interval_minutes = bpy.props.IntProperty(
-		name='Minutes',
-		description="Number of minutes between checking for updates",
-		default=0,
-		min=0,
-		max=59)
-
-	def draw(self, context):
-		layout = self.layout
-		# Updater draw function, could also pass in col as third arg.
-		addon_updater_ops.update_settings_ui(self, context)
-
 
 #------------ SPACER ---------------------
 
@@ -148,7 +102,7 @@ from .ui import (TOPBAR_MT_custom_menu)
 
 #Classes list for register
 #List of all classes that will be registered
-classes = (DemoPreferences,TBA_OT_export_scene, TOPBAR_MT_custom_menu,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
+classes = (TBA_OT_export_scene, TOPBAR_MT_custom_menu,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
 
 
 #------------ SPACER ---------------------
@@ -160,8 +114,9 @@ def save_hanfler(dummy):
     print("TBA_Before_Check")
     if(check and checkP):
         print("TBA_Auto_Save_On")
+        functions.setFolderStructure()
         batch_export.glbExp(draco=False,material=True)
-        set_data_file.exportData()
+        #set_data_file.exportData()
 
 
 #------------ SPACER ---------------------

@@ -3,7 +3,7 @@ import os
 from . import functions
 
 
-def glbExpOp(folderpath,format,ob,draco,material):
+def glbExpOp(folderpath,format,coll,ob,draco,material):
 
     #------------ SPACER ---------------------
 
@@ -16,7 +16,9 @@ def glbExpOp(folderpath,format,ob,draco,material):
 
     functions.forceSelectable(ob)
     file_name = ob.name
+    file_name = functions.nameMatchScene(file_name,coll.name)
     file_name = functions.namingConvention(file_name)
+    print("TBA_HERE_1",file_name)
     target_path =os.path.join(folderpath, file_name)
     #------------ SPACER ---------------------
     functions.geoCleaner(ob)
@@ -32,22 +34,23 @@ def glbExp(draco,material):
 
     #------------ SPACER ---------------------
 
-    # colName = "Objects"
-    # #coll = functions.findCollection(colName)
-    # collArray = functions.getCollections(colName)
-    # for coll in collArray:
-    #     for ob in coll.objects:
-    #         glbExpOp(folderpath,format,ob,draco,material)
+    colName = "Objects"
+    #coll = functions.findCollection(colName)
+    collArray = functions.getCollections(colName)
+    for coll in collArray:
+        for ob in coll.objects:
+            glbExpOp(folderpath,format,coll,ob,draco,material)
 
     
-    # colName = "Instances"
-    # #coll = functions.findCollection(colName)
-    # collArray = functions.getCollections(colName)
-    # for coll in collArray:
-    #     count = 0
-    #     for ob in coll.objects:
-    #         if(count == 0):
-    #             glbExpOp(folderpath,format,ob,draco,material)
-    #         count += 1
-
+    colName = "Instances"
+    #coll = functions.findCollection(colName)
+    collArray = functions.getCollections(colName)
+    for coll in collArray:
+        for child in coll.children:
+            print("TBA_HERE_2",child.name)
+            count = 0
+            # for ob in child.objects:
+            #     if(count == 0):
+            #         glbExpOp(folderpath,format,coll,ob,draco,material)
+            #     count += 1
     return

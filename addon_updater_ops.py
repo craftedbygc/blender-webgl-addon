@@ -792,11 +792,11 @@ def check_for_update_background():
     settings = get_user_preferences(bpy.context)
     if not settings:
         return
-    updater.set_check_interval(enabled=settings.auto_check_update,
-                               months=settings.updater_interval_months,
-                               days=settings.updater_interval_days,
-                               hours=settings.updater_interval_hours,
-                               minutes=settings.updater_interval_minutes)
+    updater.set_check_interval(enabled=True,
+                               months=0,
+                               days=0,
+                               hours=8,
+                               minutes=0)
 
     # Input is an optional callback function. This function should take a bool
     # input, if true: update ready, if false: no update ready.
