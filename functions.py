@@ -117,6 +117,7 @@ def pollcheckExport():
 def namingConvention(string):
     string = string.lower()
     string = string.replace(".", "-")
+    string = string.replace("_", "-")
     return string
 
 #------------ SPACER ---------------------
@@ -218,7 +219,12 @@ def nameMatchScene(name,cname):
     name = cname + "-" + name
     return name
 
-
+#------------ Fetch Children Collections ---------------------
+def getChildCollections(collParent):
+    colls = []
+    for coll in  collParent.children:
+            colls.append(coll)
+    return colls
 
     
         

@@ -14,67 +14,82 @@ def exportData():
             
            #------------ SPACER ---------------------
             jsonObject = {}
-            jsonObject["instances"] = {}
-            jsonObject["objects"] = {}
-            jsonObject["paths"] = {}
             
             #------------ SPACER ---------------------
             f = open(filepath, "w")
             bpy.context.scene.frame_set(0)
 
-            #------------ SPACER ---------------------
+            colNameTarget = "Scene"
+            collArray = functions.getCollections(colNameTarget)
+            for c in collArray:
+                #Create main Scene object
+                collName = c.name
+                mainConv = functions.namingConvention(collName)
+                jsonObject[mainConv] = {}
 
-            collName = "Scene Instances"
-            collmain = functions.findCollection(collName)
-            if(collmain):
-                bpy.data.collections[collName].color_tag = 'COLOR_05'
-                for coll in collmain.children:
-                        bpy.data.collections[coll.name].color_tag = 'COLOR_04'
-                        cName = coll.name
-                        myList = [obj.name for obj in coll.all_objects]
-                        myList = sorted(myList)
-                        inName = myList[0]
-                        conName = functions.namingConvention(inName)
-                        jsonObject["instances"][conName] = []
-                        
-                        for name in myList:
-                            ob = coll.all_objects[name] 
-                            set_data_objects.create(jsonObject,ob,inName,False)
+                #------------ SPACER ---------------------
+                childColls = functions.getChildCollections(c)
+                for cc in childColls:
+                    childCollName = cc.name
+                    childCov = functions.namingConvention(childCollName)
+                    childCovTweak = childCov[2:]
+                    jsonObject[mainConv][childCovTweak] = {}
 
+                    #------------ SPACER ---------------------
+                    # OBJECTS !!!!!!!!!
+                    #Target the Objects collection to add data to json
+                    if(childCovTweak == "objects"):
+                        bpy.data.collections[childCollName].color_tag = 'COLOR_06'
+                        oblist = [obj.name for obj in cc.all_objects]
+                        oblist = sorted(oblist)
+                        for name in oblist:
+                            ob = cc.all_objects[name]
+                            obname = functions.nameMatchScene(ob.name,collName)
+                            obname = functions.namingConvention(obname)
+                            data = set_data_objects.create(ob)
+                            jsonObject[mainConv][childCovTweak][obname] = []
+                            jsonObject[mainConv][childCovTweak][obname].append(data)
 
-            #------------ SPACER ---------------------
-            collName = "Scene Objects"
-            collmain = functions.findCollection(collName)
-            if(collmain):
-                bpy.data.collections[collName].color_tag = 'COLOR_06'
-                oblist = [obj.name for obj in collmain.all_objects]
-                oblist = sorted(oblist)
-                for name in oblist:
-                    ob = collmain.all_objects[name]
-                    set_data_objects.create(jsonObject,ob,ob.name,True)
-            
-            #------------ SPACER ---------------------
-            collName = "Scene Camera"
-            collmain = functions.findCollection(collName)
-            if(collmain):
-                bpy.data.collections[collName].color_tag = 'COLOR_03'
-                for coll in collmain.children:
-                    bpy.data.collections[coll.name].color_tag = 'COLOR_02'
-                set_data_camera.create(jsonObject,collmain)
+                    #------------ SPACER ---------------------
+                    # INSTANCES MANUNAL !!!!!!!!!
+                    #Target the Objects collection to add data to json
+                    if(childCovTweak == "instances-manual"):
+                        bpy.data.collections[childCollName].color_tag = 'COLOR_05'
+                        for ccc in cc.children:
+                            bpy.data.collections[cc.name].color_tag = 'COLOR_04'
+                            oblist = [obj.name for obj in ccc.all_objects]
+                            oblist = sorted(oblist)
+                            inName = oblist[0]
+                            conName = functions.namingConvention(inName)
+                            jsonObject[mainConv][childCovTweak][conName] = []
 
-            #------------ SPACER ---------------------
+                            for name in oblist:
+                                ob = ccc.all_objects[name]
+                                data = set_data_objects.create(ob)
+                                jsonObject[mainConv][childCovTweak][conName].append(data)
 
-            collName = "Scene Objects Paths"
-            collmain = functions.findCollection(collName)
-            if(collmain):
-                bpy.data.collections[collName].color_tag = 'COLOR_07'
-                oblist = [obj.name for obj in collmain.all_objects]
-                oblist = sorted(oblist)
-                for name in oblist:
-                    ob = collmain.all_objects[name]
-                    set_data_obpaths.create(jsonObject,ob)
+                    #------------ SPACER ---------------------
+                    # CAMERA !!!!!!!!!
+                    #Target the Camera to add data to json
+                    if(childCovTweak == "camera"):
+                        bpy.data.collections[childCollName].color_tag = 'COLOR_03'
+                        for ccc in cc.children:
+                            bpy.data.collections[ccc.name].color_tag = 'COLOR_02'
+                        camJsonObject = jsonObject[mainConv][childCovTweak]
+                        set_data_camera.create(camJsonObject,cc)
 
-            #------------ SPACER ---------------------
+                    #------------ SPACER ---------------------
+                    # PATHS !!!!!!!!!
+                    #Target the paths to add data to json
+                    if(childCovTweak == "paths"):
+                        bpy.data.collections[childCollName].color_tag = 'COLOR_07'
+                        oblist = [obj.name for obj in cc.all_objects]
+                        oblist = sorted(oblist)
+                        for name in oblist:
+                            ob = cc.all_objects[name]
+                            pathJsonObject = jsonObject[mainConv][childCovTweak]
+                            set_data_obpaths.create(pathJsonObject,ob)
+                            
                     
             if(bpy.context.scene.minify):
                 indentVal = None

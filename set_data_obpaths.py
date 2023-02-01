@@ -8,6 +8,6 @@ def create(jsonObject,ob):
     name = ob.name
     name = name[:-5]
     name = functions.namingConvention(name)
-    jsonObject["paths"][name] = functions.getPathPoints(ob)
+    jsonObject[name] = functions.getPathPoints(ob)
 
     return {"FINISHED"}

@@ -2,7 +2,8 @@ import bpy
 from mathutils import Quaternion
 from . import functions
 
-def create(objects,object,name,check):
+
+def create(object):
 
             data = []
             settings = {}
@@ -26,10 +27,5 @@ def create(objects,object,name,check):
             data.append(settings)
             
             #------------ SPACER ---------------------
-            name = functions.namingConvention(name)
-            if(check):
-                objects["objects"][name] = []
-                objects["objects"][name].append(data)
-            else:
-                objects["instances"][name].append(data)
+            return data
                 

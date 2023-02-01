@@ -3,21 +3,16 @@ from mathutils import Quaternion
 from . import functions
 
 
-def create(jsonObject,coll):
-    #------------ SPACER ---------------------
-    # get camera settings 
-    jsonObject["camera"] = {}
-    job = jsonObject["camera"]
-
+def create(camJsonObject,coll):
     #------------ SPACER ---------------------
     camFilm = None
     cam = None
     camDataMame = "CamData"
     for ob in coll.objects:
         name = ob.name
-        if(name == "Camera"):
-            cam = bpy.data.cameras[camDataMame]
-            camFilm = bpy.data.cameras[camDataMame].sensor_width
+        if("Camera" in name):
+            cam = bpy.data.cameras[ob.name]
+            camFilm = bpy.data.cameras[ob.name].sensor_width
     cam_stops,tgt_stops,camLens = functions.getAniAtt(cam)
 
     #------------ SPACER ---------------------
@@ -25,11 +20,11 @@ def create(jsonObject,coll):
     tpath = functions.findObject("tgt-path")
     #------------ SPACER ---------------------
 
-    job["focal-length"] = camLens
-    job["film-gauge"] = camFilm
-    job["cam-path"] = functions.getPathPoints(cpath)
-    job["cam-stops"] = cam_stops
-    job["tgt-path"] = functions.getPathPoints(tpath)
-    job["tgt-stops"] = tgt_stops
+    camJsonObject["focal-length"] = camLens
+    camJsonObject["film-gauge"] = camFilm
+    camJsonObject["cam-path"] = functions.getPathPoints(cpath)
+    camJsonObject["cam-stops"] = cam_stops
+    camJsonObject["tgt-path"] = functions.getPathPoints(tpath)
+    camJsonObject["tgt-stops"] = tgt_stops
 
     return {"FINISHED"}

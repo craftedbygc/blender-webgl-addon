@@ -116,7 +116,7 @@ def save_hanfler(dummy):
         print("TBA_Auto_Save_On")
         functions.setFolderStructure()
         batch_export.glbExp(draco=False,material=True)
-        #set_data_file.exportData()
+        set_data_file.exportData()
 
 
 #------------ SPACER ---------------------
