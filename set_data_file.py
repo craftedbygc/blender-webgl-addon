@@ -72,20 +72,20 @@ def exportData():
                     #------------ SPACER ---------------------
                     # INSTANCES Nodes !!!!!!!!!
                     #Target the Objects collection to add data to json
-                    if(childCovTweak == "instances-nodes"):
-                        bpy.data.collections[childCollName].color_tag = 'COLOR_05'
-                        for ccc in cc.children:
-                            bpy.data.collections[cc.name].color_tag = 'COLOR_04'
-                            if("Scattering-Bases"in cc.name):
-                                oblist = [obj.name for obj in ccc.all_objects]
-                                oblist = sorted(oblist)
-                                for name in oblist:
-                                    ob = ccc.all_objects[name]
-                                    data,name = set_data_objects.create(ob) 
-                                    obname = functions.nameMatchScene(name,collName)
-                                    obname = functions.namingConvention(obname)                           
-                                    jsonObject[mainConv][childCovTweak][obname] = []
-                                    jsonObject[mainConv][childCovTweak][obname].append(data)
+                    # if(childCovTweak == "instances-nodes"):
+                    #     bpy.data.collections[childCollName].color_tag = 'COLOR_05'
+                    #     for ccc in cc.children:
+                    #         bpy.data.collections[cc.name].color_tag = 'COLOR_04'
+                    #         if("Scattering-Bases"in cc.name):
+                    #             oblist = [obj.name for obj in ccc.all_objects]
+                    #             oblist = sorted(oblist)
+                    #             for name in oblist:
+                    #                 ob = ccc.all_objects[name]
+                    #                 data,name = set_data_objects.create(ob) 
+                    #                 obname = functions.nameMatchScene(name,collName)
+                    #                 obname = functions.namingConvention(obname)                           
+                    #                 jsonObject[mainConv][childCovTweak][obname] = []
+                    #                 jsonObject[mainConv][childCovTweak][obname].append(data)
 
 
                     #------------ SPACER ---------------------

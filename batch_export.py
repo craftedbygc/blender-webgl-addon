@@ -43,11 +43,9 @@ def glbExp(draco,material):
         for ob in coll.objects:
             glbExpOp(folderpath,format,coll,ob,draco,material)
             obcount += 1
-    
-     
-    
 
-    
+    #------------ SPACER ---------------------
+
     colName = "Instances-Manual"
     collArray = functions.getCollections(colName)
     instcount = 0
@@ -59,9 +57,22 @@ def glbExp(draco,material):
             for ob in cc.objects:
                 if(count == 0):
                     glbExpOp(folderpath,format,coll,ob,draco,material)
-                count += 1       
+                count += 1
+    
+    #------------ SPACER ---------------------
 
-    finalCount = instcount + obcount
+    colName = "Instances-Nodes"
+    collArray = functions.getCollections(colName)
+    nodecount = 0
+    for coll in collArray:
+        for cc in coll.children: 
+            if("Instanced-Geometry" in cc.name):     
+                for ob in cc.objects:
+                    glbExpOp(folderpath,format,coll,ob,draco,material)
+                    nodecount += 1
+ 
+
+    finalCount = instcount + obcount + nodecount
     print("========================= #")
     print("========================= #") 
     print("========================= #")
@@ -70,4 +81,3 @@ def glbExp(draco,material):
     print("========================= #")
     print("========================= #") 
     print("========================= #") 
-    #return
