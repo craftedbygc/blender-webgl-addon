@@ -68,6 +68,27 @@ def exportData():
                                 data = set_data_objects.create(ob)
                                 jsonObject[mainConv][childCovTweak][conName].append(data)
 
+
+                    #------------ SPACER ---------------------
+                    # INSTANCES Nodes !!!!!!!!!
+                    #Target the Objects collection to add data to json
+                    if(childCovTweak == "instances-nodes"):
+                        bpy.data.collections[childCollName].color_tag = 'COLOR_05'
+                        for ccc in cc.children:
+                            bpy.data.collections[cc.name].color_tag = 'COLOR_04'
+                            if("Instanced-Geometry"in cc.name):
+                                oblist = [obj.name for obj in ccc.all_objects]
+                                oblist = sorted(oblist)
+                                for name in oblist:
+                                    ob = ccc.all_objects[name]
+                                    obname = functions.nameMatchScene(ob.name,collName)
+                                    obname = functions.namingConvention(obname)
+                                    # ZALA FUNCTIONS
+                                    data = set_data_objects.create(ob)                                    
+                                    jsonObject[mainConv][childCovTweak][obname] = []
+                                    jsonObject[mainConv][childCovTweak][obname].append(data)
+                        
+
                     #------------ SPACER ---------------------
                     # CAMERA !!!!!!!!!
                     #Target the Camera to add data to json
@@ -77,6 +98,7 @@ def exportData():
                             bpy.data.collections[ccc.name].color_tag = 'COLOR_02'
                         camJsonObject = jsonObject[mainConv][childCovTweak]
                         set_data_camera.create(camJsonObject,cc)
+
 
                     #------------ SPACER ---------------------
                     # PATHS !!!!!!!!!
