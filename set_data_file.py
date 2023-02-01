@@ -81,12 +81,12 @@ def exportData():
                                 oblist = sorted(oblist)
                                 for name in oblist:
                                     ob = ccc.all_objects[name]
-                                    obname = functions.nameMatchScene(ob.name,collName)
-                                    obname = functions.namingConvention(obname)
-                                    # ZALA FUNCTIONS
-                                    data = set_data_objects.create(ob)                                    
+                                    data,name = set_data_objects.create(ob) 
+                                    obname = functions.nameMatchScene(name,collName)
+                                    obname = functions.namingConvention(obname)                           
                                     jsonObject[mainConv][childCovTweak][obname] = []
                                     jsonObject[mainConv][childCovTweak][obname].append(data)
+
 
                     #------------ SPACER ---------------------
                     # CAMERA !!!!!!!!!
