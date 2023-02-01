@@ -5,6 +5,7 @@ from . import functions
 from . import set_data_objects
 from . import set_data_camera
 from . import set_data_obpaths
+from . import set_data_geoinstances
 
 def exportData():
             #------------ SPACER -----------s----------
@@ -73,19 +74,60 @@ def exportData():
                     # INSTANCES Nodes !!!!!!!!!
                     #Target the Objects collection to add data to json
                     if(childCovTweak == "instances-nodes"):
-                        bpy.data.collections[childCollName].color_tag = 'COLOR_05'
+
+                        # Select Instancing geo and Scattering base collections separately - TO DO
+                        # bpy.data.collections[childCollName].color_tag = 'COLOR_05'
+                        # instancedGeoCol = functions.getCollections("Instanced-Geometry")[0]
+                        # bpy.data.collections[instancedGeoCol.name].color_tag = 'COLOR_04'
+                        # # instancedGeoColName = instancedGeoCol.name[2:]
+                        # oblist = [obj.name for obj in instancedGeoCol.all_objects]
+                        # oblist = sorted(oblist)
+                        # print(oblist)
+                        # for name in oblist:
+                        #     ob = instancedGeoCol.all_objects[name]
+                        #     # obname = functions.nameMatchScene(name,collName)
+                        #     obname = functions.namingConvention(name)                           
+                        #     jsonObject[mainConv][childCovTweak][obname] = [] # Create an empty array for each geometry that is instanced
+                        #     print(f'create temp instance json {jsonObject[mainConv][childCovTweak]}')
+
+                        # scatteringBasesCol = functions.getCollections("Scattering-Bases")[0]
+                        # bpy.data.collections[scatteringBasesCol.name].color_tag = 'COLOR_04'
+                        # oblist = [obj.name for obj in scatteringBasesCol.all_objects]
+                        # oblist = sorted(oblist)
+                        # print(oblist)
+                        # depsgraph = bpy.context.evaluated_depsgraph_get() # Create evaluated graph for the whole scene
+                        # for name in oblist:
+                        #     # Go through all bases
+                        #     ob = scatteringBasesCol.all_objects[name]
+                        #     # Get the object in the evaluated dependency graph to attach instances
+                        #     evalOb = ob.evaluated_get(depsgraph)
+                        #     set_data_geoinstances.find(depsgraph, evalOb, jsonObject[mainConv][childCovTweak], collName)
+
                         for ccc in cc.children:
-                            bpy.data.collections[cc.name].color_tag = 'COLOR_04'
-                            if("Scattering-Bases"in cc.name):
+                            # Go through the Scattering-Bases & Instanced-Geometry collections - important that Instanced-Geometry is first in the list !! (for now)
+                            bpy.data.collections[ccc.name].color_tag = 'COLOR_04'
+                            subCollectionName = ccc.name
+                            subCollectionName = subCollectionName[2:]
+                            if("Instanced-Geometry"in subCollectionName):
                                 oblist = [obj.name for obj in ccc.all_objects]
                                 oblist = sorted(oblist)
                                 for name in oblist:
                                     ob = ccc.all_objects[name]
-                                    data,name = set_data_objects.create(ob) 
                                     obname = functions.nameMatchScene(name,collName)
                                     obname = functions.namingConvention(obname)                           
-                                    jsonObject[mainConv][childCovTweak][obname] = []
-                                    jsonObject[mainConv][childCovTweak][obname].append(data)
+                                    jsonObject[mainConv][childCovTweak][obname] = [] # Create an empty array for each geometry that is instanced
+                                    # print(f'create temp instance json {jsonObject[mainConv][childCovTweak]}')
+                            if ("Scattering-Bases" in subCollectionName):
+                                # Get all base objects
+                                oblist = [obj.name for obj in ccc.all_objects]
+                                oblist = sorted(oblist)
+                                depsgraph = bpy.context.evaluated_depsgraph_get() # Create evaluated graph for the whole scene
+                                for name in oblist:
+                                    # Go through all bases
+                                    ob = ccc.all_objects[name]
+                                    # Get the object in the evaluated dependency graph to attach instances
+                                    evalOb = ob.evaluated_get(depsgraph)
+                                    set_data_geoinstances.find(depsgraph, evalOb, jsonObject[mainConv][childCovTweak], collName)
 
 
                     #------------ SPACER ---------------------
