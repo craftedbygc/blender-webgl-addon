@@ -60,7 +60,8 @@ def exportData():
                             oblist = [obj.name for obj in ccc.all_objects]
                             oblist = sorted(oblist)
                             inName = oblist[0]
-                            conName = functions.namingConvention(inName)
+                            conName = functions.nameMatchScene(inName,collName)
+                            conName = functions.namingConvention(conName)
                             jsonObject[mainConv][childCovTweak][conName] = []
 
                             for name in oblist:
