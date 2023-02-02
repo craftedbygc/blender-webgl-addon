@@ -103,8 +103,7 @@ def exportData():
                             oblist = sorted(oblist)
                             for name in oblist:
                                 ob = ccc.all_objects[name]
-                                obname = functions.nameMatchScene(name,collName)
-                                obname = functions.namingConvention(obname)                           
+                                obname = functions.namingConvention(ob.name)                           
                                 jsonObject[childCovTweak][obname] = [] # Create an empty array for each geometry that is instanced
                                 # print(f'create temp instance json {jsonObject[mainConv][childCovTweak]}')
                         if ("Scattering-Bases" in subCollectionName):
