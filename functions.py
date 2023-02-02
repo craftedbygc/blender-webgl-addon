@@ -118,6 +118,7 @@ def namingConvention(string):
     string = string.lower()
     string = string.replace(".", "-")
     string = string.replace("_", "-")
+    string = string.replace(" ", "-")
     return string
 
 #------------ SPACER ---------------------
@@ -232,6 +233,10 @@ def getNamedChildCollections(string, collParent):
         if(string in coll.name):
             colls.append(coll)
     return colls
+
+#------------ Fetch Children Collections ---------------------
+#def isObjectupdated(ob):
+    #dep = bpy.context.evaluated_depsgraph_get()
 
     
         

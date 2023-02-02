@@ -145,7 +145,7 @@ def register():
     bpy.types.Scene.minify = bpy.props.BoolProperty(name="Minify",description=des, default = True)
 
     des = "Set Addon to export everytime you save the file"
-    bpy.types.Scene.expOnSave = bpy.props.BoolProperty(name="Auto Export On Save",description=des, default = True)
+    bpy.types.Scene.expOnSave = bpy.props.BoolProperty(name="Auto Export On Save",description=des, default = False)
 
     des = "Website Preview Version Is Open - Untick if you need open a new tab and Preview Scene Site Again"
     bpy.types.Scene.previewOn = bpy.props.BoolProperty(name="Site Preview On",description=des, default = False)
