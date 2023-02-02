@@ -49,8 +49,8 @@ def getproperty(object,property):
 #------------ SPACER ---------------------
 
 #Force Select Objects
-def forceselect(e):
-    bpy.ops.object.mode_set(mode='OBJECT')
+def forceselect(e): 
+    #bpy.ops.object.mode_set(mode='OBJECT')
     bpy.ops.object.select_all(action='DESELECT')
     bpy.context.view_layer.objects.active = None
     e.select_set(True)

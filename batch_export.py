@@ -16,7 +16,7 @@ def glbExpOp(folderpath,format,coll,ob,draco,material):
 
     functions.forceSelectable(ob)
     file_name = ob.name
-    file_name = functions.nameMatchScene(file_name,coll.name)
+    #file_name = functions.nameMatchScene(file_name,coll.name)
     file_name = functions.namingConvention(file_name)
     target_path =os.path.join(folderpath, file_name)
 
@@ -37,31 +37,38 @@ def glbExp(draco,material):
     #------------ SPACER ---------------------
 
     colName = "Objects"
-    collArray = functions.getCollections(colName)
+    coll = functions.findCollection(colName)
     obcount = 0
-    for coll in collArray:
-        for ob in coll.objects:
-            glbExpOp(folderpath,format,coll,ob,draco,material)
-            obcount += 1
-    
-     
-    
+    for ob in coll.objects:
+        glbExpOp(folderpath,format,coll,ob,draco,material)
+        obcount += 1
 
-    
-    colName = "Instances-Manual"
-    collArray = functions.getCollections(colName)
+    #------------ SPACER ---------------------
+
+    colName = "Instances Manual"
+    coll = functions.findCollection(colName)
     instcount = 0
-    for coll in collArray:
-        for cc in coll.children:
-            print("TBA_HERE_2",cc.name)
-            instcount += 1
-            count = 0
-            for ob in cc.objects:
-                if(count == 0):
-                    glbExpOp(folderpath,format,coll,ob,draco,material)
-                count += 1       
+    for cc in coll.children:
+        instcount += 1
+        count = 0
+        for ob in cc.objects:
+            if(count == 0):
+                glbExpOp(folderpath,format,coll,ob,draco,material)
+            count += 1
+    
+    #------------ SPACER ---------------------
 
-    finalCount = instcount + obcount
+    colName = "Instances Nodes"    
+    coll = functions.findCollection(colName)
+    nodecount = 0
+    for cc in coll.children: 
+        if("Instanced-Geometry" in cc.name):     
+            for ob in cc.objects:
+                glbExpOp(folderpath,format,coll,ob,draco,material)
+                nodecount += 1
+ 
+
+    finalCount = instcount + obcount + nodecount
     print("========================= #")
     print("========================= #") 
     print("========================= #")
@@ -70,4 +77,3 @@ def glbExp(draco,material):
     print("========================= #")
     print("========================= #") 
     print("========================= #") 
-    #return
