@@ -72,7 +72,7 @@ def exportData():
                 #------------ SPACER ---------------------
                 # INSTANCES MANUNAL !!!!!!!!!
                 #Target the Objects collection to add data to json
-                if(childCovTweak == "instances manual"):
+                if(childCovTweak == "instances-manual"):
                     bpy.data.collections[childCollName].color_tag = 'COLOR_05'
                     for ccc in cc.children:
                         bpy.data.collections[cc.name].color_tag = 'COLOR_04'
@@ -90,7 +90,7 @@ def exportData():
                 #------------ SPACER ---------------------
                 # INSTANCES Nodes !!!!!!!!!
                 #Target the Instances-Nodes collection to add data to json
-                if(childCovTweak == "instances nodes"):
+                if(childCovTweak == "instances-nodes"):
 
                     # Select Instancing geo and Scattering base collections separately
                     bpy.data.collections[childCollName].color_tag = 'COLOR_05'
