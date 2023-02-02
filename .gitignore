@@ -4,3 +4,4 @@ __pycache__/set_data_geoinstances.cpython-310.pyc
 __pycache__/set_data_file.cpython-310.pyc
 __pycache__/set_data_geoinstances.cpython-310.pyc
 __pycache__/set_data_file.cpython-310.pyc
+*.pyc
