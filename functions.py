@@ -226,6 +226,13 @@ def getChildCollections(collParent):
             colls.append(coll)
     return colls
 
+def getNamedChildCollections(string, collParent):
+    colls = []
+    for coll in collParent.children:
+        if(string in coll.name):
+            colls.append(coll)
+    return colls
+
     
         
 
