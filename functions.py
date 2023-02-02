@@ -229,12 +229,14 @@ def getChildCollections(collParent):
 
 
 #------------ Fetch Children Collections ---------------------
-#def isObjectupdated(ob):
-    #dep = bpy.context.evaluated_depsgraph_get()
+def isObjectupdated(ob):
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    print("TBA-HERE",depsgraph.updates) 
+    for update in depsgraph.updates:
+        if update.id.original == ob and update.is_updated_geometry or update.is_updated_transform:
+            return True
 
-    
-        
-
+    return False       
 
     
 

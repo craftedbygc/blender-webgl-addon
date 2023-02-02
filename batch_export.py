@@ -40,8 +40,11 @@ def glbExp(draco,material):
     coll = functions.findCollection(colName)
     obcount = 0
     for ob in coll.objects:
-        glbExpOp(folderpath,format,coll,ob,draco,material)
-        obcount += 1
+        update = functions.isObjectupdated(ob)
+        print("TBA-C2",update)
+        if(update):
+            glbExpOp(folderpath,format,coll,ob,draco,material)
+            obcount += 1
 
     #------------ SPACER ---------------------
 
