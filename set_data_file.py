@@ -30,7 +30,6 @@ def exportData():
             for cc in childColls:
                 childCollName = cc.name
                 childCov = functions.namingConvention(childCollName)
-                #childCovTweak = childCov[2:]
                 childCovTweak = childCov
                 jsonObject[childCovTweak] = {}
 
