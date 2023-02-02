@@ -212,6 +212,15 @@ def getCollections(string):
         if string in coll.name:
             colls.append(coll)
     return colls
+
+def getDifNamesColl(array):
+    colls = []
+    for coll in  bpy.data.collections:
+        for name  in array:
+            if name in coll.name:
+                colls.append(coll)
+    return colls
+       
        
 #------------ Fetch Collections ---------------------
 
@@ -239,10 +248,27 @@ def getNamedChildCollections(string, collParent):
     #dep = bpy.context.evaluated_depsgraph_get()
 
     
+#------------ Get Property ---------------------    
+def getproperty(object,property):
+    check = True
+    try:
+        get = object[property]
+    except:
+        check = False
         
+    if(check):
+        if(object.type == 'MESH'):    
+            value = object[property]
+        else:
+            value = object[property]
+        
+        return  value
+    else:
+        return False
 
 
-    
-
-
-
+def createProp(ob,propName,val):
+    ob.select_set(True)
+    bpy.context.view_layer.objects.active = bpy.data.objects[ob.name]
+    bpy.props.FloatProperty(name=propName)
+    bpy.context.object[propName] = val

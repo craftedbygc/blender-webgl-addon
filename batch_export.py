@@ -2,6 +2,13 @@ import bpy
 import os
 from . import functions
 
+def restUpdateState():
+    allColls = functions.getDifNamesColl(["Objects","Instances Manual"])
+    for coll in allColls:
+        for ob in coll.objects:
+            functions.createProp(ob,"updated",1)
+    
+
 
 def glbExpOp(folderpath,format,coll,ob,draco,material):
 
@@ -22,7 +29,7 @@ def glbExpOp(folderpath,format,coll,ob,draco,material):
 
     #------------ SPACER ---------------------
     # TBA-NEEDS-REVISION
-    #functions.geoCleaner(ob)
+    functions.geoCleaner(ob)
 
     #------------ SPACER ---------------------
     functions.forceselect(ob)
@@ -34,26 +41,48 @@ def glbExp(draco,material):
     mainfolderpath = bpy.context.scene.saveFolderPath
     folderpath =os.path.join(mainfolderpath, "models")
 
+
+    print("========================= #") 
+    print("========================= #")
+    print("BATCH START") 
+    print("========================= #")
+    print("========================= #") 
+
+
     #------------ SPACER ---------------------
 
     colName = "Objects"
     coll = functions.findCollection(colName)
     obcount = 0
     for ob in coll.objects:
-        glbExpOp(folderpath,format,coll,ob,draco,material)
-        obcount += 1
-
+        prop = functions.getproperty(ob,"updated")
+        if(prop > 0):
+                glbExpOp(folderpath,format,coll,ob,draco,material)
+                ob["updated"] = 0
+                obcount += 1
+        else:
+            print("BATCH START") 
+            if(prop == False):
+                functions.createProp(ob,"updated",0)
+                
+                
     #------------ SPACER ---------------------
 
     colName = "Instances Manual"
     coll = functions.findCollection(colName)
     instcount = 0
     for cc in coll.children:
-        instcount += 1
         count = 0
         for ob in cc.objects:
-            if(count == 0):
-                glbExpOp(folderpath,format,coll,ob,draco,material)
+            prop = functions.getproperty(ob,"updated")
+            if(prop > 0 and count == 0):
+                    instcount += 1
+                    glbExpOp(folderpath,format,coll,ob,draco,material)
+                    ob["updated"] = 0
+                    obcount += 1
+            else:
+                if(prop == False):
+                    functions.createProp(ob,"updated",0)
             count += 1
     
     #------------ SPACER ---------------------
@@ -64,16 +93,23 @@ def glbExp(draco,material):
     for cc in coll.children: 
         if("Instanced-Geometry" in cc.name):     
             for ob in cc.objects:
-                glbExpOp(folderpath,format,coll,ob,draco,material)
-                nodecount += 1
+                prop = functions.getproperty(ob,"updated")
+                if(prop > 0 and count == 0):
+                    glbExpOp(folderpath,format,coll,ob,draco,material)
+                    ob["updated"] = 0
+                    nodecount += 1
+                else:
+                    if(prop == False):
+                        functions.createProp(ob,"updated",0)
+           
  
 
     finalCount = instcount + obcount + nodecount
-    print("========================= #")
+    
     print("========================= #") 
     print("========================= #")
     print("BATCH EXPORT DONE") 
     print("- Total Objects Exported:",finalCount)
     print("========================= #")
     print("========================= #") 
-    print("========================= #") 
+
