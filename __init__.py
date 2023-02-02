@@ -28,7 +28,8 @@ import bpy
 from . import functions
 from . import batch_export
 from . import set_data_file
-from bpy.app.handlers import persistent
+from bpy.app.handlers import persistent, depsgraph_update_post
+from bpy.types import Object
 
 #------------ SPACER ---------------------
 from . import addon_updater_ops
@@ -118,6 +119,20 @@ def save_hanfler(dummy):
         batch_export.glbExp(draco=False,material=True)
         set_data_file.exportData()
 
+#------------ Fetch Children Collections ---------------------
+
+def on_depsgraph_update(scene, depsgraph):
+    for obj in depsgraph.updates:
+        if isinstance(obj.id, Object):
+            ob = bpy.data.objects[obj.id.name]
+            functions.createProp(ob,"updated",1)
+
+@persistent
+def executeOnLoad(dummy):
+    print("NEW SCENE - RESET UPDATE")
+    batch_export.restUpdateState()
+    depsgraph_update_post.append(on_depsgraph_update)
+
 
 #------------ SPACER ---------------------
 
@@ -125,6 +140,7 @@ def save_hanfler(dummy):
 def register():
     #ADDON UPDATER CODE
     addon_updater_ops.register(bl_info)
+   
 
     #------------ SPACER ---------------------
     #Register Addon Classes
@@ -154,8 +170,7 @@ def register():
 
 
     bpy.app.handlers.save_post.append(save_hanfler)
-
-
+    bpy.app.handlers.load_post.append(executeOnLoad)
 
 def unregister():
     addon_updater_ops.unregister()
