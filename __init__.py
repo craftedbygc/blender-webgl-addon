@@ -116,7 +116,7 @@ def save_hanfler(dummy):
     if(check and checkP):
         print("TBA_Auto_Save_On")
         functions.setFolderStructure()
-        batch_export.glbExp(draco=False,material=True)
+        batch_export.glbExp(draco=False,material=True,autoCheck=True)
         set_data_file.exportData()
 
 #------------ Fetch Children Collections ---------------------
@@ -140,7 +140,6 @@ def executeOnLoad(dummy):
 def register():
     #ADDON UPDATER CODE
     addon_updater_ops.register(bl_info)
-   
 
     #------------ SPACER ---------------------
     #Register Addon Classes
@@ -168,9 +167,10 @@ def register():
 
     #------------ SPACER ---------------------
 
-
-    bpy.app.handlers.save_post.append(save_hanfler)
-    bpy.app.handlers.load_post.append(executeOnLoad)
+    if not save_hanfler in bpy.app.handlers.save_post:
+        bpy.app.handlers.save_post.append(save_hanfler)
+    if not executeOnLoad in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.append(executeOnLoad)
 
 def unregister():
     addon_updater_ops.unregister()
@@ -180,7 +180,11 @@ def unregister():
         bpy.utils.unregister_class(cls)
 
     #------------ SPACER ---------------------  
-    
+    if save_hanfler in bpy.app.handlers.save_post:
+        bpy.app.handlers.save_post.remove(save_hanfler)
+    if executeOnLoad in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.remove(executeOnLoad)
+
     del bpy.types.Scene.saveFolderPath
     del bpy.types.Scene.precision
     del bpy.types.Scene.minify

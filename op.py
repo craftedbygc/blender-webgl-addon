@@ -23,7 +23,7 @@ class TBA_OT_export_scene_materials(Operator):
 
     def execute(self, context):
         functions.setFolderStructure()
-        batch_export.glbExp(draco=False,material=True)
+        batch_export.glbExp(draco=False,material=True,autoCheck=False)
         set_data_file.exportData()
         return {"FINISHED"}
 
@@ -40,7 +40,7 @@ class TBA_OT_export_scene(Operator):
 
     def execute(self, context):
         functions.setFolderStructure()
-        batch_export.glbExp(draco=False,material=False)
+        batch_export.glbExp(draco=False,material=False,autoCheck=False)
         set_data_file.exportData()
         return {"FINISHED"}
 
@@ -57,7 +57,7 @@ class TBA_OT_export_comp_scene(Operator):
 
     def execute(self, context):
         functions.setFolderStructure()
-        batch_export.glbExp(draco=True,material=False)
+        batch_export.glbExp(draco=True,material=False,autoCheck=False)
         set_data_file.exportData()
         return {"FINISHED"}
 
@@ -74,7 +74,7 @@ class TBA_OT_open_chrome_preview(Operator):
 
     def execute(self, context):
         functions.setFolderStructure()
-        batch_export.glbExp(draco=False,material=False)
+        batch_export.glbExp(draco=False,material=False,autoCheck=False)
         set_data_file.exportData()
         #------------
         if(bpy.context.scene.previewOn == False):
