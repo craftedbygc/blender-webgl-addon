@@ -94,7 +94,7 @@ def exportData():
 
                     # Select Instancing geo and Scattering base collections separately
                     bpy.data.collections[childCollName].color_tag = 'COLOR_05'
-                    instancedGeoCol = functions.getNamedChildCollections("Instanced-Geometry", cc)[0]
+                    instancedGeoCol = functions.getNamedChildCollections("Instanced Geometry", cc)[0]
                     bpy.data.collections[instancedGeoCol.name].color_tag = 'COLOR_04'
                     oblist = [obj.name for obj in instancedGeoCol.all_objects]
                     oblist = sorted(oblist)
@@ -104,7 +104,7 @@ def exportData():
                         jsonObject[childCovTweak][obname] = [] # Create an empty array for each geometry that is instanced
                         # print(f'create temp instance json {jsonObject[childCovTweak]}')
 
-                    scatteringBasesCol = functions.getNamedChildCollections("Scattering-Bases", cc)[0]
+                    scatteringBasesCol = functions.getNamedChildCollections("Scattering Bases", cc)[0]
                     bpy.data.collections[scatteringBasesCol.name].color_tag = 'COLOR_04'
                     oblist = [obj.name for obj in scatteringBasesCol.all_objects]
                     oblist = sorted(oblist)
