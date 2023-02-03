@@ -18,7 +18,7 @@ bl_info = {
     "author" : "Tiago Andrade",
     "description" : "",
     "blender" : (3, 4, 1),
-    "version" : (1, 3, 2),
+    "version" : (1, 3, 3),
     "location" : "Topbar",
     "warning" : "",
     "category" : "Object"
@@ -89,6 +89,10 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         row.scale_y = 1.5
         #------------
         row = layout.row()
+        row.prop(sce,'checkUpdates')
+        row.scale_y = 1.5
+        #------------
+        row = layout.row()
         row.label(text="")
         row.scale_y = spacer*2
 
@@ -116,7 +120,7 @@ def save_hanfler(dummy):
     if(check and checkP):
         print("TBA_Auto_Save_On")
         functions.setFolderStructure()
-        batch_export.glbExp(draco=False,material=True,autoCheck=True)
+        batch_export.glbExp(draco=False,material=True)
         set_data_file.exportData()
 
 #------------ Fetch Children Collections ---------------------
@@ -161,6 +165,9 @@ def register():
 
     des = "Set Addon to export everytime you save the file"
     bpy.types.Scene.expOnSave = bpy.props.BoolProperty(name="Auto Export On Save",description=des, default = False)
+
+    des = "Check If Objects were edited before export, improves performance"
+    bpy.types.Scene.checkUpdates = bpy.props.BoolProperty(name="Export Only Edited Geometry",description=des, default = True)
 
     des = "Website Preview Version Is Open - Untick if you need open a new tab and Preview Scene Site Again"
     bpy.types.Scene.previewOn = bpy.props.BoolProperty(name="Site Preview On",description=des, default = False)
