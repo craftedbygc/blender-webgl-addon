@@ -90,26 +90,27 @@ def glbExp(draco,material):
 
     colName = "Instances Manual"
     coll = functions.findCollection(colName)
-    for cc in coll.children:
-        count = 0
-        for ob in cc.objects:
-            if(count == 0):
-                obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount)     
-            count += 1
+    if coll is not None:
+        for cc in coll.children:
+            count = 0
+            for ob in cc.objects:
+                if(count == 0):
+                    obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount)     
+                count += 1
     
     #------------ SPACER ---------------------
 
     colName = "Instances Nodes"    
     coll = functions.findCollection(colName)
-    for cc in coll.children: 
-        if("Instanced Geometry" in cc.name):     
-            for ob in cc.objects:
-                obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount)
-            for ccc in cc.children:
-                for ob in ccc.objects:
-                    obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount) 
-           
- 
+    if coll is not None:
+        for cc in coll.children: 
+            if("Instanced Geometry" in cc.name):     
+                for ob in cc.objects:
+                    obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount)
+                for ccc in cc.children:
+                    for ob in ccc.objects:
+                        obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount) 
+        
 
     finalCount = obcount
     
