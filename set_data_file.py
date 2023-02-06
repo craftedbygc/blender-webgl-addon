@@ -8,10 +8,19 @@ from . import set_data_obpaths
 from . import set_data_geoinstances
 
 def exportData():
+
+            cNameTarget = "Scene"
+            c = functions.findCollectionWithString(cNameTarget)
+            dataName = c.name.replace(cNameTarget, "")
+            dataName = dataName.replace(" ", "")
+            dataName = functions.namingConvention(dataName)
+            dataName = dataName + ".unseen"
+
             #------------ SPACER -----------s----------
-            file = "data.unseen"
+            #file = "data.unseen"
+            
             mainfolderpath = bpy.context.scene.saveFolderPath
-            filepath = os.path.join(mainfolderpath, file)
+            filepath = os.path.join(mainfolderpath, dataName)
             
            #------------ SPACER ---------------------
             jsonObject = {}
@@ -21,9 +30,6 @@ def exportData():
             bpy.context.scene.frame_set(0)
 
             jsonObject = {}
-
-            cNameTarget = "Scene"
-            c = functions.findCollection(cNameTarget)
 
             #------------ SPACER ---------------------
             childColls = functions.getChildCollections(c)
