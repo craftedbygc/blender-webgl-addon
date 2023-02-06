@@ -136,6 +136,7 @@ def executeOnLoad(dummy):
     print("NEW SCENE - RESET UPDATE")
     batch_export.restUpdateState()
     depsgraph_update_post.append(on_depsgraph_update)
+    addon_updater_ops.check_for_update_onload()
 
 
 #------------ SPACER ---------------------

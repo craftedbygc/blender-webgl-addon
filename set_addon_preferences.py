@@ -30,14 +30,14 @@ class DemoPreferences(bpy.types.AddonPreferences):
 	updater_interval_hours = bpy.props.IntProperty(
 		name='Hours',
 		description="Number of hours between checking for updates",
-		default=8,
+		default=0,
 		min=0,
 		max=23)
 
 	updater_interval_minutes = bpy.props.IntProperty(
 		name='Minutes',
 		description="Number of minutes between checking for updates",
-		default=0,
+		default=30,
 		min=0,
 		max=59)
 

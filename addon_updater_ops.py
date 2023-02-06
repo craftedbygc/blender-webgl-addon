@@ -777,6 +777,7 @@ def check_for_update_background():
     *Could* be called on register, but would be bad practice as the bare
     minimum code should run at the moment of registration (addon ticked).
     """
+    \
     if updater.invalid_updater:
         return
     global ran_background_check
@@ -795,13 +796,17 @@ def check_for_update_background():
     updater.set_check_interval(enabled=True,
                                months=0,
                                days=0,
-                               hours=8,
-                               minutes=0)
+                               hours=0,
+                               minutes=15)
 
     # Input is an optional callback function. This function should take a bool
     # input, if true: update ready, if false: no update ready.
     updater.check_for_update_async(background_update_callback)
     ran_background_check = True
+
+def check_for_update_onload():
+    print("TBA-H1")
+    updater.check_for_update_now()
 
 
 def check_for_update_nonthreaded(self, context):
@@ -817,11 +822,11 @@ def check_for_update_nonthreaded(self, context):
             print("Could not get {} preferences, update check skipped".format(
                 __package__))
         return
-    updater.set_check_interval(enabled=settings.auto_check_update,
-                               months=settings.updater_interval_months,
-                               days=settings.updater_interval_days,
-                               hours=settings.updater_interval_hours,
-                               minutes=settings.updater_interval_minutes)
+    updater.set_check_interval(enabled=True,
+                               months=0,
+                               days=0,
+                               hours=0,
+                               minutes=15)
 
     (update_ready, version, link) = updater.check_for_update(now=False)
     if update_ready:
