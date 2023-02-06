@@ -33,6 +33,20 @@ def exportData():
 
             #------------ SPACER ---------------------
             childColls = functions.getChildCollections(c)
+
+            for cc in childColls:
+                childCollName = cc.name
+                childCov = functions.namingConvention(childCollName)
+                childCovTweak = childCov
+                if(childCovTweak == "objects"):
+                    jsonObject[childCovTweak] = {}
+                if(childCovTweak == "camera"):
+                    jsonObject[childCovTweak] = {}
+                if(childCovTweak == "paths"):
+                    jsonObject[childCovTweak] = {}
+                if(childCovTweak == "instances-manual" or childCovTweak == "instances-nodes"):
+                    jsonObject["instances"] = {}
+
             for cc in childColls:
                 childCollName = cc.name
                 childCov = functions.namingConvention(childCollName)
@@ -43,7 +57,6 @@ def exportData():
                 # OBJECTS !!!!!!!!!
                 #Target the Objects collection to add data to json
                 if(childCovTweak == "objects"):
-                    jsonObject[childCovTweak] = {}
                     bpy.data.collections[childCollName].color_tag = 'COLOR_06'
                     oblist = [obj.name for obj in cc.all_objects]
                     oblist = sorted(oblist)
@@ -83,8 +96,6 @@ def exportData():
                 #Target the Objects collection to add data to json
                 if(childCovTweak == "instances-manual"):
                     childCovTweak = childCovTweak[:-7]
-                    jsonObject[childCovTweak] = {}
-                    print(childCovTweak)
                     bpy.data.collections[childCollName].color_tag = 'COLOR_05'
                     for ccc in cc.children:
                         bpy.data.collections[cc.name].color_tag = 'COLOR_04'
@@ -97,14 +108,13 @@ def exportData():
                         for name in oblist:
                             ob = ccc.all_objects[name]
                             data = set_data_objects.create(ob)
-                            jsonObject[childCovTweak][conName].append(data)        
+                            jsonObject[childCovTweak][conName].append(data)       
 
                 #------------ SPACER ---------------------
                 # INSTANCES Nodes !!!!!!!!!
                 #Target the Instances-Nodes collection to add data to json
                 if(childCovTweak == "instances-nodes"):
                     childCovTweak = childCovTweak[:-6]
-                    jsonObject[childCovTweak] = {}
                     # Select Instancing geo and Scattering base collections separately
                     bpy.data.collections[childCollName].color_tag = 'COLOR_05'
                     instancedGeoCol = functions.getNamedChildCollections("Instanced Geometry", cc)[0]
@@ -136,7 +146,7 @@ def exportData():
                 indentVal = None
             else:
                 indentVal = 1
-                
+ 
             objects = json.dumps(jsonObject, indent=indentVal, ensure_ascii=True,separators=(',', ':'))
             f.write(objects)
             f.close()
