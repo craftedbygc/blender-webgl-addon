@@ -793,11 +793,12 @@ def check_for_update_background():
     settings = get_user_preferences(bpy.context)
     if not settings:
         return
+    #TBA-UPDATER_VALUES
     updater.set_check_interval(enabled=True,
                                months=0,
                                days=0,
                                hours=0,
-                               minutes=15)
+                               minutes=1)
 
     # Input is an optional callback function. This function should take a bool
     # input, if true: update ready, if false: no update ready.
@@ -822,11 +823,12 @@ def check_for_update_nonthreaded(self, context):
             print("Could not get {} preferences, update check skipped".format(
                 __package__))
         return
+    #TBA-UPDATER_VALUES
     updater.set_check_interval(enabled=True,
                                months=0,
                                days=0,
                                hours=0,
-                               minutes=15)
+                               minutes=1)
 
     (update_ready, version, link) = updater.check_for_update(now=False)
     if update_ready:

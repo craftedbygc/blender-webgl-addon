@@ -52,8 +52,7 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         row = layout.row()
         ver = functions.tupleToString(bl_info["version"])
         row.label(text="Addon v"+ver+" Installed",icon ="SCRIPT")
-        
-        #addon_updater_ops.check_for_update_background()
+        addon_updater_ops.check_for_update_background()
         addon_updater_ops.update_notice_box_ui(self, context,ver)
         row = layout.row()
         row.label(text="")
