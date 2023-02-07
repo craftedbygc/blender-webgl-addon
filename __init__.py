@@ -31,6 +31,7 @@ from . import set_data_file
 from bpy.app.handlers import persistent, depsgraph_update_post
 from bpy.types import Object
 
+
 #------------ SPACER ---------------------
 from . import addon_updater_ops
 #from .set_addon_preferences import (DemoPreferences)
@@ -78,10 +79,6 @@ class TBA_OT_save_dialog(bpy.types.Operator):
          #------------
         row = layout.row()
         row.prop(sce,'minify')
-        row.scale_y = 1.5
-        #------------
-        row = layout.row()
-        row.prop(sce,'previewOn')
         row.scale_y = 1.5
         #------------
         row = layout.row()
@@ -136,6 +133,7 @@ def on_depsgraph_update(scene, depsgraph):
 def executeOnLoad(dummy):
     print("NEW SCENE - RESET UPDATE")
     batch_export.restUpdateState()
+    bpy.context.scene.previewOn = False
     depsgraph_update_post.append(on_depsgraph_update)
     addon_updater_ops.check_for_update_onload()
 

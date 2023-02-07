@@ -890,10 +890,10 @@ def update_notice_box_ui(self, context,verOld):
     saying an update is ready, and give a button for: update now, open website,
     or ignore popup. Ideal to be placed at the end / beginning of a panel.
     """
-    print("TBA_updater",updater.json)
+    
     if updater.invalid_updater:
         return
-
+    #print("TBA_updater",updater.json)
     saved_state = updater.json
 
     if not updater.auto_reload_post_update:
