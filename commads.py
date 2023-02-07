@@ -6,6 +6,7 @@ def open_command():
     program = "cmd.exe "
     pause = "/K "
     path = bpy.context.scene.saveFolderPath
+    
     pub = 'public' + 'baz "\\"'
     clPath =  path.replace(pub, '')
     path =  " cd "+ clPath
