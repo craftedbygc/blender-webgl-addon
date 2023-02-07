@@ -25,6 +25,8 @@ def tupleToString(tup):
 #Round Values
 def rd(e):
     return round(e, bpy.context.scene.precision)
+def crd(e,precison):
+    return round(e, precison)
 
 #------------ SPACER ---------------------
 
@@ -166,10 +168,10 @@ def getAniAtt(cam):
             camLens.append(getLens)
             
         if(prevCam == getCamStop):
-            cam_stops.append(rd(getCamStop))
+            cam_stops.append(crd(getCamStop,5))
 
         if(prevTgt == getTgtStop):
-            tgt_stops.append(rd(getTgtStop))
+            tgt_stops.append(crd(getTgtStop,5))
         #------------ SPACER ---------------------
         prevLens = getLens
         prevCam = getCamStop
