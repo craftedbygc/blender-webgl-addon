@@ -2,11 +2,31 @@ import bpy
 import os
 from . import functions
 
+
+
+
 def restUpdateState():
-    allColls = functions.getDifNamesColl(["Objects","Instances Manual"])
+    nameArray = ["Objects","Instances Manual","Instances Nodes"]
+    allColls = functions.getDifNamesColl(nameArray)
     for coll in allColls:
-        for ob in coll.objects:
-            functions.createProp(ob,"updated",1)
+        if(coll.name == nameArray[0]):
+            for ob in coll.objects:
+                functions.createProp(ob,"updated",1)
+        if(coll.name == nameArray[1]):
+            for cc in coll.children:
+                count = 0
+                for ob in cc.objects:
+                    if(count == 0):
+                        functions.createProp(ob,"updated",1)
+        if(coll.name == nameArray[2]):
+            for cc in coll.children:
+                if("Instanced Geometry" in cc.name):     
+                    for ob in cc.objects:
+                        functions.createProp(ob,"updated",1)
+                    for ccc in cc.children:
+                        for ob in ccc.objects:
+                            functions.createProp(ob,"updated",1) 
+                
     
 
 
