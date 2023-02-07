@@ -166,17 +166,16 @@ def getAniAtt(cam):
             camLens.append(getLens)
             
         if(prevCam == getCamStop):
-            cam_stops.append(getCamStop)
+            cam_stops.append(rd(getCamStop))
 
-        if(prevTgt == getCamStop):
-            tgt_stops.append(getTgtStop)
+        if(prevTgt == getTgtStop):
+            tgt_stops.append(rd(getTgtStop))
         #------------ SPACER ---------------------
         prevLens = getLens
         prevCam = getCamStop
         prevTgt = getTgtStop
 
         
-    
     cam_stops = getunic(cam_stops)
     tgt_stops = getunic(tgt_stops)
     camLens = getunic(camLens)
