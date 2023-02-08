@@ -44,6 +44,8 @@ def exportData():
                     jsonObject[childCovTweak] = {}
                 if(childCovTweak == "paths"):
                     jsonObject[childCovTweak] = {}
+                if(childCovTweak == "empties"):
+                    jsonObject[childCovTweak] = {}
                 if(childCovTweak == "instances-manual" or childCovTweak == "instances-nodes"):
                     jsonObject["instances"] = {}
 
@@ -91,6 +93,24 @@ def exportData():
                         pathJsonObject = jsonObject[childCovTweak]
                         set_data_obpaths.create(pathJsonObject,ob)
 
+                 #------------ SPACER ---------------------
+                # INTERFACE !!!!!!!!!
+                #Target the Objects collection to add data to json
+                if(childCovTweak == "empties"):
+                    bpy.data.collections[childCollName].color_tag = 'COLOR_05'
+                    for ccc in cc.children:
+                        bpy.data.collections[ccc.name].color_tag = 'COLOR_04'
+                        oblist = [obj.name for obj in ccc.all_objects]
+                        oblist = sorted(oblist)
+                        inName = oblist[0]
+                        conName = functions.namingConvention(inName)
+                        jsonObject[childCovTweak][conName] = []
+                        for name in oblist:
+                            ob = ccc.all_objects[name]
+                            data = set_data_objects.create(ob)
+                            jsonObject[childCovTweak][conName].append(data)       
+       
+
                 #------------ SPACER ---------------------
                 # INSTANCES MANUNAL !!!!!!!!!
                 #Target the Objects collection to add data to json
@@ -98,7 +118,7 @@ def exportData():
                     childCovTweak = childCovTweak[:-7]
                     bpy.data.collections[childCollName].color_tag = 'COLOR_05'
                     for ccc in cc.children:
-                        bpy.data.collections[cc.name].color_tag = 'COLOR_04'
+                        bpy.data.collections[ccc.name].color_tag = 'COLOR_04'
                         oblist = [obj.name for obj in ccc.all_objects]
                         oblist = sorted(oblist)
                         inName = oblist[0]
@@ -108,7 +128,8 @@ def exportData():
                         for name in oblist:
                             ob = ccc.all_objects[name]
                             data = set_data_objects.create(ob)
-                            jsonObject[childCovTweak][conName].append(data)       
+                            jsonObject[childCovTweak][conName].append(data)
+
 
                 #------------ SPACER ---------------------
                 # INSTANCES Nodes !!!!!!!!!
