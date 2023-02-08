@@ -1,9 +1,8 @@
-import bpy 
-import threading
+import bpy
+import subprocess
 import atexit
 
-def open_command():  
-    import subprocess
+def run():  
     program = "cmd.exe "
     pause = "/K "
     path = bpy.context.scene.saveFolderPath
@@ -13,18 +12,16 @@ def open_command():
     run  = " && npm start"
     command = program + pause + path + run
     print(command)
-    cmd = subprocess.Popen(command) 
+    cmd = subprocess.Popen(command)
 
-def run():
-    t = threading.Thread(target=open_command)
-    t.start()
-    return {'FINISHED'}
+    def stop():
+        print("========================= #") 
+        print("========================= #")
+        print("STOP NPM START")
+        cmd.terminate()
+        print("========================= #")
+        print("========================= #") 
+       
+    atexit.register(stop)
 
 
-def stop():
-    t = threading.Thread(target=open_command)
-    t.set()
-    return {'FINISHED'}
-
-
-atexit.register(stop)

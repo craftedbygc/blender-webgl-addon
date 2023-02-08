@@ -78,7 +78,7 @@ class TBA_OT_open_chrome_preview(Operator):
         #------------
         if(bpy.context.scene.previewOn == False):
             bpy.context.scene.previewOn = True
-            #commads.run()
+            commads.run()
         
         url = 'http://localhost:3000/?gui'
         if(platform == "darwin"):
