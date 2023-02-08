@@ -42,6 +42,11 @@ def glbExpOp(folderpath,format,coll,ob,draco,material):
     #------------ SPACER ---------------------
 
     functions.forceSelectable(ob)
+
+    is_empty = ob.type == 'EMPTY'
+    if(is_empty):
+        return
+        
     file_name = ob.name
     #file_name = functions.nameMatchScene(file_name,coll.name)
     file_name = functions.namingConvention(file_name)
