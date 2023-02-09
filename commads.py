@@ -35,19 +35,19 @@ def run():
     clPath =  path.replace(pub, '')
     com1 =  " cd "+ clPath
     #------------ SPACER ---------------------
-    com2 =  "npm start"
-    com3 =  "npm stop"
+    com2 =  "npm run blender-start"
+    com3 =  "npm run blender-stop"
     com4 =  "exit"
-    print(com1)
-    process = Popen(com2, cwd=clPath, shell=True)
+    #Create process
+    process = Popen(com2, cwd=clPath, stdin=PIPE, stdout=PIPE, stderr=PIPE,shell=True)
+ 
 
     def stop():
         print("========================= #") 
         print("========================= #")
         print("STOP NPM START")
-        #process = Popen(com4,cwd=clPath,shell=True)
+        Popen(com3, cwd=clPath, stdin=PIPE, stdout=PIPE, stderr=PIPE,shell=True)
         process.terminate()
-        #pynput.keyboard.press(Key.q)
         print("========================= #")
         print("========================= #") 
        
