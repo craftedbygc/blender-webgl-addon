@@ -79,14 +79,14 @@ class TBA_OT_open_chrome_preview(Operator):
         if(bpy.context.scene.previewOn == False):
             bpy.context.scene.previewOn = True
             #TBA STILL NOT WORKING
-            #commads.run()
+            commads.run()
         
-        url = 'http://localhost:3000/?gui'
-        if(platform == "darwin"):
-            chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
-        else:
-            chrome_path = 'C:/Program Files/Google/Chrome/Application/chrome.exe %s'
-        webbrowser.get(chrome_path).open(url)    
+        # url = 'http://localhost:3000/?gui'
+        # if(platform == "darwin"):
+        #     chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
+        # else:
+        #     chrome_path = 'C:/Program Files/Google/Chrome/Application/chrome.exe %s'
+        # webbrowser.get(chrome_path).open(url)    
     
         return {"FINISHED"}
 
