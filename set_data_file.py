@@ -67,6 +67,23 @@ def exportData():
                         data = set_data_objects.create(ob)
                         jsonObject[childCovTweak][obname] = []
                         jsonObject[childCovTweak][obname].append(data)
+
+                #------------ SPACER ---------------------
+                # RIGGED OBJECTS !!!!!!!!!
+                #Target the Objects collection to add data to json
+                if(childCovTweak == "rigged-objects"):
+                    bpy.data.collections[childCollName].color_tag = 'COLOR_06'
+                    oblist = [obj.name for obj in cc.all_objects]
+                    oblist = sorted(oblist)
+                    for name in oblist:
+                        ob = cc.all_objects[name]
+                        if(ob.type == 'MESH'):
+                            obname = functions.namingConvention(ob.name)
+                            obp = ob.parent
+                            data = set_data_objects.create(obp)
+                            childCovTweak = childCovTweak.replace("rigged-", "")       
+                            jsonObject[childCovTweak][obname] = []
+                            jsonObject[childCovTweak][obname].append(data)
                 
                 #------------ SPACER ---------------------
                 # CAMERA !!!!!!!!!

@@ -125,16 +125,45 @@ def namingConvention(string):
 
 #------------ SPACER ---------------------
 
-def geoCleaner(ob):
+def geoCleaner(ob,skinned):
+
     forceselect(ob)
+    prevLoc = ob.location.copy()
+    prevRot = ob.rotation_euler.copy()
+    prevSac = ob.scale.copy()
+    
+    #------------ SPACER ---------------------
+    ob.location = (0,0,0)
+    ob.rotation_euler =(0,0,0)
+    ob.scale = (1,1,1)
+
+    #------------ SPACER ---------------------
     bpy.ops.object.shade_smooth()
-    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
     bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
     bpy.ops.object.editmode_toggle()
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.remove_doubles()
     bpy.ops.mesh.average_normals(average_type='FACE_AREA')
     bpy.ops.object.editmode_toggle()
+
+    #------------ SPACER ---------------------
+    if(skinned):
+        parent = ob.parent
+        forceselect(parent)
+        parentprevLoc = ob.parent.location.copy()
+        parentprevRot = ob.parent.rotation_euler.copy()
+        parent.location = (0,0,0)
+        parent.rotation_euler =(0,0,0)
+        parent.scale = (1,1,1)
+        bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+        forceselect(ob)
+        prevLoc = parentprevLoc
+        prevRot = parentprevRot
+
+    return prevLoc,prevRot,prevSac
+
+    
 
 
 def getunic(mylist):
@@ -273,3 +302,5 @@ def createProp(ob,propName,val):
     bpy.context.view_layer.objects.active = bpy.data.objects[ob.name]
     bpy.props.FloatProperty(name=propName)
     bpy.context.object[propName] = val
+
+
