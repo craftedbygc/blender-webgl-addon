@@ -18,7 +18,7 @@ bl_info = {
     "author" : "Tiago Andrade",
     "description" : "",
     "blender" : (3, 4, 1),
-    "version" : (1, 5, 2),
+    "version" : (1, 5, 3),
     "location" : "Topbar",
     "warning" : "",
     "category" : "Object"
@@ -126,7 +126,7 @@ def on_depsgraph_update(scene, depsgraph):
     for obj in depsgraph.updates:
         if isinstance(obj.id, Object):
             ob = bpy.data.objects[obj.id.name]
-            if ob.type == 'MESH':
+            if ob.type == 'MESH' or ob.type == 'EMPTY' or ob.type == 'ARMATURE':
                 functions.createProp(ob,"updated",1)
 
 @persistent
