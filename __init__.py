@@ -18,7 +18,7 @@ bl_info = {
     "author" : "Tiago Andrade",
     "description" : "",
     "blender" : (3, 4, 1),
-    "version" : (1, 5, 4),
+    "version" : (1, 5, 5),
     "location" : "Topbar",
     "warning" : "",
     "category" : "Object"
@@ -126,8 +126,10 @@ def on_depsgraph_update(scene, depsgraph):
     for obj in depsgraph.updates:
         if isinstance(obj.id, Object):
             ob = bpy.data.objects[obj.id.name]
-            if ob.type == 'MESH' or ob.type == 'EMPTY' or ob.type == 'ARMATURE':
-                functions.createProp(ob,"updated",1)
+            check = 'cam_' not in ob.name
+            if ob.type == 'MESH' or ob.type == 'EMPTY':
+                if ob.type != 'CURVE' and check:
+                    functions.createProp(ob,"updated",1)
 
 @persistent
 def executeOnLoad(dummy):
@@ -181,8 +183,8 @@ def register():
 
 def unregister():
     addon_updater_ops.unregister()
-
     bpy.types.TOPBAR_MT_editor_menus.remove(TOPBAR_MT_custom_menu.menu_draw)
+
     for cls in classes:
         bpy.utils.unregister_class(cls)
 
