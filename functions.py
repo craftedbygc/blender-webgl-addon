@@ -297,10 +297,15 @@ def getproperty(object,property):
         return False
 
 
-def createProp(ob,propName,val):
-    ob.select_set(True)
-    bpy.context.view_layer.objects.active = bpy.data.objects[ob.name]
-    bpy.props.FloatProperty(name=propName)
-    bpy.context.object[propName] = val
+def createProp(ob,propName,val): 
+    prop = getproperty(ob,"updated")
+    if(prop == False):  
+        ob.select_set(True)
+        bpy.context.view_layer.objects.active = bpy.data.objects[ob.name]
+        bpy.props.FloatProperty(name=propName)
+        bpy.context.object[propName] = val
+    else:
+        ob["updated"] = 1
+        print('TESTINGGGGGGGGGG')
 
 

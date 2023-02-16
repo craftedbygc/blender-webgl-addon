@@ -84,15 +84,16 @@ def checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned):
             glbExpOp(folderpath,format,coll,ob,draco,material,skinned)
             ob["updated"] = 0
             obcount += 1
+            print("TBA-E1")
             return obcount
         else:
             if(prop == False):
                 functions.createProp(ob,"updated",0)
             return obcount  
-
     else:
         glbExpOp(folderpath,format,coll,ob,draco,material,skinned)
         functions.createProp(ob,"updated",0)
+        print("TBA-E2")
         obcount += 1
         return obcount
 
