@@ -27,10 +27,11 @@ def create(instance):
     pos = [functions.rd(pos.x),functions.rd(pos.z),functions.rd(-pos.y)]
     data.append(pos)
     
-    rot = [functions.rd(rot[1]), functions.rd(rot[2]), functions.rd(rot[3]), functions.rd(rot[0])]
+    # rot = [functions.rd(rot[1]), functions.rd(rot[2]), functions.rd(rot[3]), functions.rd(rot[0])]
+    rot = [functions.rd(rot[0]), functions.rd(rot[1]), functions.rd(rot[2]), functions.rd(rot[3])]
     data.append(rot)
     
-    sca = [functions.rd(sca.x),functions.rd(sca.y),functions.rd(sca.z)]  
+    sca = [functions.rd(sca.x),functions.rd(sca.z),functions.rd(sca.y)]  
     data.append(sca)
 
     return data
