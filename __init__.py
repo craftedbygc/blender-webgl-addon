@@ -18,7 +18,7 @@ bl_info = {
     "author" : "Tiago Andrade",
     "description" : "",
     "blender" : (3, 4, 1),
-    "version" : (1, 5, 5),
+    "version" : (1, 5, 6),
     "location" : "Topbar",
     "warning" : "",
     "category" : "Object"
@@ -123,13 +123,14 @@ def save_hanfler(dummy):
 #------------ Fetch Children Collections ---------------------
 
 def on_depsgraph_update(scene, depsgraph):
-    for obj in depsgraph.updates:
-        if isinstance(obj.id, Object):
-            ob = bpy.data.objects[obj.id.name]
-            check = 'cam_' not in ob.name
-            if ob.type == 'MESH' or ob.type == 'EMPTY':
-                if ob.type != 'CURVE' and check:
-                    functions.createProp(ob,"updated",1)
+    for update in depsgraph.updates:
+        if update.is_updated_transform:
+            if isinstance(update.id, Object):
+                ob = bpy.data.objects[update.id.name]
+                check = 'cam_' not in ob.name
+                if ob.type == 'MESH' or ob.type == 'EMPTY':
+                    if ob.type != 'CURVE' and check:
+                        functions.createProp(ob,"updated",1)
 
 @persistent
 def executeOnLoad(dummy):
