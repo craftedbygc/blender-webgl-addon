@@ -33,8 +33,9 @@ def create(instance):
     rotateEul = Euler((eul[0], eul[2], eul[1])) # Switch axes
     rotQuat = rotateEul.to_quaternion() # Make back into quaterion
     rotQuat.normalize()
-    rot = Quaternion((rotQuat[0], rotQuat[1], rotQuat[3], -rotQuat[2]))
-    rot = [functions.rd(rotQuat[1]), functions.rd(rotQuat[2]), functions.rd(rotQuat[3]), functions.rd(rotQuat[0])]
+    rot = Quaternion((rotQuat[0], rotQuat[1], rotQuat[3], rotQuat[2]))
+    # rot = [functions.rd(rotQuat[1]), functions.rd(rotQuat[2]), functions.rd(rotQuat[3]), functions.rd(rotQuat[0])]
+    rot = [functions.rd(rot[1]), functions.rd(rot[2]), functions.rd(rot[3]), functions.rd(rot[0])]
     data.append(rot)
     
     sca = [functions.rd(sca.x),functions.rd(sca.z),functions.rd(sca.y)]  
