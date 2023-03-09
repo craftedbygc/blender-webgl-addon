@@ -1,4 +1,6 @@
 import bpy
+from mathutils import Quaternion
+from mathutils import Euler
 from . import functions
 
 def find(depsgraph, evalOb, json):
@@ -22,15 +24,17 @@ def create(instance):
     # Get the world matrix
     mat = instance.matrix_world
     # extract components back out of the matrix as two vectors and a quaternion
-    pos, rot, sca = mat.decompose()
+    pos, quat, sca = mat.decompose()
     
     pos = [functions.rd(pos.x),functions.rd(pos.z),functions.rd(-pos.y)]
     data.append(pos)
-    
+
+    quat.normalize()
+    rot = Quaternion((quat[0], quat[1], quat[3], -quat[2]))
     rot = [functions.rd(rot[1]), functions.rd(rot[2]), functions.rd(rot[3]), functions.rd(rot[0])]
     data.append(rot)
     
-    sca = [functions.rd(sca.x),functions.rd(sca.y),functions.rd(sca.z)]  
+    sca = [functions.rd(sca.x),functions.rd(sca.z),functions.rd(sca.y)]  
     data.append(sca)
 
     return data

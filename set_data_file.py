@@ -33,6 +33,7 @@ def exportData():
 
             #------------ SPACER ---------------------
             childColls = functions.getChildCollections(c)
+
             for cc in childColls:
                 childCollName = cc.name
                 childCov = functions.namingConvention(childCollName)
@@ -94,6 +95,7 @@ def exportData():
                 # CAMERA !!!!!!!!!
                 #Target the Camera to add data to json
                 if(childCovTweak == "camera"):
+                    jsonObject[childCovTweak] = {}
                     bpy.data.collections[childCollName].color_tag = 'COLOR_03'
                     for ccc in cc.children:
                         bpy.data.collections[ccc.name].color_tag = 'COLOR_02'
@@ -104,6 +106,7 @@ def exportData():
                 # PATHS !!!!!!!!!
                 #Target the paths to add data to json
                 if(childCovTweak == "paths"):
+                    jsonObject[childCovTweak] = {}
                     bpy.data.collections[childCollName].color_tag = 'COLOR_07'
                     if len(cc.all_objects) > 0:
                         oblist = [obj.name for obj in cc.all_objects]
@@ -195,7 +198,7 @@ def exportData():
                 indentVal = None
             else:
                 indentVal = 1
-                
+ 
             objects = json.dumps(jsonObject, indent=indentVal, ensure_ascii=True,separators=(',', ':'))
             f.write(objects)
             f.close()
