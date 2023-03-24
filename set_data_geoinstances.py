@@ -13,6 +13,9 @@ def find(depsgraph, evalOb, json):
                 insname = functions.namingConvention(obj.name) # Match the name of the instanced geometry to the JSON structure
                 # Grab data from the instance
                 data = create(instance)
+                # Add the custom "section" property from the parent
+                data = addCustomProp(evalOb, data)
+                
                 if(insname in json):
                     json[insname].append(data)
                 else:
@@ -36,5 +39,17 @@ def create(instance):
     
     sca = [functions.rd(sca.x),functions.rd(sca.z),functions.rd(sca.y)]  
     data.append(sca)
+
+    return data
+
+def addCustomProp(obj, data):
+    propData = {}
+    prop = functions.getproperty(obj,"section")
+    if(prop > 0):
+        # The property exists (note: value of 0 would return False!)
+        # print(obj.name, 'section value', prop)
+        propData['section'] = prop
+    
+    data.append( propData )
 
     return data
