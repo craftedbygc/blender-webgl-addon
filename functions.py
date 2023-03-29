@@ -125,7 +125,7 @@ def namingConvention(string):
 
 #------------ SPACER ---------------------
 
-def geoCleaner(ob,skinned):
+def geoCleaner(ob,skinned,keepOrigin=False):
 
     forceselect(ob)
     prevLoc = ob.location.copy()
@@ -140,7 +140,10 @@ def geoCleaner(ob,skinned):
     #------------ SPACER ---------------------
     bpy.ops.object.shade_smooth()
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
-    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
+
+    if(keepOrigin == False):
+        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
+
     bpy.ops.object.editmode_toggle()
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.remove_doubles()
@@ -299,13 +302,12 @@ def getproperty(object,property):
 
 def createProp(ob,propName,val): 
     prop = getproperty(ob,"updated")
-    if(prop == False):  
+    if(prop == False):
         ob.select_set(True)
         bpy.context.view_layer.objects.active = bpy.data.objects[ob.name]
         bpy.props.FloatProperty(name=propName)
         bpy.context.object[propName] = val
     else:
-        ob["updated"] = 1
-        print('TESTINGGGGGGGGGG')
+        ob["updated"] += val
 
 

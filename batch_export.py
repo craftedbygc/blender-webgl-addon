@@ -33,7 +33,7 @@ def restUpdateState():
          
             
 
-def glbExpOp(folderpath,format,coll,ob,draco,material,skinned):
+def glbExpOp(folderpath,format,coll,ob,draco,material,skinned,keepOrigin=False):
 
     #------------ SPACER ---------------------
     if(material):
@@ -54,7 +54,7 @@ def glbExpOp(folderpath,format,coll,ob,draco,material,skinned):
     target_path =os.path.join(folderpath, file_name)
 
     #------------ SPACER ---------------------
-    prevLoc, prevRot, prevSac = functions.geoCleaner(ob,skinned)
+    prevLoc, prevRot, prevSac = functions.geoCleaner(ob,skinned,keepOrigin)
 
     #------------ SPACER ---------------------
     functions.forceselect(ob)
@@ -72,7 +72,7 @@ def glbExpOp(folderpath,format,coll,ob,draco,material,skinned):
         ob.scale = prevSac
 
 
-def checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned):
+def checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned,keepOrigin=False):
     autoCheck = bpy.context.scene.checkUpdates == True
     if obcount is None:
         obcount = 0
@@ -81,7 +81,7 @@ def checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned):
         bpy.context.view_layer.update()
         prop = functions.getproperty(ob,"updated")
         if(prop > 0):
-            glbExpOp(folderpath,format,coll,ob,draco,material,skinned)
+            glbExpOp(folderpath,format,coll,ob,draco,material,skinned,keepOrigin)
             ob["updated"] = 0
             obcount += 1
             print("TBA-E1")
@@ -91,7 +91,7 @@ def checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned):
                 functions.createProp(ob,"updated",0)
             return obcount  
     else:
-        glbExpOp(folderpath,format,coll,ob,draco,material,skinned)
+        glbExpOp(folderpath,format,coll,ob,draco,material,skinned,keepOrigin)
         functions.createProp(ob,"updated",0)
         print("TBA-E2")
         obcount += 1
@@ -119,15 +119,16 @@ def glbExp(draco,material):
     coll = functions.findCollection(colName)
    
     for ob in coll.objects:
-        obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned=False)
+        if ob is not None and ob.type == 'MESH': 
+            obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned=False,keepOrigin=False)
 
     #------------ SPACER ---------------------
     
     colName = "Rigged Objects"
     coll = functions.findCollection(colName)
     for ob in coll.objects:   
-        if(ob.type == 'MESH'):
-            obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned=True)
+        if ob is not None and ob.type == 'MESH':
+            obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned=True,keepOrigin=False)
                 
     #------------ SPACER ---------------------
 
@@ -137,9 +138,10 @@ def glbExp(draco,material):
         for cc in coll.children:
             count = 0
             for ob in cc.objects:
-                if(count == 0):
-                    obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned=False)     
-                count += 1
+                if ob is not None and ob.type == 'MESH':
+                    if(count == 0):
+                        obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned=False,keepOrigin=False)     
+                    count += 1
     
     #------------ SPACER ---------------------
 
@@ -149,10 +151,12 @@ def glbExp(draco,material):
         for cc in coll.children: 
             if("Instanced Geometry" in cc.name):     
                 for ob in cc.objects:
-                    obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned=False)
+                    if ob is not None and ob.type == 'MESH':
+                        obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned=False,keepOrigin=True)
                 for ccc in cc.children:
                     for ob in ccc.objects:
-                        obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned=False) 
+                        if ob is not None and ob.type == 'MESH':
+                            obcount = checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned=False,keepOrigin=True) 
         
 
     finalCount = obcount
