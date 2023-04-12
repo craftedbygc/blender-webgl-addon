@@ -18,7 +18,7 @@ bl_info = {
     "author" : "Tiago Andrade",
     "description" : "",
     "blender" : (3, 4, 1),
-    "version" : (1, 6, 2),
+    "version" : (1, 6, 3),
     "location" : "Topbar",
     "warning" : "",
     "category" : "Object"
@@ -27,9 +27,10 @@ bl_info = {
 import bpy
 from . import functions
 from . import keymaps
+from . import checkers
 from . import batch_export
 from . import set_data_file
-from bpy.app.handlers import persistent, depsgraph_update_post
+from bpy.app.handlers import persistent, depsgraph_update_post, depsgraph_update_pre
 from bpy.types import Object
 
 
@@ -128,22 +129,14 @@ def save_hanfler(dummy):
 
 #------------ Fetch Children Collections ---------------------
 
-def on_depsgraph_update(scene, depsgraph):
-    for update in depsgraph.updates:
-        if update.is_updated_transform:
-            if isinstance(update.id, Object):
-                ob = bpy.data.objects[update.id.name]
-                check = 'cam_' not in ob.name
-                if ob.type == 'MESH' or ob.type == 'EMPTY':
-                    if ob.type != 'CURVE' and check:
-                        functions.createProp(ob,"updated",1)
 
 @persistent
 def executeOnLoad(dummy):
     print("NEW SCENE - RESET UPDATE")
     batch_export.restUpdateState()
     bpy.context.scene.previewOn = False
-    #gdepsgraph_update_post.append(on_depsgraph_update)
+    depsgraph_update_post.append(checkers.on_depsgraph_update)
+    #depsgraph_update_pre.append(checkers.tba_check_changes)
     addon_updater_ops.check_for_update_onload()
 
 

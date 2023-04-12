@@ -11,25 +11,25 @@ def restUpdateState():
         if(coll.name == nameArray[0]):
             for ob in coll.objects:
                 if(ob.type == 'MESH'):
-                    functions.createProp(ob,"updated",1)
+                    functions.createProp(ob,"updated",True,2)
         if(coll.name == nameArray[1]):
             for ob in coll.objects:
                 if(ob.type == 'MESH'):
-                    functions.createProp(ob,"updated",1)
+                    functions.createProp(ob,"updated",True,2)
         if(coll.name == nameArray[2]):
             for cc in coll.children:
                 count = 0
                 for ob in cc.objects:
                     if(count == 0):
-                        functions.createProp(ob,"updated",1)
+                        functions.createProp(ob,"updated",True,2)
         if(coll.name == nameArray[3]):
             for cc in coll.children:
                 if("Instanced Geometry" in cc.name):     
                     for ob in cc.objects:
-                        functions.createProp(ob,"updated",1)
+                        functions.createProp(ob,"updated",True,2)
                     for ccc in cc.children:
                         for ob in ccc.objects:
-                            functions.createProp(ob,"updated",1)
+                           functions.createProp(ob,"updated",True,2)
          
             
 
@@ -81,18 +81,18 @@ def checkAndExport(folderpath,format,coll,ob,draco,material,obcount,skinned):
     if(autoCheck):
         bpy.context.view_layer.update()
         prop = functions.getproperty(ob,"updated")
-        if(prop > 0):
+        if(prop > 1):
             glbExpOp(folderpath,format,coll,ob,draco,material,skinned)
             ob["updated"] = 0
             obcount += 1
             return obcount
         else:   
             if(prop == False):
-                functions.createProp(ob,"updated",0)
+                functions.createProp(ob,"updated",True,1)
             return obcount  
     else:
         glbExpOp(folderpath,format,coll,ob,draco,material,skinned)
-        functions.createProp(ob,"updated",0)
+        functions.createProp(ob,"updated",True,1)
         obcount += 1
         return obcount
 
