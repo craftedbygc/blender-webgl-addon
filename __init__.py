@@ -28,14 +28,14 @@ import bpy
 from . import functions
 from . import keymaps
 from . import checkers
-from . import batch_export
+from . import export_batch
 from . import set_data_file
 from bpy.app.handlers import persistent, depsgraph_update_post, depsgraph_update_pre
 from bpy.types import Object
 
 
 #------------ SPACER ---------------------
-from . import addon_updater_ops
+from . import external_addon_updater_ops
 #from .set_addon_preferences import (DemoPreferences)
 
 #------------ SPACER ---------------------
@@ -55,8 +55,8 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         row = layout.row()
         ver = functions.tupleToString(bl_info["version"])
         row.label(text="Addon v"+ver+" Installed",icon ="SCRIPT")
-        addon_updater_ops.check_for_update_background()
-        addon_updater_ops.update_notice_box_ui(self, context,ver)
+        external_addon_updater_ops.check_for_update_background()
+        external_addon_updater_ops.update_notice_box_ui(self, context,ver)
         row = layout.row()
         row.label(text="")
         row.scale_y = spacer*0.5
@@ -102,8 +102,8 @@ class TBA_OT_save_dialog(bpy.types.Operator):
 #------------ SPACER ---------------------
 
 #Import classes
-from .op import TBA_OT_Update,TBA_OT_export_scene,TBA_OT_export_comp_scene,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials
-from .ui import TOPBAR_MT_custom_menu         
+from .create_op import TBA_OT_Update,TBA_OT_export_scene,TBA_OT_export_comp_scene,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials
+from .create_ui import TOPBAR_MT_custom_menu         
 
 #Classes list for register
 #List of all classes that will be registered
@@ -124,7 +124,7 @@ def save_hanfler(dummy):
     if(check and checkP):
         print("TBA_Auto_Save_On")
         functions.setFolderStructure()
-        batch_export.glbExp(draco=False,material=True)
+        export_batch.glbExp(draco=False,material=True)
         set_data_file.exportData()
 
 #------------ Fetch Children Collections ---------------------
@@ -133,11 +133,11 @@ def save_hanfler(dummy):
 @persistent
 def executeOnLoad(dummy):
     print("NEW SCENE - RESET UPDATE")
-    batch_export.restUpdateState()
+    export_batch.restUpdateState()
     bpy.context.scene.previewOn = False
     depsgraph_update_post.append(checkers.on_depsgraph_update)
     #depsgraph_update_pre.append(checkers.tba_check_changes)
-    addon_updater_ops.check_for_update_onload()
+    external_addon_updater_ops.check_for_update_onload()
 
 
 #------------ SPACER ---------------------
@@ -145,7 +145,7 @@ def executeOnLoad(dummy):
 
 def register():
     #ADDON UPDATER CODE
-    addon_updater_ops.register(bl_info)
+    external_addon_updater_ops.register(bl_info)
 
     #------------ SPACER ---------------------
     #Register Addon Classes
@@ -187,7 +187,7 @@ def register():
         bpy.app.handlers.load_post.append(executeOnLoad)
 
 def unregister():
-    addon_updater_ops.unregister()
+    external_addon_updater_ops.unregister()
     bpy.types.TOPBAR_MT_editor_menus.remove(TOPBAR_MT_custom_menu.menu_draw)
     #------------ SPACER ---------------------  
     for km, kmi in addon_keymaps:

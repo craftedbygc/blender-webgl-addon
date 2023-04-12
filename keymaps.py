@@ -1,5 +1,5 @@
 import bpy
-from .op import TBA_OT_Update;
+from .create_op import TBA_OT_Update;
   
 
 def update_tex_keymap():

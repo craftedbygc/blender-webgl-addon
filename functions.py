@@ -92,12 +92,12 @@ def setFolderStructure():
     folderpath = bpy.context.scene.saveFolderPath
     folderName = "models"
     modelsFolder =os.path.join(folderpath, folderName)
-    folderName = "texture"
+    folderName = "textures"
     textFolder =os.path.join(folderpath, folderName)
-    check = os.path.exists(modelsFolder)
-    
-    if(check == False):
+
+    if os.path.exists(modelsFolder) == False :
         os.mkdir(modelsFolder)
+    if os.path.exists(textFolder) == False :
         os.mkdir(textFolder)
 
 #------------ SPACER ---------------------

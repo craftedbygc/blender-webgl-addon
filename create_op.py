@@ -1,7 +1,7 @@
 import bpy
 from bpy.types import Operator 
 from . import functions
-from . import batch_export
+from . import export_batch
 from . import set_data_file
 from . import commads
 from bpy.props import *
@@ -25,7 +25,7 @@ class TBA_OT_export_scene_materials(Operator):
 
     def execute(self, context):
         functions.setFolderStructure()
-        batch_export.glbExp(draco=False,material=True)
+        export_batch.glbExp(draco=False,material=True)
         set_data_file.exportData()
         return {"FINISHED"}
 
@@ -42,7 +42,7 @@ class TBA_OT_export_scene(Operator):
 
     def execute(self, context):
         functions.setFolderStructure()
-        batch_export.glbExp(draco=False,material=False)
+        export_batch.glbExp(draco=False,material=False)
         set_data_file.exportData()
         return {"FINISHED"}
 
@@ -59,7 +59,7 @@ class TBA_OT_export_comp_scene(Operator):
 
     def execute(self, context):
         functions.setFolderStructure()
-        batch_export.glbExp(draco=True,material=False)
+        export_batch.glbExp(draco=True,material=False)
         set_data_file.exportData()
         return {"FINISHED"}
 
