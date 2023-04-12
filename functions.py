@@ -308,3 +308,15 @@ def createProp(ob,propName,val):
         ob["updated"] += val
 
 
+#------------ SPACER ---------------------    
+
+def reload_textures():
+    print("UPDATING TEXTURES")
+    for mat in bpy.data.materials:
+        if mat.node_tree:
+            for node in mat.node_tree.nodes:
+                if node.type == 'TEX_IMAGE':
+                    if node.image:
+                        node.image.reload()
+
+
