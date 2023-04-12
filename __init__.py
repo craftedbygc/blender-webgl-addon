@@ -26,6 +26,7 @@ bl_info = {
 
 import bpy
 from . import functions
+from . import keymaps
 from . import batch_export
 from . import set_data_file
 from bpy.app.handlers import persistent, depsgraph_update_post
@@ -96,16 +97,21 @@ class TBA_OT_save_dialog(bpy.types.Operator):
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
 
+
 #------------ SPACER ---------------------
 
 #Import classes
-from .op import (TBA_OT_export_scene,TBA_OT_export_comp_scene,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
-from .ui import (TOPBAR_MT_custom_menu)           
+from .op import TBA_OT_Update,TBA_OT_export_scene,TBA_OT_export_comp_scene,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials
+from .ui import TOPBAR_MT_custom_menu         
 
 #Classes list for register
 #List of all classes that will be registered
-classes = (TBA_OT_export_scene, TOPBAR_MT_custom_menu,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
+classes = (TBA_OT_Update,TBA_OT_export_scene, TOPBAR_MT_custom_menu,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
 
+
+#------------ SPACER ---------------------
+
+addon_keymaps = []
 
 #------------ SPACER ---------------------
 # Set option to Update on save file
@@ -137,7 +143,7 @@ def executeOnLoad(dummy):
     print("NEW SCENE - RESET UPDATE")
     batch_export.restUpdateState()
     bpy.context.scene.previewOn = False
-    depsgraph_update_post.append(on_depsgraph_update)
+    #gdepsgraph_update_post.append(on_depsgraph_update)
     addon_updater_ops.check_for_update_onload()
 
 
@@ -154,6 +160,11 @@ def register():
         bpy.utils.register_class(cls)
     bpy.types.TOPBAR_MT_editor_menus.append(TOPBAR_MT_custom_menu.menu_draw)
     
+    #------------ SPACER ---------------------
+    # Add the hotkey
+    km,kmi = keymaps.update_tex_keymap()
+    addon_keymaps.append((km, kmi))
+
 
     #------------ SPACER ---------------------
 
@@ -185,7 +196,12 @@ def register():
 def unregister():
     addon_updater_ops.unregister()
     bpy.types.TOPBAR_MT_editor_menus.remove(TOPBAR_MT_custom_menu.menu_draw)
+    #------------ SPACER ---------------------  
+    for km, kmi in addon_keymaps:
+        km.keymap_items.remove(kmi)
+    addon_keymaps.clear()
 
+    #------------ SPACER ---------------------  
     for cls in classes:
         bpy.utils.unregister_class(cls)
 
