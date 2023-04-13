@@ -322,5 +322,3 @@ def reload_textures():
                     if node.image:
                         node.image.reload()
 
-
-

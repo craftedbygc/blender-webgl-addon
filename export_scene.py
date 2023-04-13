@@ -73,7 +73,7 @@ def main_scene_export(draco,material):
                         obcount = export_batch.checkAndExport(mainfolderpath,format,ob,draco,material,obcount,skinned=False)
 
                         #Export the image and return the texture objects
-                        textures, matSettings = export_materials.export(mainfolderpath,ob)
+                        #textures, matSettings = export_materials.export(mainfolderpath,ob)
                         
                         #WRITTE THE ob to json
                         data = set_data_objects.create(ob)
@@ -83,9 +83,9 @@ def main_scene_export(draco,material):
                         #------------ SPACER ---------------------
                         #Add settings to objects
                         settings = {}
-                        settings["material"] = matSettings
-                        settings["textures"] = textures
-                        jsonObject[childCovTweak][obname].append(settings)
+                        #settings["material"] = matSettings
+                        #settings["textures"] = textures
+                        #jsonObject[childCovTweak][obname].append(settings)
                         #Add the objects for extra information
 
                 else:

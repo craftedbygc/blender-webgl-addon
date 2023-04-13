@@ -1,4 +1,5 @@
 import bpy
+import time
 from bpy.types import Operator 
 from . import functions
 from . import export_batch
@@ -33,7 +34,7 @@ class TBA_OT_export_scene_materials(Operator):
         #set_data_file.exportData()
         export_scene.main_scene_export(draco=False,material=True)
         return {"FINISHED"}
-
+    
 #------------ SPACER ---------------------
 
 class TBA_OT_export_scene(Operator):
@@ -99,22 +100,3 @@ class TBA_OT_Update(Operator):
         functions.reload_textures()
         return {"FINISHED"}
     
-
-#------------ SPACER ---------------------
-
-
-class TBA_OT_ProgressPopUp(Operator):
-    bl_idname = "object.simple_popup"
-    bl_label = "Progress Pop Up"
-
-    def execute(self, context):
-        return {'FINISHED'}
-
-    def invoke(self, context, event):
-        return context.window_manager.invoke_props_dialog(self)
-
-    def draw(self, context):
-        global message
-        layout = self.layout
-        layout.label(text=message)
-        layout.operator("myops.simple_popup_close", text="Close")

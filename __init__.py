@@ -178,6 +178,9 @@ def register():
 
     des = "Website Preview Version Is Open - Untick if you need open a new tab and Preview Scene Site Again"
     bpy.types.Scene.previewOn = bpy.props.BoolProperty(name="Site Preview On",description=des, default = False)
+    
+    des = "Folder path to export scene assets to"
+    bpy.types.Scene.progressPopup = bpy.props.StringProperty(default="EXPORT STARTED")
 
     #------------ SPACER ---------------------
 
