@@ -65,6 +65,8 @@ def exportData():
                 for name in oblist:
                     ob = cc.all_objects[name]
                     obname = functions.namingConvention(ob.name)
+                    
+
                     data = set_data_objects.create(ob)
                     jsonObject[childCovTweak][obname] = []
                     jsonObject[childCovTweak][obname].append(data)
