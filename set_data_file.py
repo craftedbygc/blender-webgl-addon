@@ -121,24 +121,24 @@ def exportData():
                 print("NO PATHS TO ADD TO DATA JSON")
 
             #------------ SPACER ---------------------
-        # INTERFACE !!!!!!!!!
-        #Target the Objects collection to add data to json
-        if(childCovTweak == "empties"):
-            bpy.data.collections[childCollName].color_tag = 'COLOR_05'
-            for ccc in cc.children:
-                if len(ccc.all_objects) > 0:
-                    bpy.data.collections[ccc.name].color_tag = 'COLOR_04'
-                    oblist = [obj.name for obj in ccc.all_objects]
-                    oblist = sorted(oblist)
-                    inName = oblist[0]
-                    conName = functions.namingConvention(inName)
-                    jsonObject[childCovTweak][conName] = []
-                    for name in oblist:
-                        ob = ccc.all_objects[name]
-                        data = set_data_objects.create(ob)
-                        jsonObject[childCovTweak][conName].append(data)
-                else:
-                    print("NO EMPTIES TO ADD TO DATA JSON")               
+            # INTERFACE !!!!!!!!!
+            #Target the Objects collection to add data to json
+            if(childCovTweak == "empties"):
+                bpy.data.collections[childCollName].color_tag = 'COLOR_05'
+                for ccc in cc.children:
+                    if len(ccc.all_objects) > 0:
+                        bpy.data.collections[ccc.name].color_tag = 'COLOR_04'
+                        oblist = [obj.name for obj in ccc.all_objects]
+                        oblist = sorted(oblist)
+                        inName = oblist[0]
+                        conName = functions.namingConvention(inName)
+                        jsonObject[childCovTweak][conName] = []
+                        for name in oblist:
+                            ob = ccc.all_objects[name]
+                            data = set_data_objects.create(ob)
+                            jsonObject[childCovTweak][conName].append(data)
+                    else:
+                        print("NO EMPTIES TO ADD TO DATA JSON")               
 
 
         #------------ SPACER ---------------------

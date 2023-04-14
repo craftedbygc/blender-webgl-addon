@@ -26,5 +26,6 @@ def create(camJsonObject,coll):
     camJsonObject["cam-stops"] = cam_stops
     camJsonObject["tgt-path"] = functions.getPathPoints(tpath)
     camJsonObject["tgt-stops"] = tgt_stops
+    print("TBA-LEVEL-2")
 
     return {"FINISHED"}

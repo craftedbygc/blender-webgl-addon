@@ -64,11 +64,57 @@ def main_scene_export(draco):
             #Check if the current sellect collection is usable and create an object from it
             collist = ("objects","camera","paths","empties","instances-manual","instances-nodes")
             if childCovTweak in collist:
-                if "instances" in childCovTweak and "instances" not in jsonObject:
-                    jsonObject["instances"] = {}
-                else:
-                    if childCovTweak not in jsonObject:
+                if childCovTweak not in jsonObject:
+                    if "instances" in childCovTweak:
+                        jsonObject["instances"] = {}
+                    else:
                         jsonObject[childCovTweak] = {}
+            
+            #------------ SPACER ---------------------
+            # CAMERA !!!!!!!!!
+            #Target the Camera to add data to json
+            if(childCovTweak == "camera"):
+                bpy.data.collections[childCollName].color_tag = 'COLOR_03'
+                for ccc in cc.children:
+                    bpy.data.collections[ccc.name].color_tag = 'COLOR_02'
+                camJsonObject = jsonObject[childCovTweak]
+                set_data_camera.create(camJsonObject,cc)
+
+            #------------ SPACER ---------------------
+            # PATHS !!!!!!!!!
+            #Target the paths to add data to json
+            if(childCovTweak == "paths"):
+                bpy.data.collections[childCollName].color_tag = 'COLOR_07'
+                if len(cc.all_objects) > 0:
+                    oblist = [obj.name for obj in cc.all_objects]
+                    oblist = sorted(oblist)
+                    for name in oblist:
+                        ob = cc.all_objects[name]
+                        pathJsonObject = jsonObject[childCovTweak]
+                        set_data_obpaths.create(pathJsonObject,ob)
+                else:
+                    print("NO PATHS TO ADD TO DATA JSON")
+            
+            #------------ SPACER ---------------------
+            # INTERFACE !!!!!!!!!
+            #Target the Objects collection to add data to json
+            if(childCovTweak == "empties"):
+                bpy.data.collections[childCollName].color_tag = 'COLOR_05'
+                for ccc in cc.children:
+                    if len(ccc.all_objects) > 0:
+                        bpy.data.collections[ccc.name].color_tag = 'COLOR_04'
+                        oblist = [obj.name for obj in ccc.all_objects]
+                        oblist = sorted(oblist)
+                        inName = oblist[0]
+                        conName = functions.namingConvention(inName)
+
+                        for name in oblist:
+                            ob = ccc.all_objects[name]
+                            data = set_data_objects.create(ob)
+                            jsonObject[childCovTweak][conName] = data
+
+                    else:
+                        print("NO EMPTIES TO ADD TO DATA JSON")             
                     
             #------------ NEW COLL TYPE ---------------------  
             #------------ NEW COLL TYPE ---------------------
@@ -114,8 +160,9 @@ def main_scene_export(draco):
                             #------------ SPACER ---------------------
                             #Add settings to objects
                             settings = {}
-                            settings["material"] = matSettings
-                            settings["textures"] = textures
+                            if textures !=None and matSettings !=None:
+                                settings["material"] = matSettings
+                                settings["textures"] = textures
 
                             #------------ SPACER ---------------------
                             #Add object info to main object
@@ -133,6 +180,7 @@ def main_scene_export(draco):
 
                 else:
                     print("NO OBJECTS TO ADD TO DATA JSON")
+            
 
     else:
         print("NO COLLECTIONS IN SCENE")

@@ -5,6 +5,8 @@ from . import functions
 
 
 def export(folder_path,ob):
+    texObject = None
+    matSettingsObject = None
     if ob is not None and ob.type == "MESH":
         if len(ob.material_slots) > 0:
             mat = ob.material_slots[0].material
@@ -45,6 +47,7 @@ def export(folder_path,ob):
             
         else:
             print(ob.name,"NO MATERIAL DEFINED")
+            return texObject, matSettingsObject
 
 
 #------------ SPACER ---------------------
