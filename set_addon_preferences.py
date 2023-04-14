@@ -1,8 +1,8 @@
 import bpy
-from . import addon_updater_ops
+from . import external_addon_updater_ops
 
 
-@addon_updater_ops.make_annotations
+@external_addon_updater_ops.make_annotations
 class DemoPreferences(bpy.types.AddonPreferences):
 	"""Demo bare-bones preferences"""
 	bl_idname = __package__
@@ -49,7 +49,7 @@ class DemoPreferences(bpy.types.AddonPreferences):
 		col = mainrow.column()
 
 		# Updater draw function, could also pass in col as third arg.
-		addon_updater_ops.update_settings_ui(self, context)
+		external_addon_updater_ops.update_settings_ui(self, context)
 
 		# Alternate draw function, which is more condensed and can be
 		# placed within an existing draw function. Only contains:

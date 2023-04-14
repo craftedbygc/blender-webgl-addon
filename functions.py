@@ -92,12 +92,12 @@ def setFolderStructure():
     folderpath = bpy.context.scene.saveFolderPath
     folderName = "models"
     modelsFolder =os.path.join(folderpath, folderName)
-    folderName = "texture"
+    folderName = "textures"
     textFolder =os.path.join(folderpath, folderName)
-    check = os.path.exists(modelsFolder)
-    
-    if(check == False):
+
+    if os.path.exists(modelsFolder) == False :
         os.mkdir(modelsFolder)
+    if os.path.exists(textFolder) == False :
         os.mkdir(textFolder)
 
 #------------ SPACER ---------------------
@@ -140,7 +140,6 @@ def geoCleaner(ob,skinned):
     #------------ SPACER ---------------------
     bpy.ops.object.shade_smooth()
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
-    #bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
     bpy.ops.object.editmode_toggle()
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.remove_doubles()
@@ -297,19 +296,11 @@ def getproperty(object,property):
         return False
 
 
-def createProp(ob,propName,reset,val): 
-    prop = getproperty(ob,"updated")
-    if prop == False:
-        ob.select_set(True)
-        bpy.context.view_layer.objects.active = bpy.data.objects[ob.name]
-        bpy.props.FloatProperty(name=propName)
-        bpy.context.object[propName] = val
-    else:
-        if reset:
-            ob["updated"] = val
-        else:
-            ob["updated"] += val
-
+def createProp(ob,propName,val): 
+    ob.select_set(True)
+    bpy.context.view_layer.objects.active = bpy.data.objects[ob.name]
+    bpy.props.FloatProperty(name=propName)
+    bpy.context.object[propName] = val
 
 #------------ SPACER ---------------------    
 
@@ -323,4 +314,30 @@ def reload_textures():
                         node.image.reload()
 
 
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
 
+def restUpdateState():
+    nameArray = ["Objects","Rigged Objects","Instances Manual","Instances Nodes"]
+    allColls = getDifNamesColl(nameArray)
+    if len(allColls) > 0:
+        for coll in allColls:
+            if coll.name in nameArray:
+                if("Instances" in coll.name):
+                    for cc in coll.children:
+                        if("Instanced Geometry" in cc.name):     
+                            for ob in cc.objects:
+                                createProp(ob,"updated",1)
+                            for ccc in cc.children:
+                                for ob in ccc.objects:
+                                    createProp(ob,"updated",1)
+                        else:
+                            count = 0
+                            for ob in cc.objects:
+                                if(count == 0):
+                                    createProp(ob,"updated",1)
+                else:
+                    for ob in coll.objects:
+                        if(ob.type == 'MESH'):
+                            createProp(ob,"updated",1)

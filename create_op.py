@@ -1,7 +1,9 @@
 import bpy
+import time
 from bpy.types import Operator 
 from . import functions
-from . import batch_export
+from . import export_batch
+from . import export_scene
 from . import set_data_file
 from . import commads
 from bpy.props import *
@@ -14,6 +16,7 @@ warn = "1 - If button is greyed out pls check scene structure or if all Projects
 warn2 = "2 - If Site does not open pls uncheck the preview on option in Project Settings"
 warn3 = "1- Npm Start runs once per blender session, so any issues restarting blender should help"
 warn4 = "1- You can also use the shift+U shortcut to perfome this operation"
+
 class TBA_OT_export_scene_materials(Operator):
     bl_idname = "object.exportscenematerials"
     bl_label ="Export With Materials"
@@ -25,15 +28,14 @@ class TBA_OT_export_scene_materials(Operator):
 
     def execute(self, context):
         functions.setFolderStructure()
-        batch_export.glbExp(draco=False,material=True)
-        set_data_file.exportData()
+        export_scene.main_scene_export(draco=False)
         return {"FINISHED"}
-
+    
 #------------ SPACER ---------------------
 
 class TBA_OT_export_scene(Operator):
     bl_idname = "object.exportscene"
-    bl_label ="Export Uncompressed"
+    bl_label ="Export Uncompressed & Materials"
     bl_description = "Export Scene Uncompressed \n\n"+warn
 
     @classmethod
@@ -42,15 +44,14 @@ class TBA_OT_export_scene(Operator):
 
     def execute(self, context):
         functions.setFolderStructure()
-        batch_export.glbExp(draco=False,material=False)
-        set_data_file.exportData()
+        export_scene.main_scene_export(draco=False)
         return {"FINISHED"}
 
 #------------ SPACER ---------------------
 
 class TBA_OT_export_comp_scene(Operator):
     bl_idname = "object.exportcompscene"
-    bl_label ="Export Draco Compressed"
+    bl_label ="Export Draco Compressed & Materials"
     bl_description = "Export Scene With Draco Compression \n\n"+warn
 
     @classmethod
@@ -59,8 +60,7 @@ class TBA_OT_export_comp_scene(Operator):
 
     def execute(self, context):
         functions.setFolderStructure()
-        batch_export.glbExp(draco=True,material=False)
-        set_data_file.exportData()
+        export_scene.main_scene_export(draco=False)
         return {"FINISHED"}
 
 #------------ SPACER ---------------------
@@ -84,7 +84,7 @@ class TBA_OT_open_chrome_preview(Operator):
 class TBA_OT_Update(Operator):
     bl_idname = "object.update"
     bl_label ="Update Textures"
-    bl_description = "Will update all the textures in created materials\n\n"+warn4
+    bl_description = "If texture files have changed you can force update with this operation to reload all the texures used\n\n"+warn4
 
     @classmethod
     def poll(cls,context):
@@ -93,3 +93,4 @@ class TBA_OT_Update(Operator):
     def execute(self, context):
         functions.reload_textures()
         return {"FINISHED"}
+    
