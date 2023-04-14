@@ -78,27 +78,19 @@ def glbExp(draco,material):
 #------------ SPACER ---------------------
 #------------ SPACER ---------------------
 #------------ SPACER ---------------------
-
 def checkAndExport(folderpath,format,ob,draco,material,obcount,skinned):
-    autoCheck = bpy.context.scene.checkUpdates == True
+    bpy.context.view_layer.update()
+    try:
+        prop = functions.getproperty(ob,"updated")
+    except:
+        functions.createProp(ob,"updated",0)
+    
     if obcount is None:
         obcount = 0
 
-    if(autoCheck):
-        bpy.context.view_layer.update()
-        prop = functions.getproperty(ob,"updated")
-        if(prop > 1):
-            glbExpOp(folderpath,format,ob,draco,material,skinned)
-            ob["updated"] = 0
-            obcount += 1
-            return obcount
-        else:   
-            if(prop == False):
-                functions.createProp(ob,"updated",True,1)
-            return obcount  
-    else:
+    if prop>0:
+        ob["updated"] = 1
         glbExpOp(folderpath,format,ob,draco,material,skinned)
-        functions.createProp(ob,"updated",True,1)
         obcount += 1
         return obcount
 
@@ -110,8 +102,6 @@ def checkAndExport(folderpath,format,ob,draco,material,obcount,skinned):
 def glbExpOp(folderpath,format,ob,draco,material,skinned):
 
     modelFolder =os.path.join(folderpath, "models")
-    texFolder =os.path.join(folderpath, "textures")
-
 
     #------------ SPACER ---------------------
     if(material):

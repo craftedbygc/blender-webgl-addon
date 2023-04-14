@@ -182,6 +182,8 @@ def register():
     des = "Folder path to export scene assets to"
     bpy.types.Scene.progressPopup = bpy.props.StringProperty(default="EXPORT STARTED")
 
+    bpy.types.Scene.exportState = bpy.props.BoolProperty(default = False)
+
     #------------ SPACER ---------------------
 
     if not save_hanfler in bpy.app.handlers.save_post:

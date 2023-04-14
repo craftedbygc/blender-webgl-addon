@@ -7,8 +7,19 @@ from . import functions
 #------------ SPACER ---------------------
 #------------ SPACER ---------------------
 #------------ SPACER ---------------------
+def checkAndExport(folder_path,ob):
+    bpy.context.view_layer.update()
+    try:
+        prop = functions.getproperty(ob,"updated")
+    except:
+        functions.createProp(ob,"updated",0)
 
+    if prop>0:
+        ob["updated"] = 1
+        textures, matSettings = export(folder_path,ob)
+        return textures, matSettings
 
+        
 def export(folder_path,ob):
     if ob is not None and ob.type == "MESH":
         if len(ob.material_slots) > 0:
@@ -20,6 +31,8 @@ def export(folder_path,ob):
                 for node in mat.node_tree.nodes:
                     if node.type == "TEX_IMAGE":
                         img = node.image
+                        original_image = img
+                        original_image_path = img.filepath
                         if img is not None and len(img.pixels) > 0:
                             socket_name = None
                             for link in mat.node_tree.links:
@@ -27,10 +40,14 @@ def export(folder_path,ob):
                                     socket_name = functions.namingConvention(link.to_socket.name)
                                     tex = set_image(folder_path,ob,img,socket_name)
                                     texObject[socket_name] = tex
+                                    node.image = original_image
+                                    node.image.filepath = original_image_path 
                                 if link.to_node.type == "NORMAL_MAP" and link.from_node == node:
                                     socket_name = "normals"
                                     tex = set_image(folder_path,ob,img,socket_name)
                                     texObject[socket_name] = tex
+                                    node.image = original_image
+                                    node.image.filepath = original_image_path
                         else:
                             print(ob.name,"NO IMAGE DATA TO EXPORT")
 
@@ -67,9 +84,6 @@ def set_image(folder_path,ob,img,socket_name):
     new_file_path = os.path.join(folder_path,file_name)
     print(new_file_path)
 
-    #new_img = bpy.data.images.new(new_name, width=img.size[0], height=img.size[1])
-    #new_img.pixels = img.pixels[:]
-
     # Save the original image to a temporary file
     with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as temp_file:
         temp_file_path = temp_file.name
@@ -91,6 +105,8 @@ def set_image(folder_path,ob,img,socket_name):
 
     # Delete the temporary file
     os.remove(temp_file_path)
+
+    
 
     return file_name
     

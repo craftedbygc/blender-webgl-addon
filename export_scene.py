@@ -67,13 +67,13 @@ def main_scene_export(draco,material):
                     for name in oblist:
                         ob = cc.all_objects[name]
                         obname = functions.namingConvention(ob.name)
-
+                        bpy.context.scene.exportState = True
                         #------------ SPACER ---------------------
                         # Export the selected object
                         obcount = export_batch.checkAndExport(mainfolderpath,format,ob,draco,material,obcount,skinned=False)
 
                         #Export the image and return the texture objects
-                        #textures, matSettings = export_materials.export(mainfolderpath,ob)
+                        textures, matSettings = export_materials.checkAndExport(mainfolderpath,ob)
                         
                         #WRITTE THE ob to json
                         data = set_data_objects.create(ob)
@@ -83,9 +83,9 @@ def main_scene_export(draco,material):
                         #------------ SPACER ---------------------
                         #Add settings to objects
                         settings = {}
-                        #settings["material"] = matSettings
-                        #settings["textures"] = textures
-                        #jsonObject[childCovTweak][obname].append(settings)
+                        settings["material"] = matSettings
+                        settings["textures"] = textures
+                        jsonObject[childCovTweak][obname].append(settings)
                         #Add the objects for extra information
 
                 else:
@@ -109,6 +109,7 @@ def main_scene_export(draco,material):
     f.close()
     f = open(filepath, "r")
     bpy.context.scene.frame_set(1)
+    bpy.context.scene.exportState = False
 
     #------------ SPACER ---------------------
 
