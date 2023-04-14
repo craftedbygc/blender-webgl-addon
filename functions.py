@@ -140,7 +140,6 @@ def geoCleaner(ob,skinned):
     #------------ SPACER ---------------------
     bpy.ops.object.shade_smooth()
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
-    #bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
     bpy.ops.object.editmode_toggle()
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.remove_doubles()
