@@ -57,8 +57,10 @@ def main_scene_export(draco,material):
                 else:
                     jsonObject[childCovTweak] = {}
                     
-
+            #------------ SPACER ---------------------  
             #------------ SPACER ---------------------
+            #------------ SPACER ---------------------
+            #------------ SPACER ---------------------  
             # Do export action to the current select collection
             if(childCovTweak == "objects"):
                 if len(cc.all_objects) > 0:
@@ -69,23 +71,35 @@ def main_scene_export(draco,material):
                         obname = functions.namingConvention(ob.name)
                         bpy.context.scene.exportState = True
                         #------------ SPACER ---------------------
-                        # Export the selected object
-                        obcount = export_batch.checkAndExport(mainfolderpath,format,ob,draco,material,obcount,skinned=False)
-
-                        #Export the image and return the texture objects
-                        textures, matSettings = export_materials.checkAndExport(mainfolderpath,ob)
-                        
-                        #WRITTE THE ob to json
-                        data = set_data_objects.create(ob)
-                        jsonObject[childCovTweak][obname] = []
-                        jsonObject[childCovTweak][obname].append(data)
+                        # Check if object changed
+                        bpy.context.view_layer.update()
+                        try:
+                            prop = functions.getproperty(ob,"updated")
+                        except:
+                            functions.createProp(ob,"updated",0)
 
                         #------------ SPACER ---------------------
-                        #Add settings to objects
-                        settings = {}
-                        settings["material"] = matSettings
-                        settings["textures"] = textures
-                        jsonObject[childCovTweak][obname].append(settings)
+                        # Export the selected object
+                        if prop>0:
+                            obcount = export_batch.glbExpOp(mainfolderpath,format,ob,draco,material,obcount,skinned=False)
+
+                            #Export the image and return the texture objects
+                            textures, matSettings = export_materials.export(mainfolderpath,ob)
+                        
+                            #WRITTE THE ob to json
+                            data = set_data_objects.create(ob)
+                            jsonObject[childCovTweak][obname] = []
+                            jsonObject[childCovTweak][obname].append(data)
+
+                            #------------ SPACER ---------------------
+                            #Add settings to objects
+                            settings = {}
+                            settings["material"] = matSettings
+                            settings["textures"] = textures
+                            jsonObject[childCovTweak][obname].append(settings)
+                            ob["updated"] = 1
+                        else:
+                            print(ob,"- HAS NOT CHANGED")
                         #Add the objects for extra information
 
                 else:

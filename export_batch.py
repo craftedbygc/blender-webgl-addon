@@ -77,29 +77,9 @@ def glbExp(draco,material):
 
 #------------ SPACER ---------------------
 #------------ SPACER ---------------------
-#------------ SPACER ---------------------
-def checkAndExport(folderpath,format,ob,draco,material,obcount,skinned):
-    bpy.context.view_layer.update()
-    try:
-        prop = functions.getproperty(ob,"updated")
-    except:
-        functions.createProp(ob,"updated",0)
-    
-    if obcount is None:
-        obcount = 0
-
-    if prop>0:
-        ob["updated"] = 1
-        glbExpOp(folderpath,format,ob,draco,material,skinned)
-        obcount += 1
-        return obcount
-
-
-#------------ SPACER ---------------------
-#------------ SPACER ---------------------
 #------------ SPACER ---------------------           
 
-def glbExpOp(folderpath,format,ob,draco,material,skinned):
+def glbExpOp(folderpath,format,ob,draco,material,obcount,skinned):
 
     modelFolder =os.path.join(folderpath, "models")
 
@@ -142,6 +122,9 @@ def glbExpOp(folderpath,format,ob,draco,material,skinned):
         ob.location = prevLoc
         ob.rotation_euler = prevRot
         ob.scale = prevSac
+    
+    obcount += 1
+    return obcount
 
 
 
@@ -152,26 +135,23 @@ def glbExpOp(folderpath,format,ob,draco,material,skinned):
 def restUpdateState():
     nameArray = ["Objects","Rigged Objects","Instances Manual","Instances Nodes"]
     allColls = functions.getDifNamesColl(nameArray)
-    for coll in allColls:
-        if(coll.name == nameArray[0]):
-            for ob in coll.objects:
-                if(ob.type == 'MESH'):
-                    functions.createProp(ob,"updated",True,2)
-        if(coll.name == nameArray[1]):
-            for ob in coll.objects:
-                if(ob.type == 'MESH'):
-                    functions.createProp(ob,"updated",True,2)
-        if(coll.name == nameArray[2]):
-            for cc in coll.children:
-                count = 0
-                for ob in cc.objects:
-                    if(count == 0):
-                        functions.createProp(ob,"updated",True,2)
-        if(coll.name == nameArray[3]):
-            for cc in coll.children:
-                if("Instanced Geometry" in cc.name):     
-                    for ob in cc.objects:
-                        functions.createProp(ob,"updated",True,2)
-                    for ccc in cc.children:
-                        for ob in ccc.objects:
-                           functions.createProp(ob,"updated",True,2)
+    if len(allColls) > 0:
+        for coll in allColls:
+            if coll.name in nameArray:
+                if("Instances" in coll.name):
+                    for cc in coll.children:
+                        if("Instanced Geometry" in cc.name):     
+                            for ob in cc.objects:
+                                functions.createProp(ob,"updated",1)
+                            for ccc in cc.children:
+                                for ob in ccc.objects:
+                                    functions.createProp(ob,"updated",1)
+                        else:
+                            count = 0
+                            for ob in cc.objects:
+                                if(count == 0):
+                                    functions.createProp(ob,"updated",1)
+                else:
+                    for ob in coll.objects:
+                        if(ob.type == 'MESH'):
+                            functions.createProp(ob,"updated",1)

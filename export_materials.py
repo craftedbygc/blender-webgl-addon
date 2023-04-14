@@ -4,22 +4,6 @@ import tempfile
 from . import functions
 
 
-#------------ SPACER ---------------------
-#------------ SPACER ---------------------
-#------------ SPACER ---------------------
-def checkAndExport(folder_path,ob):
-    bpy.context.view_layer.update()
-    try:
-        prop = functions.getproperty(ob,"updated")
-    except:
-        functions.createProp(ob,"updated",0)
-
-    if prop>0:
-        ob["updated"] = 1
-        textures, matSettings = export(folder_path,ob)
-        return textures, matSettings
-
-        
 def export(folder_path,ob):
     if ob is not None and ob.type == "MESH":
         if len(ob.material_slots) > 0:
@@ -58,7 +42,7 @@ def export(folder_path,ob):
                             set = functions.namingConvention(set)
                             matSettingsObject[set] = val
 
-
+                print(texObject, matSettingsObject)
                 return texObject, matSettingsObject
             
         else:
