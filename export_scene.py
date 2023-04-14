@@ -70,12 +70,12 @@ def main_scene_export(draco):
                     if childCovTweak not in jsonObject:
                         jsonObject[childCovTweak] = {}
                     
-            #------------ SPACER ---------------------  
-            #------------ SPACER ---------------------
-            #------------ SPACER ---------------------
-            #------------ SPACER ---------------------  
+            #------------ NEW COLL TYPE ---------------------  
+            #------------ NEW COLL TYPE ---------------------
+            #------------ NEW COLL TYPE ---------------------
+            #------------ NEW COLL TYPE ---------------------
             # Do export action to the current select collection
-            if(childCovTweak == "objects"):
+            if(childCovTweak == "objects" or childCovTweak == "rigged-objects"):
                 bpy.data.collections[childCollName].color_tag = 'COLOR_06'
                 if len(cc.all_objects) > 0:
                     oblist = [obj.name for obj in cc.all_objects]
@@ -93,7 +93,15 @@ def main_scene_export(draco):
                             functions.createProp(ob,"updated",0)
 
                         #------------ SPACER ---------------------
+                        # Check if rigged
+                        obp = ob
+                        if "rigged-" in childCovTweak:
+                            obp = ob.parent
+                            childCovTweak = childCovTweak.replace("rigged-", "") 
+
+                        #------------ SPACER ---------------------
                         # Export the selected object
+                            
                         if prop>0:
                             obcount = export_batch.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
 
@@ -101,16 +109,22 @@ def main_scene_export(draco):
                             textures, matSettings = export_materials.export(mainfolderpath,ob)
                         
                             #WRITTE THE ob to json
-                            data = set_data_objects.create(ob)
-                            jsonObject[childCovTweak][obname] = []
-                            jsonObject[childCovTweak][obname].append(data)
+                            data = set_data_objects.create(obp)
 
                             #------------ SPACER ---------------------
                             #Add settings to objects
                             settings = {}
                             settings["material"] = matSettings
                             settings["textures"] = textures
-                            jsonObject[childCovTweak][obname].append(settings)
+
+                            #------------ SPACER ---------------------
+                            #Add object info to main object
+                            data.append(settings)
+                            jsonObject[childCovTweak][obname] = data
+
+                            
+                            #------------ SPACER ---------------------
+                            #Reset Updater and print
                             ob["updated"] = 0
                             print(ob.name,">>> EXPORTED !!!!")
                         else:
@@ -119,20 +133,22 @@ def main_scene_export(draco):
 
                 else:
                     print("NO OBJECTS TO ADD TO DATA JSON")
+
     else:
         print("NO COLLECTIONS IN SCENE")
 
 
+    #------------ SPACER ---------------------  
     #------------ SPACER ---------------------
+    #------------ SPACER ---------------------
+    #------------ SPACER ---------------------  
+    # Writte to Json file an apply final changes
     
     if(bpy.context.scene.minify):
         indentVal = None
     else:
         indentVal = 1
     
-   
-    
-
     objects = json.dumps(jsonObject, indent=indentVal, ensure_ascii=True,separators=(',', ':'))
     f.write(objects)
     f.close()

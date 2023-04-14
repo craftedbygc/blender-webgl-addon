@@ -6,7 +6,6 @@ from . import functions
 def create(object):
 
             data = []
-            settings = {}
 
             #------------ SPACER ---------------------
 
@@ -24,7 +23,6 @@ def create(object):
             data.append(apos)
             data.append(rot)
             data.append(asac)
-            data.append(settings)
             
             #------------ SPACER ---------------------
             return data
