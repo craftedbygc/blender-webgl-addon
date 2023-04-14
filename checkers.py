@@ -7,7 +7,7 @@ def check_and_change(ob):
     autoCheck = bpy.context.scene.exportState == False
     if ob.type == 'MESH' or ob.type == 'EMPTY':
         if ob.type != 'CURVE' and check and autoCheck:
-            functions.createProp(ob,"updated",False,1)
+            functions.createProp(ob,"updated",1)
 
 
 def on_depsgraph_update(scene, depsgraph):

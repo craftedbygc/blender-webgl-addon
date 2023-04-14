@@ -314,3 +314,31 @@ def reload_textures():
                     if node.image:
                         node.image.reload()
 
+
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+
+def restUpdateState():
+    nameArray = ["Objects","Rigged Objects","Instances Manual","Instances Nodes"]
+    allColls = getDifNamesColl(nameArray)
+    if len(allColls) > 0:
+        for coll in allColls:
+            if coll.name in nameArray:
+                if("Instances" in coll.name):
+                    for cc in coll.children:
+                        if("Instanced Geometry" in cc.name):     
+                            for ob in cc.objects:
+                                createProp(ob,"updated",1)
+                            for ccc in cc.children:
+                                for ob in ccc.objects:
+                                    createProp(ob,"updated",1)
+                        else:
+                            count = 0
+                            for ob in cc.objects:
+                                if(count == 0):
+                                    createProp(ob,"updated",1)
+                else:
+                    for ob in coll.objects:
+                        if(ob.type == 'MESH'):
+                            createProp(ob,"updated",1)

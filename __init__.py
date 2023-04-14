@@ -28,10 +28,8 @@ import bpy
 from . import functions
 from . import keymaps
 from . import checkers
-from . import export_batch
-from . import set_data_file
+from . import export_scene
 from bpy.app.handlers import persistent, depsgraph_update_post, depsgraph_update_pre
-from bpy.types import Object
 
 
 #------------ SPACER ---------------------
@@ -124,8 +122,7 @@ def save_hanfler(dummy):
     if(check and checkP):
         print("TBA_Auto_Save_On")
         functions.setFolderStructure()
-        export_batch.glbExp(draco=False,material=True)
-        set_data_file.exportData()
+        export_scene.main_scene_export(draco=False)
 
 #------------ Fetch Children Collections ---------------------
 
@@ -133,10 +130,9 @@ def save_hanfler(dummy):
 @persistent
 def executeOnLoad(dummy):
     print("NEW SCENE - RESET UPDATE")
-    export_batch.restUpdateState()
+    functions.restUpdateState()
     bpy.context.scene.previewOn = False
     depsgraph_update_post.append(checkers.on_depsgraph_update)
-    #depsgraph_update_pre.append(checkers.tba_check_changes)
     external_addon_updater_ops.check_for_update_onload()
 
 

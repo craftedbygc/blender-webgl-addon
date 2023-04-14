@@ -9,7 +9,7 @@ from . import set_data_camera
 from . import set_data_obpaths
 from . import set_data_geoinstances
 
-def main_scene_export(draco,material):
+def main_scene_export(draco):
 
     #------------ SPACER ---------------------
     # Fetch High level collection and create the Name for the unseen file
@@ -20,15 +20,28 @@ def main_scene_export(draco,material):
     dataName = functions.namingConvention(dataName)
     dataName = dataName + ".unseen"
 
-
     #------------ SPACER ---------------------
     # Initial Setup and Variables
     mainfolderpath = bpy.context.scene.saveFolderPath
     childColls = functions.getChildCollections(c)
-    jsonObject = {}
     format = 'GLB'
     obcount = 0
     bpy.context.scene.frame_set(0)
+    currentSelectedOb = bpy.context.active_object
+
+    #------------ SPACER ---------------------
+    # Open Json File and check if it exists
+    filepath = os.path.join(mainfolderpath, dataName)
+    global jsonObject
+    try:
+        with open(filepath, "r") as json_file:
+            # Load the JSON content
+            jsonObject = json.load(json_file)
+            f = open(filepath, "w")
+    except:
+        f = open(filepath, "w")
+        jsonObject = {}
+   
 
     #------------ SPACER ---------------------
     # Print into console so we can mark the start of the export
@@ -46,16 +59,16 @@ def main_scene_export(draco,material):
             childCollName = cc.name
             childCov = functions.namingConvention(childCollName)
             childCovTweak = childCov 
-
             
             #------------ SPACER ---------------------
             #Check if the current sellect collection is usable and create an object from it
             collist = ("objects","camera","paths","empties","instances-manual","instances-nodes")
             if childCovTweak in collist:
-                if "instances" in childCovTweak:
+                if "instances" in childCovTweak and "instances" not in jsonObject:
                     jsonObject["instances"] = {}
                 else:
-                    jsonObject[childCovTweak] = {}
+                    if childCovTweak not in jsonObject:
+                        jsonObject[childCovTweak] = {}
                     
             #------------ SPACER ---------------------  
             #------------ SPACER ---------------------
@@ -63,6 +76,7 @@ def main_scene_export(draco,material):
             #------------ SPACER ---------------------  
             # Do export action to the current select collection
             if(childCovTweak == "objects"):
+                bpy.data.collections[childCollName].color_tag = 'COLOR_06'
                 if len(cc.all_objects) > 0:
                     oblist = [obj.name for obj in cc.all_objects]
                     oblist = sorted(oblist)
@@ -81,7 +95,7 @@ def main_scene_export(draco,material):
                         #------------ SPACER ---------------------
                         # Export the selected object
                         if prop>0:
-                            obcount = export_batch.glbExpOp(mainfolderpath,format,ob,draco,material,obcount,skinned=False)
+                            obcount = export_batch.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
 
                             #Export the image and return the texture objects
                             textures, matSettings = export_materials.export(mainfolderpath,ob)
@@ -97,9 +111,10 @@ def main_scene_export(draco,material):
                             settings["material"] = matSettings
                             settings["textures"] = textures
                             jsonObject[childCovTweak][obname].append(settings)
-                            ob["updated"] = 1
+                            ob["updated"] = 0
+                            print(ob.name,">>> EXPORTED !!!!")
                         else:
-                            print(ob,"- HAS NOT CHANGED")
+                            print(ob.name,">>> NOT CHANGED")
                         #Add the objects for extra information
 
                 else:
@@ -116,14 +131,14 @@ def main_scene_export(draco,material):
         indentVal = 1
     
    
-    filepath = os.path.join(mainfolderpath, dataName)
-    f = open(filepath, "w")
+    
+
     objects = json.dumps(jsonObject, indent=indentVal, ensure_ascii=True,separators=(',', ':'))
     f.write(objects)
     f.close()
-    f = open(filepath, "r")
     bpy.context.scene.frame_set(1)
     bpy.context.scene.exportState = False
+    functions.forceselect(currentSelectedOb)
 
     #------------ SPACER ---------------------
 
