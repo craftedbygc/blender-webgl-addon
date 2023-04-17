@@ -4,7 +4,7 @@ from bpy.types import Operator
 from . import functions
 from . import export_batch
 from . import export_scene
-from . import set_data_file
+from . import baking_textures
 from . import commads
 from bpy.props import *
 import webbrowser
@@ -92,5 +92,19 @@ class TBA_OT_Update(Operator):
 
     def execute(self, context):
         functions.reload_textures()
+        return {"FINISHED"}
+    
+class TBA_OT_Bake_Maps(Operator):
+    bl_idname = "object.bakemaps"
+    bl_label ="Bake Maps"
+    bl_description = "Bake and Export Maps\n\n"+warn
+
+    @classmethod
+    def poll(cls,context):
+        return functions.pollcheckExport()
+
+    def execute(self, context):
+        functions.setFolderStructure()
+        #baking_textures.bake_maps()
         return {"FINISHED"}
     
