@@ -40,3 +40,15 @@ class TOPBAR_MT_custom_menu(Menu):
         row = layout.row()
         row.scale_x = 1.1
         row.menu("TOPBAR_MT_custom_menu",icon="HIDE_OFF")
+
+
+class TBA_Bake_Panel(bpy.types.Panel):
+    bl_label = "Baking"
+    bl_idname = "OBJECT_PT_bake_panel"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = "UNSEEN BAKING"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator("object.bakemaps", text="Bake Maps")

@@ -1,6 +1,5 @@
 import bpy
 import os
-import tempfile
 from . import functions
 
 
@@ -56,8 +55,8 @@ def export(folder_path,ob):
 
      
 def set_image(folder_path,ob,img,socket_name):
-    
-    folder_path =os.path.join(folder_path, "textures")
+    tex_size = 2048
+    folder_path = os.path.join(folder_path, "textures")
     
     if socket_name:
         new_name = ob.name +"-"+ socket_name 
@@ -71,7 +70,7 @@ def set_image(folder_path,ob,img,socket_name):
     new_img = img
     new_img.name = new_name
     
-    new_img.scale(512,512)
+    new_img.scale(tex_size,tex_size)
     new_img.filepath_raw = new_file_path
     new_img.file_format = 'PNG'
     new_img.save()

@@ -28,6 +28,7 @@ def main_scene_export(draco):
     obcount = 0
     bpy.context.scene.frame_set(0)
     currentSelectedOb = bpy.context.active_object
+    bpy.context.scene.exportState = True
 
     #------------ SPACER ---------------------
     # Open Json File and check if it exists
@@ -129,7 +130,7 @@ def main_scene_export(draco):
                     for name in oblist:
                         ob = cc.all_objects[name]
                         obname = functions.namingConvention(ob.name)
-                        bpy.context.scene.exportState = True
+                        
                         #------------ SPACER ---------------------
                         # Check if object changed
                         bpy.context.view_layer.update()

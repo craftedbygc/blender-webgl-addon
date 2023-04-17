@@ -299,8 +299,10 @@ def getproperty(object,property):
 def createProp(ob,propName,val): 
     ob.select_set(True)
     bpy.context.view_layer.objects.active = bpy.data.objects[ob.name]
-    bpy.props.FloatProperty(name=propName)
-    bpy.context.object[propName] = val
+    current_mode = bpy.context.mode
+    if current_mode == "OBJECT":
+        bpy.props.FloatProperty(name=propName)
+        bpy.context.object[propName] = val
 
 #------------ SPACER ---------------------    
 
