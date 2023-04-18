@@ -2,7 +2,7 @@ import bpy
 import time
 from bpy.types import Operator 
 from . import functions
-from . import export_batch
+from . import export_import
 from . import export_scene
 from . import baking_textures
 from . import commads
@@ -98,6 +98,20 @@ class TBA_OT_Bake_Maps(Operator):
     bl_idname = "object.bakemaps"
     bl_label ="Bake Maps"
     bl_description = "Bake and Export Maps\n\n"+warn
+
+    @classmethod
+    def poll(cls,context):
+        return functions.pollcheckExport()
+
+    def execute(self, context):
+        functions.setFolderStructure()
+        #baking_textures.bake_maps()
+        return {"FINISHED"}
+    
+class TBA_OT_Import_c4d(Operator):
+    bl_idname = "object.importc4d"
+    bl_label ="Import C4D Scene"
+    bl_description = "Import C4D Scene\n\n"+warn
 
     @classmethod
     def poll(cls,context):
