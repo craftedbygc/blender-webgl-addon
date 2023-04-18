@@ -29,3 +29,6 @@ def create(camJsonObject,coll):
     print("TBA-LEVEL-2")
 
     return {"FINISHED"}
+
+def simple_create():
+    print("working on it")
