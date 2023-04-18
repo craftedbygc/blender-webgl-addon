@@ -76,7 +76,11 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         row = layout.row()
         row.prop(sce,'precision')
         row.scale_y = 1.5
-         #------------
+        #------------
+        row = layout.row()
+        row.prop(sce,'camPaths')
+        row.scale_y = 1.5
+        #------------
         row = layout.row()
         row.prop(sce,'minify')
         row.scale_y = 1.5
@@ -162,6 +166,9 @@ def register():
 
     des = "Define precision of data file - higher values will increase the data file size but match position better"
     bpy.types.Scene.precision = bpy.props.IntProperty(name="Precision",description=des,default=4)
+
+    des = "Tick to use cam paths in the scene"
+    bpy.types.Scene.camPaths = bpy.props.BoolProperty(name="Cam Paths",description=des, default = False)
 
     des = "Remove indentation from export"
     bpy.types.Scene.minify = bpy.props.BoolProperty(name="Minify",description=des, default = True)

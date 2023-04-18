@@ -1,9 +1,16 @@
 {
-    "last_check": "2023-04-18 17:09:11.645875",
+    "last_check": "2023-04-18 20:48:05.246858",
     "backup_date": "",
-    "update_ready": false,
+    "update_ready": true,
     "ignore": false,
     "just_restored": false,
     "just_updated": false,
-    "version_text": {}
+    "version_text": {
+        "link": "https://api.github.com/repos/craftedbygc/blender-webgl-addon/zipball/refs/tags/v.1.7.3",
+        "version": [
+            1,
+            7,
+            3
+        ]
+    }
 }
