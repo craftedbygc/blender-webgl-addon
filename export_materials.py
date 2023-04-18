@@ -9,6 +9,11 @@ def export(folder_path,ob):
     if ob is not None and ob.type == "MESH":
         if len(ob.material_slots) > 0:
             mat = ob.material_slots[0].material
+            try:
+                mat.use_nodes
+            except:
+                print('NO NODES USED')   
+
             if mat.use_nodes:
                 #Create the texture object to save the file name too
                 texObject = {}
@@ -55,13 +60,19 @@ def export(folder_path,ob):
 
      
 def set_image(folder_path,ob,img,socket_name):
-    tex_size = 2048
+    width, height = img.size
+    if width > 2048:
+        tex_size = 2048
+    else:
+        tex_size = width
+        
     folder_path = os.path.join(folder_path, "textures")
     
     if socket_name:
         new_name = ob.name +"-"+ socket_name 
     else:
         print(ob.name," - texture not connected to socket")
+        
         
     covName = functions.namingConvention(new_name)
     file_name = covName + ".png"

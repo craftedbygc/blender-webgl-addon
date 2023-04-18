@@ -2,7 +2,7 @@ import bpy
 import os
 import json
 from . import functions
-from . import export_batch
+from . import export_import
 from . import export_materials
 from . import set_data_objects
 from . import set_data_camera
@@ -150,7 +150,7 @@ def main_scene_export(draco):
                         # Export the selected object
                             
                         if prop>0:
-                            obcount = export_batch.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
+                            obcount = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
 
                             #Export the image and return the texture objects
                             textures, matSettings = export_materials.export(mainfolderpath,ob)

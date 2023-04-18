@@ -1,6 +1,9 @@
 import bpy
 import os
+import addon_utils
 from . import functions
+
+addon_utils.enable("io_scene_fbx")
 
 #------------ SPACER ---------------------
 #------------ SPACER ---------------------
@@ -48,3 +51,41 @@ def glbExpOp(folderpath,format,ob,draco,obcount,skinned):
     
     obcount += 1
     return obcount
+
+
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+#------------ SPACER --------------------- 
+
+def c4d_import():
+    fbx_file_path = "path_to_your_fbx_file"
+    bpy.ops.import_scene.fbx(filepath=fbx_file_path)
+
+    obcoll = functions.findCollection("Objects")
+    imported_object = [ob for ob in bpy.context.selected_objects]
+
+    for ob in imported_object:
+        functions.forceselect(ob)
+        ob.scale *=0.01
+        obcoll.objects.link(ob)
+
+def c4d_export():
+    fbx_file_path = "path_to_your_fbx_file"
+    bpy.ops.import_scene.fbx(filepath=fbx_file_path)
+
+    obcoll = functions.findCollection("Objects")
+    prevScale = 1
+    if obcoll is not None:
+        for ob in obcoll.objects:
+            functions.forceselect(ob)
+            prevScale = ob.scale
+            ob.scale *= 100
+    else:
+        print("No Objects Collections To export")
+
+    
+
+
+
+
+
