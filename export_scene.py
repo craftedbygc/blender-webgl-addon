@@ -193,23 +193,23 @@ def main_scene_export(draco):
                 for instanceCol in cc.children: 
                     # Go through all instances in that collection
                     if len(instanceCol.all_objects) > 0:
-                        # Create the jsonObject for the instances
-                        instanceName = functions.namingConvention(instanceCol.name)
-                        # jsonObject['instances'][instanceName] = []
-                        # print('json', jsonObject['instances'])
+                        # # Create the jsonObject for the instances
+                        # instanceName = functions.namingConvention(instanceCol.name)
+                        # # jsonObject['instances'][instanceName] = []
+                        # # print('json', jsonObject['instances'])
 
-                        if instanceName in jsonObject["instances"]:
-                            # print(instanceName, 'data exists!')
-                            data = jsonObject["instances"][instanceName]
-                            dataArray = jsonObject["instances"][instanceName][0]
-                            settings = jsonObject["instances"][instanceName][1]
-                        else: # Create empty data
-                            # Create master data
-                            data = []
-                            # Create data for all position, scale, rot data
-                            dataArray = []
-                            # Create settings object for material and textures
-                            settings = {}
+                        # if instanceName in jsonObject["instances"]:
+                        #     # print(instanceName, 'data exists!')
+                        #     data = jsonObject["instances"][instanceName]
+                        #     dataArray = jsonObject["instances"][instanceName][0]
+                        #     settings = jsonObject["instances"][instanceName][1]
+                        # else: # Create empty data
+                        #     # Create master data
+                        #     data = []
+                        #     # Create data for all position, scale, rot data
+                        #     dataArray = []
+                        #     # Create settings object for material and textures
+                        #     settings = {}
 
                         # Get all the instanced objects in the collection
                         oblist = [obj.name for obj in instanceCol.all_objects]
@@ -236,11 +236,29 @@ def main_scene_export(draco):
                                 obp = ob.parent
                                 childCovTweak = childCovTweak.replace("rigged-", "") 
 
+                            # Create main data file structure no matter the changes
+                            #JSON data structure for instances 'instance name'; [ [positions], {material, textures} ]
+                            if (count == 0):
+                                # Create the jsonObject for the instances
+                                jsonName = obname
+                                if obname in jsonObject["instances"]:
+                                    # print(instanceName, 'data exists!')
+                                    data = jsonObject["instances"][jsonName]
+                                    dataArray = jsonObject["instances"][jsonName][0]
+                                    settings = jsonObject["instances"][jsonName][1]
+                                else: # Create empty data
+                                    # Create master data
+                                    data = []
+                                    # Create data for all position, scale, rot data
+                                    dataArray = []
+                                    # Create settings object for material and textures
+                                    settings = {}
+
                             # #------------ SPACER ---------------------
                             # Export the selected object
                             if prop>0:
                                 if (count == 0):
-                                    #JSON data structure for instances 'instance name'; [ [positions], {material, textures} ]
+                                    # Export the first model
                                     obcount = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
 
                                     #Export the image and return the texture objects
@@ -276,7 +294,7 @@ def main_scene_export(draco):
                             data.append(dataArray)
                             data.append(settings)
                         # Add to JSON object
-                        jsonObject["instances"][instanceName] = data
+                        jsonObject["instances"][jsonName] = data
                     else: 
                         print(f'No instances in {instanceCol.name}')
     else:
