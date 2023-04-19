@@ -2,12 +2,12 @@ import bpy
 from . import functions
 from bpy.types import Object, Material
 
-def check_and_change(ob):
+def check_and_change(ob,val):
     check = 'cam_' not in ob.name
     autoCheck = bpy.context.scene.exportState == False
     if ob.type == 'MESH' or ob.type == 'EMPTY':
         if ob.type != 'CURVE' and check and autoCheck:
-            functions.createProp(ob,"updated",1)
+            functions.createProp(ob,"updated",val)
 
 
 def on_depsgraph_update(scene, depsgraph):
@@ -19,9 +19,11 @@ def on_depsgraph_update(scene, depsgraph):
                 for ob in scene.objects:
                     if ob.type == 'MESH':
                         if material.name in ob.data.materials:
-                            check_and_change(ob)
+                            check_and_change(ob,2)
 
         if update.is_updated_transform or update.is_updated_geometry:
             if isinstance(update.id, Object):
                 ob = bpy.data.objects[update.id.name]
-                check_and_change(ob)
+                prop = functions.getproperty(ob,"updated")
+                if prop is not None and prop < 1:
+                    check_and_change(ob,1)

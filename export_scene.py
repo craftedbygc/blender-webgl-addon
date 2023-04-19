@@ -39,6 +39,19 @@ def main_scene_export(draco):
             # Load the JSON content
             jsonObject = json.load(json_file)
             f = open(filepath, "w")
+
+            if bpy.context.scene.camPaths == False:
+                target_objects = [{"key": "cam-path"}, {"key": "tgt-path"}]
+                for target in target_objects:
+                    if target in jsonObject:
+                        jsonObject.remove(target)
+            else:
+                target_objects = [{"key": "cam-positions"}, {"key": "tgt-positions"}]
+                for target in target_objects:
+                    if target in jsonObject:
+                        jsonObject.remove(target)
+
+
     except:
         f = open(filepath, "w")
         jsonObject = {}
@@ -154,7 +167,11 @@ def main_scene_export(draco):
                             obcount = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
 
                             #Export the image and return the texture objects
-                            textures, matSettings = export_materials.export(mainfolderpath,ob)
+                            textures =  None
+                            matSettings = None
+
+                            if prop>1:
+                                textures, matSettings = export_materials.export(mainfolderpath,ob)
                         
                             #WRITTE THE ob to json
                             data = set_data_objects.create(obp)
