@@ -67,7 +67,8 @@ def main_scene_export(draco):
             if childCovTweak in collist:
                 if childCovTweak not in jsonObject:
                     if "instances" in childCovTweak:
-                        jsonObject["instances"] = {}
+                        if "instances" not in jsonObject:
+                            jsonObject["instances"] = {}
                     else:
                         jsonObject[childCovTweak] = {}
             
@@ -182,7 +183,102 @@ def main_scene_export(draco):
                 else:
                     print("NO OBJECTS TO ADD TO DATA JSON")
             
+            # if(childCovTweak == "instances-nodes"):
+            #     print('Going into instanced nodes')
+            #     bpy.data.collections[childCollName].color_tag = 'COLOR_06'
 
+            if(childCovTweak == "instances-manual"):
+                bpy.data.collections[childCollName].color_tag = 'COLOR_06'
+
+                for instanceCol in cc.children: 
+                    # Go through all instances in that collection
+                    if len(instanceCol.all_objects) > 0:
+                        # Create the jsonObject for the instances
+                        instanceName = functions.namingConvention(instanceCol.name)
+                        # jsonObject['instances'][instanceName] = []
+                        # print('json', jsonObject['instances'])
+
+                        if instanceName in jsonObject["instances"]:
+                            # print(instanceName, 'data exists!')
+                            data = jsonObject["instances"][instanceName]
+                            dataArray = jsonObject["instances"][instanceName][0]
+                            settings = jsonObject["instances"][instanceName][1]
+                        else: # Create empty data
+                            # Create master data
+                            data = []
+                            # Create data for all position, scale, rot data
+                            dataArray = []
+                            # Create settings object for material and textures
+                            settings = {}
+
+                        # Get all the instanced objects in the collection
+                        oblist = [obj.name for obj in instanceCol.all_objects]
+                        oblist = sorted(oblist)
+                        count = 0
+
+                        for name in oblist:
+                            # Get the instanced object
+                            ob = instanceCol.all_objects[name]
+                            obname = functions.namingConvention(ob.name)
+
+                            #------------ SPACER ---------------------
+                            # Check if object changed
+                            bpy.context.view_layer.update()
+                            try:
+                                prop = functions.getproperty(ob,"updated")
+                            except:
+                                functions.createProp(ob,"updated",0)
+
+                            #------------ SPACER ---------------------
+                            # Check if rigged
+                            obp = ob
+                            if "rigged-" in childCovTweak:
+                                obp = ob.parent
+                                childCovTweak = childCovTweak.replace("rigged-", "") 
+
+                            # #------------ SPACER ---------------------
+                            # Export the selected object
+                            if prop>0:
+                                if (count == 0):
+                                    #JSON data structure for instances 'instance name'; [ [positions], {material, textures} ]
+                                    obcount = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
+
+                                    #Export the image and return the texture objects
+                                    textures, matSettings = export_materials.export(mainfolderpath,ob)
+
+                                    #------------ SPACER ---------------------
+                                    #Add settings to objects
+                                    if textures !=None and matSettings !=None:
+                                        settings["material"] = matSettings
+                                        settings["textures"] = textures
+                                
+                                # Get the data for that specific instance - update the specific location if it exists
+                                if len(dataArray) > count:
+                                    dataArray[count] = set_data_objects.create(obp)
+                                else: 
+                                    # Otherwise append to the data
+                                    dataArray.append(set_data_objects.create(obp))
+                            
+                                #------------ SPACER ---------------------
+                                #Reset Updater and print
+                                ob["updated"] = 0
+                                print(ob.name,">>> EXPORTED !!!!")
+                            else:
+                                print(ob.name,">>> NOT CHANGED")
+                            # Iterate
+                            count += 1
+                        # End of iteration - append the instance data and material data
+                        if len(data) > 0:
+                            # Data was present before - just update
+                            data[0] = dataArray
+                            data[1] = settings
+                        else:
+                            data.append(dataArray)
+                            data.append(settings)
+                        # Add to JSON object
+                        jsonObject["instances"][instanceName] = data
+                    else: 
+                        print(f'No instances in {instanceCol.name}')
     else:
         print("NO COLLECTIONS IN SCENE")
 
