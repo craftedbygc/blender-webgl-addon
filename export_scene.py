@@ -255,131 +255,106 @@ def main_scene_export(draco):
                                 jsonObject["instances"][jsonName][0] = transforms
                             else:
                                 # No previous data -> append
+                                # jsonObject["instances"][jsonName] = [] # todo check if this is needed upon error
                                 jsonObject["instances"][jsonName].append(transforms)
                     else: 
                         print(f'No instances in {instanceCol.name}')
             
             # ----------- INSTANCES NODES ------------- 
-            # if(childCovTweak == "instances-nodes"):
-                # print('Going into instanced nodes')
-                # bpy.data.collections[childCollName].color_tag = 'COLOR_06'
+            if(childCovTweak == "instances-nodes"):
+                print('Going into instanced nodes')
+
+                # Create temp json object to prevent override of variables
+                tempJson = {}
+
+                bpy.data.collections[childCollName].color_tag = 'COLOR_06'
                 
-                # # Get the Instanced Geometry to export the GLBs
-                # instancedGeoCol = functions.getNamedChildCollections("Instanced Geometry", cc)[0]
-                # bpy.data.collections[instancedGeoCol.name].color_tag = 'COLOR_04'
+                # Get the Instanced Geometry to export the GLBs
+                instancedGeoCol = functions.getNamedChildCollections("Instanced Geometry", cc)[0]
+                bpy.data.collections[instancedGeoCol.name].color_tag = 'COLOR_04'
 
-                # # Get all models
-                # oblist = [obj.name for obj in instancedGeoCol.all_objects]
-                # oblist = sorted(oblist)
+                # Get all models
+                oblist = [obj.name for obj in instancedGeoCol.all_objects]
+                oblist = sorted(oblist)
 
-                # for name in oblist:
-                #     ob = instancedGeoCol.all_objects[name]
-                #     obname = functions.namingConvention(ob.name)
-                #     # print('obname', obname)                
-                    
-                #     jsonName = obname
-                #     # if obname in jsonObject["instances"]:
-                #     #     print(obname, 'data exists!')
-                #     #     data = jsonObject["instances"][jsonName]
-                #     #     transforms = jsonObject["instances"][jsonName][0]
-                #     #     settings = jsonObject["instances"][jsonName][1]
-                #     # else: # Create empty data
-                #     # Create master data
-                #     data = []
-                #     # Create data for all position, scale, rot data
-                #     transforms = []
-                #     # Create settings object for material and textures
-                #     settings = {}
+                for name in oblist:
+                    ob = instancedGeoCol.all_objects[name]
+                    obname = functions.namingConvention(ob.name)
 
-                #     #------------ SPACER ---------------------
-                #     # Check if object changed
-                #     bpy.context.view_layer.update()
-                #     try:
-                #         prop = functions.getproperty(ob,"updated")
-                #     except:
-                #         functions.createProp(ob,"updated",0)
+                    # Create temp data   
+                    tempJson[obname] = {}  
+                    tempJson[obname]["transforms"] = []
+                    tempJson[obname]["settings"] = {}
+                    tempJson[obname]["toUpdate"] = False
 
-                #     #------------ SPACER ---------------------
-                #     # Check if rigged
-                #     obp = ob
-                #     if "rigged-" in childCovTweak:
-                #         obp = ob.parent
-                #         childCovTweak = childCovTweak.replace("rigged-", "") 
+                    #------------ SPACER ---------------------
+                    # Check if object changed
+                    bpy.context.view_layer.update()
+                    try:
+                        prop = functions.getproperty(ob,"updated")
+                    except:
+                        functions.createProp(ob,"updated",0)
 
-                #     #------------ SPACER ---------------------
-                #     # Export the instanced object and get material data
-                #     if prop>0:
-                #         obcount = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
+                    #------------ SPACER ---------------------
+                    # Export the instanced object and get material data
+                    if prop>0:
+                        tempJson[obname]["toUpdate"] = True # Set to True to check later
+                        obcount = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
 
-                #         #Export the image and return the texture objects
-                #         textures, matSettings = export_materials.export(mainfolderpath,ob)
+                        #Export the image and return the texture objects
+                        textures, matSettings = export_materials.export(mainfolderpath,ob)
 
-                #         #------------ SPACER ---------------------
-                #         #Add settings to objects
-                #         if textures !=None and matSettings !=None:
-                #             settings["material"] = matSettings
-                #             settings["textures"] = textures
-                    
-                #         # End of iteration - append only the material data, but only if the object has changed
-                #         # If object exists in json just update the settings
-                #         if obname in jsonObject["instances"]:
-                #             jsonObject["instances"][obname][1] = settings
-                #         else:
-                #             jsonObject["instances"][obname] = [] # Create the object first
-                #             jsonObject["instances"][obname].append([])  # Append an empty array, which we will update later, to keep the correct indexing
-                #             jsonObject["instances"][obname].append(settings) # then append settings
+                        #------------ SPACER ---------------------
+                        #Add settings to objects
+                        if textures !=None and matSettings !=None:
+                            tempJson[obname]["settings"]["material"] = matSettings
+                            tempJson[obname]["settings"]["textures"] = textures
 
-                #     # print('json', jsonObject["instances"])
+                        #------------ SPACER ---------------------
+                        #Reset Updater and print
+                        ob["updated"] = 0
+                        print(ob.name,">>> EXPORTED !!!!")
+                    else:
+                        print(ob.name,">>> NOT CHANGED")
 
-                # # Get the scattering bases collection
-                # scatteringBasesCol = functions.getNamedChildCollections("Scattering Bases", cc)[0]
-                # bpy.data.collections[scatteringBasesCol.name].color_tag = 'COLOR_04'
+                # Get the scattering bases collection to grab the data
+                scatteringBasesCol = functions.getNamedChildCollections("Scattering Bases", cc)[0]
+                bpy.data.collections[scatteringBasesCol.name].color_tag = 'COLOR_04'
 
-                # # Get all bases
-                # oblist = [obj.name for obj in scatteringBasesCol.all_objects]
-                # oblist = sorted(oblist)
-                # print('oblist bases', oblist)
+                # Get all bases
+                oblist = [obj.name for obj in scatteringBasesCol.all_objects]
+                oblist = sorted(oblist)
 
-                # if(len(oblist) > 0):
-                #         depsgraph = bpy.context.evaluated_depsgraph_get() # Create evaluated graph for the whole scene
-                # else:
-                #     print("NO NODE INSTANCES TO ADD TO DATA JSON")
+                if(len(oblist) > 0):
+                    depsgraph = bpy.context.evaluated_depsgraph_get() # Create evaluated graph for the whole scene
+                else:
+                    print("NO NODE INSTANCES TO ADD TO DATA JSON")
                 
-                # for name in oblist:
-                #     # Go through all bases
-                #     ob = scatteringBasesCol.all_objects[name]
-                #     obname = functions.namingConvention(ob.name)
+                for name in oblist:
+                    # Go through all bases
+                    ob = scatteringBasesCol.all_objects[name]
+                    obname = functions.namingConvention(ob.name)
 
-                #     #------------ SPACER ---------------------
-                #     # Check if object changed
-                #     bpy.context.view_layer.update()
-                #     try:
-                #         prop = functions.getproperty(ob,"updated")
-                #     except:
-                #         functions.createProp(ob,"updated",0)
+                    # Get the object in the evaluated dependency graph to attach instances
+                    evalOb = ob.evaluated_get(depsgraph)
+                    set_data_geoinstances.find(depsgraph, evalOb, tempJson)
 
-                #     if prop>0: 
-                #         # Get the object in the evaluated dependency graph to attach instances
-                #         evalOb = ob.evaluated_get(depsgraph)
-                #         set_data_geoinstances.find(depsgraph, evalOb, jsonObject["instances"])
-                        
-                #         #------------ SPACER ---------------------
-                #         #Reset Updater and print
-                #         ob["updated"] = 0
-                #         print(ob.name,">>> EXPORTED !!!!")
-                #     else:
-                #         print(ob.name,">>> NOT CHANGED")
-
-                # # End of iteration - append the instance data and material data
-                # if len(data) > 0:
-                #     # Data was present before - just update
-                #     data[0] = transforms
-                #     data[1] = settings
-                # else:
-                #     data.append(transforms)
-                #     data.append(settings)
-                # # Add to JSON object
-                # jsonObject["instances"][jsonName] = data
+                # Finally, iterate through the temp object, copying correct values to the actual json
+                for instanceName, instanceData in tempJson.items():
+                    if (instanceData['toUpdate'] == True):
+                            # Check if object has been updated -> overwrite everything
+                            data = []
+                            data.append(instanceData['transforms'])
+                            data.append(instanceData['settings'])
+                            jsonObject["instances"][instanceName] = data
+                    else:
+                        # Change only transforms data
+                        if instanceName in jsonObject["instances"]:
+                            # Data is present -> override
+                            jsonObject["instances"][instanceName][0] = instanceData['transforms']
+                        else:
+                            # No previous data -> append
+                            jsonObject["instances"][instanceName].append(instanceData['transforms'])
     else:
         print("NO COLLECTIONS IN SCENE")
 
