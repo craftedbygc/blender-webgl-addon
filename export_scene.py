@@ -197,6 +197,8 @@ def main_scene_export(draco):
                         else:
                             print(ob.name,">>> NOT CHANGED")
                         #Add the objects for extra information
+                        
+                        bpy.context.scene.obCount = obcount
 
                 else:
                     print("NO OBJECTS TO ADD TO DATA JSON")
@@ -338,7 +340,6 @@ def main_scene_export(draco):
     functions.forceselect(currentSelectedOb)
 
     #------------ SPACER ---------------------
-
     print("========================= #") 
     print("========================= #")
     print("EXPORT DONE") 

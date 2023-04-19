@@ -94,20 +94,6 @@ class TBA_OT_Update(Operator):
         functions.reload_textures()
         return {"FINISHED"}
     
-class TBA_OT_Bake_Maps(Operator):
-    bl_idname = "object.bakemaps"
-    bl_label ="Bake Maps"
-    bl_description = "Bake and Export Maps\n\n"+warn
-
-    @classmethod
-    def poll(cls,context):
-        return functions.pollcheckExport()
-
-    def execute(self, context):
-        functions.setFolderStructure()
-        #baking_textures.bake_maps()
-        return {"FINISHED"}
-    
 class TBA_OT_Import_c4d(Operator):
     bl_idname = "object.importc4d"
     bl_label ="Import C4D Scene"
@@ -120,5 +106,18 @@ class TBA_OT_Import_c4d(Operator):
     def execute(self, context):
         functions.setFolderStructure()
         #baking_textures.bake_maps()
+        return {"FINISHED"}
+    
+
+class TBA_OT_INFO(Operator):
+    bl_idname = "object.info"
+    bl_label ="Export Info"
+    bl_description = "Info relating the exporting process"
+
+    @classmethod
+    def poll(cls,context):
+        return functions.pollcheckExport()
+
+    def execute(self, context):
         return {"FINISHED"}
     

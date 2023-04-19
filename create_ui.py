@@ -41,14 +41,21 @@ class TOPBAR_MT_custom_menu(Menu):
         row.scale_x = 1.1
         row.menu("TOPBAR_MT_custom_menu",icon="HIDE_OFF")
 
-
-class TBA_Bake_Panel(bpy.types.Panel):
-    bl_label = "Baking"
-    bl_idname = "OBJECT_PT_bake_panel"
+class TBA_INFO_PANEL(bpy.types.Panel):
+    bl_label = "UNSEEN EXPORTER INFO"
+    bl_idname = "OBJECT_PT_info"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = "UNSEEN BAKING"
+    bl_category = "UNSEEN INFO"
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("object.bakemaps", text="Bake Maps")
+        count = str(bpy.context.scene.obCount)
+        row = layout.row()   
+        row.label(text="Export Summary")
+        row.scale_y = 1.25
+        row = layout.row()  
+        row.label(text="Objects: "+count)
+        row.scale_y = 1
+
+

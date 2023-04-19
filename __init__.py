@@ -104,12 +104,12 @@ class TBA_OT_save_dialog(bpy.types.Operator):
 #------------ SPACER ---------------------
 
 #Import classes
-from .create_op import TBA_OT_Bake_Maps,TBA_OT_Update,TBA_OT_export_scene,TBA_OT_export_comp_scene,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials
-from .create_ui import TBA_Bake_Panel,TOPBAR_MT_custom_menu         
+from .create_op import TBA_OT_INFO,TBA_OT_Update,TBA_OT_export_scene,TBA_OT_export_comp_scene,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials
+from .create_ui import TBA_INFO_PANEL,TOPBAR_MT_custom_menu         
 
 #Classes list for register
 #List of all classes that will be registered
-classes = (TBA_Bake_Panel,TBA_OT_Bake_Maps,TBA_OT_Update,TBA_OT_export_scene, TOPBAR_MT_custom_menu,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
+classes = (TBA_INFO_PANEL,TBA_OT_INFO,TBA_OT_Update,TBA_OT_export_scene, TOPBAR_MT_custom_menu,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
 
 
 #------------ SPACER ---------------------
@@ -184,6 +184,8 @@ def register():
     
     des = "Folder path to export scene assets to"
     bpy.types.Scene.progressPopup = bpy.props.StringProperty(default="EXPORT STARTED")
+
+    bpy.types.Scene.obCount = bpy.props.IntProperty(name="Exported Objects",description="Number of Exported Objects",default=0)
 
     bpy.types.Scene.exportState = bpy.props.BoolProperty(default = False)
 
