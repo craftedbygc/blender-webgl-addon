@@ -104,12 +104,12 @@ class TBA_OT_save_dialog(bpy.types.Operator):
 #------------ SPACER ---------------------
 
 #Import classes
-from .create_op import TBA_OT_Bake_Maps,TBA_OT_Update,TBA_OT_export_scene,TBA_OT_export_comp_scene,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials
-from .create_ui import TBA_Bake_Panel,TOPBAR_MT_custom_menu         
+from .create_op import TBA_OT_INFO,TBA_OT_Update,TBA_OT_Export_Updates,TBA_OT_Export_Full_Scene,TBA_OT_Export_Full_Comp,TBA_OT_open_chrome_preview
+from .create_ui import TBA_INFO_PANEL,TOPBAR_MT_custom_menu         
 
 #Classes list for register
 #List of all classes that will be registered
-classes = (TBA_Bake_Panel,TBA_OT_Bake_Maps,TBA_OT_Update,TBA_OT_export_scene, TOPBAR_MT_custom_menu,TBA_OT_export_comp_scene,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_export_scene_materials)
+classes = (TBA_INFO_PANEL,TBA_OT_INFO,TBA_OT_Update,TOPBAR_MT_custom_menu,TBA_OT_Export_Full_Scene,TBA_OT_Export_Full_Comp,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_Export_Updates)
 
 
 #------------ SPACER ---------------------
@@ -126,7 +126,7 @@ def save_hanfler(dummy):
     if(check and checkP):
         print("TBA_Auto_Save_On")
         functions.setFolderStructure()
-        export_scene.main_scene_export(draco=False)
+        export_scene.main_scene_export(draco=False,fullScene = False)
 
 #------------ Fetch Children Collections ---------------------
 
@@ -134,7 +134,7 @@ def save_hanfler(dummy):
 @persistent
 def executeOnLoad(dummy):
     print("NEW SCENE - RESET UPDATE")
-    functions.restUpdateState()
+    #functions.restUpdateState()
     bpy.context.scene.previewOn = False
     depsgraph_update_post.append(checkers.on_depsgraph_update)
     external_addon_updater_ops.check_for_update_onload()
@@ -184,6 +184,12 @@ def register():
     
     des = "Folder path to export scene assets to"
     bpy.types.Scene.progressPopup = bpy.props.StringProperty(default="EXPORT STARTED")
+
+    bpy.types.Scene.obCount = bpy.props.IntProperty(name="Exported Objects",description="Number of Exported Objects",default=0)
+
+    bpy.types.Scene.totalTex = bpy.props.IntProperty(name="Exported Textures",description="Number of Exported Textures",default=0)
+    
+    bpy.types.Scene.fileSize = bpy.props.FloatProperty(name="File Size",description="Total File Size",default=0)
 
     bpy.types.Scene.exportState = bpy.props.BoolProperty(default = False)
 

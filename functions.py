@@ -318,39 +318,60 @@ def restUpdateState():
 #------------ SPACER ---------------------
 #------------ SPACER ---------------------
 
+def fitTo01(value, min_value, max_value):
+    return (value - min_value) / (max_value - min_value)
+
+def flipAxis(coords):
+    x, y, z, t = coords
+    return [x, z, -y, t]
 
 def getAnimationValues(ob,type,prop):
     
     data = []
-    if ob.animation_data:
+    name = ob.name
+    prop = prop.replace("'", '"')
+
+    if ob.animation_data.action:
+        print(name,"HAS ANIMATION DATA")
         fcurves = [fcurve for fcurve in ob.animation_data.action.fcurves if fcurve.data_path == prop]
-        ftotal = len(fcurves)
+        ftotal = len(fcurves)+1
+        end = bpy.context.scene.frame_end
 
         # Create a list of lists for keyframe_points coordinates
         keyframe_points = [[] for _ in range(ftotal)]
         for fcurve in fcurves:
             index = fcurve.array_index
             for keyframe in fcurve.keyframe_points:
+                frame = keyframe.co.x
+                frame = fitTo01(frame,0,end)
                 value = keyframe.co.y
                 if type == "vector":
                      keyframe_points[index].append(rd(value))
+                     if(index>1):
+                        keyframe_points[index+1].append(rd(frame))
+                         
                 else:
-                     data.append(rd(value))
+                     value = [rd(value),rd(frame)]
+                     data.append(value)
                    
 
         # Transpose the list of lists to get the desired output format
         seen = set()
         if type == "vector":
             data = [[keyframe_points[i][j] for i in range(ftotal)] for j in range(len(keyframe_points[0]))]
-            data = [x for x in data if tuple(x) not in seen and not seen.add(tuple(x))]
-        else:
-            data = [x for x in data if x not in seen and not seen.add(x)]
+            data = [flipAxis(coords) for coords in data]
 
         # Remove repeated values
        
  
     else:
-        print("NO ANIMATION DATA")
-    
+        print(name,"NO ANIMATION DATA")
+        if type == "vector":
+            loc = ob.location.copy()
+            data.append(loc)
+        else:
+            if prop == 'lens':
+                val = [rd(ob.lens),0.0]
+                data.append(val)   
     return data  
                  

@@ -9,7 +9,7 @@ from . import set_data_camera
 from . import set_data_obpaths
 from . import set_data_geoinstances
 
-def main_scene_export(draco):
+def main_scene_export(draco,fullScene):
 
     #------------ SPACER ---------------------
     # Fetch High level collection and create the Name for the unseen file
@@ -26,6 +26,9 @@ def main_scene_export(draco):
     childColls = functions.getChildCollections(c)
     format = 'GLB'
     obcount = 0
+    file_size_mb = 0.0
+    total_textures = 0
+    bpy.context.scene.fileSize = file_size_mb
     bpy.context.scene.frame_set(0)
     currentSelectedOb = bpy.context.active_object
     bpy.context.scene.exportState = True
@@ -39,6 +42,19 @@ def main_scene_export(draco):
             # Load the JSON content
             jsonObject = json.load(json_file)
             f = open(filepath, "w")
+
+            if bpy.context.scene.camPaths == False:
+                target_objects = [{"key": "cam-path"}, {"key": "tgt-path"}]
+                for target in target_objects:
+                    if target in jsonObject:
+                        jsonObject.remove(target)
+            else:
+                target_objects = [{"key": "cam-positions"}, {"key": "tgt-positions"}]
+                for target in target_objects:
+                    if target in jsonObject:
+                        jsonObject.remove(target)
+
+
     except:
         f = open(filepath, "w")
         jsonObject = {}
@@ -141,6 +157,9 @@ def main_scene_export(draco):
                         except:
                             functions.createProp(ob,"updated",0)
 
+                        if fullScene:
+                            prop = 2
+
                         #------------ SPACER ---------------------
                         # Check if rigged
                         obp = ob
@@ -152,10 +171,15 @@ def main_scene_export(draco):
                         # Export the selected object
                             
                         if prop>0:
-                            obcount = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
+                            obcount, file_size_mb = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
 
                             #Export the image and return the texture objects
-                            textures, matSettings = export_materials.export(mainfolderpath,ob)
+                            textures =  None
+                            matSettings = None
+
+                            if prop>1:
+                                textures, matSettings = export_materials.export(mainfolderpath,ob)
+                                total_textures += len(textures)
                         
                             #WRITTE THE ob to json
                             data = set_data_objects.create(obp)
@@ -180,6 +204,9 @@ def main_scene_export(draco):
                         else:
                             print(ob.name,">>> NOT CHANGED")
                         #Add the objects for extra information
+                        bpy.context.scene.totalTex = total_textures
+                        bpy.context.scene.fileSize += file_size_mb
+                        bpy.context.scene.obCount = obcount
 
                 else:
                     print("NO OBJECTS TO ADD TO DATA JSON")
@@ -255,15 +282,14 @@ def main_scene_export(draco):
                                 jsonObject["instances"][jsonName][0] = transforms
                             else:
                                 # No previous data -> append
-                                # jsonObject["instances"][jsonName] = [] # todo check if this is needed upon error
+                                # Occurs also when you keep the blend file open and no changes are detected, but we don't have existing data -> create data without settings
+                                jsonObject["instances"][jsonName] = []
                                 jsonObject["instances"][jsonName].append(transforms)
                     else: 
                         print(f'No instances in {instanceCol.name}')
             
             # ----------- INSTANCES NODES ------------- 
             if(childCovTweak == "instances-nodes"):
-                print('Going into instanced nodes')
-
                 # Create temp json object to prevent override of variables
                 tempJson = {}
 
@@ -354,6 +380,8 @@ def main_scene_export(draco):
                             jsonObject["instances"][instanceName][0] = instanceData['transforms']
                         else:
                             # No previous data -> append
+                            # Occurs also when you keep the blend file open and no changes are detected, but we don't have existing data -> create data without settings
+                            jsonObject["instances"][instanceName] = []
                             jsonObject["instances"][instanceName].append(instanceData['transforms'])
     else:
         print("NO COLLECTIONS IN SCENE")
@@ -378,7 +406,6 @@ def main_scene_export(draco):
     functions.forceselect(currentSelectedOb)
 
     #------------ SPACER ---------------------
-
     print("========================= #") 
     print("========================= #")
     print("EXPORT DONE") 
