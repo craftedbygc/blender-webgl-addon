@@ -82,6 +82,7 @@ def main_scene_export(draco):
                 camJsonObject = jsonObject[childCovTweak]
                 set_data_camera.create(camJsonObject,cc)
 
+
             #------------ SPACER ---------------------
             # PATHS !!!!!!!!!
             #Target the paths to add data to json

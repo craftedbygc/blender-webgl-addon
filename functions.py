@@ -80,6 +80,15 @@ def findObject(obName):
     for ob in bpy.data.objects:
         if (ob.name == obName):
             return ob
+        
+def findObjects(names):
+    matching_objects = [None] * len(names)
+    for obj in bpy.context.scene.objects:
+        if obj.name in names:
+            index = names.index(obj.name)
+            matching_objects[index] = obj
+    return matching_objects
+
 
 def findCollectionWithString(string):
     for coll in bpy.data.collections:
@@ -171,46 +180,6 @@ def getunic(mylist):
     srtDupes = sorted(list(set(dupes)))
     revDup = list(dict.fromkeys(mylist))
     return revDup
-
-
-#------------ SPACER ---------------------
-def getAniAtt(cam):
-    sce = bpy.data.scenes["Scene"]
-    frame_start = sce.frame_start
-    frame_end = sce.frame_end
-    #------------ SPACER ---------------------
-    camLens = []
-    cam_stops = []
-    tgt_stops = []
-    prevLens = -1
-    prevCam = -1
-    prevTgt = -1
-    #------------ SPACER ---------------------
-    for f in range(frame_start, frame_end+1):
-        sce.frame_set(f)
-        getCamStop = bpy.data.objects["cam_pos"].constraints["Follow Path"].offset_factor
-        getTgtStop = bpy.data.objects["cam_tgt"].constraints["Follow Path"].offset_factor
-        getLens = cam.lens
-        #------------ SPACER ---------------------
-        if(prevLens == getLens):
-            camLens.append(getLens)
-            
-        if(prevCam == getCamStop):
-            cam_stops.append(crd(getCamStop,5))
-
-        if(prevTgt == getTgtStop):
-            tgt_stops.append(crd(getTgtStop,5))
-        #------------ SPACER ---------------------
-        prevLens = getLens
-        prevCam = getCamStop
-        prevTgt = getTgtStop
-
-        
-    cam_stops = getunic(cam_stops)
-    tgt_stops = getunic(tgt_stops)
-    camLens = getunic(camLens)
-    
-    return cam_stops, tgt_stops, camLens
 
 
 #------------ SPACER ---------------------
@@ -343,3 +312,45 @@ def restUpdateState():
                     for ob in coll.objects:
                         if(ob.type == 'MESH'):
                             createProp(ob,"updated",1)
+
+
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+
+
+def getAnimationValues(ob,type,prop):
+    
+    data = []
+    if ob.animation_data:
+        fcurves = [fcurve for fcurve in ob.animation_data.action.fcurves if fcurve.data_path == prop]
+        ftotal = len(fcurves)
+
+        # Create a list of lists for keyframe_points coordinates
+        keyframe_points = [[] for _ in range(ftotal)]
+        for fcurve in fcurves:
+            index = fcurve.array_index
+            for keyframe in fcurve.keyframe_points:
+                value = keyframe.co.y
+                if type == "vector":
+                     keyframe_points[index].append(rd(value))
+                else:
+                     data.append(rd(value))
+                   
+
+        # Transpose the list of lists to get the desired output format
+        seen = set()
+        if type == "vector":
+            data = [[keyframe_points[i][j] for i in range(ftotal)] for j in range(len(keyframe_points[0]))]
+            data = [x for x in data if tuple(x) not in seen and not seen.add(tuple(x))]
+        else:
+            data = [x for x in data if x not in seen and not seen.add(x)]
+
+        # Remove repeated values
+       
+ 
+    else:
+        print("NO ANIMATION DATA")
+    
+    return data  
+                 
