@@ -9,7 +9,7 @@ from . import set_data_camera
 from . import set_data_obpaths
 from . import set_data_geoinstances
 
-def main_scene_export(draco):
+def main_scene_export(draco,fullScene):
 
     #------------ SPACER ---------------------
     # Fetch High level collection and create the Name for the unseen file
@@ -26,6 +26,9 @@ def main_scene_export(draco):
     childColls = functions.getChildCollections(c)
     format = 'GLB'
     obcount = 0
+    file_size_mb = 0.0
+    total_textures = 0
+    bpy.context.scene.fileSize = file_size_mb
     bpy.context.scene.frame_set(0)
     currentSelectedOb = bpy.context.active_object
     bpy.context.scene.exportState = True
@@ -154,6 +157,9 @@ def main_scene_export(draco):
                         except:
                             functions.createProp(ob,"updated",0)
 
+                        if fullScene:
+                            prop = 2
+
                         #------------ SPACER ---------------------
                         # Check if rigged
                         obp = ob
@@ -165,7 +171,7 @@ def main_scene_export(draco):
                         # Export the selected object
                             
                         if prop>0:
-                            obcount = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
+                            obcount, file_size_mb = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
 
                             #Export the image and return the texture objects
                             textures =  None
@@ -173,6 +179,7 @@ def main_scene_export(draco):
 
                             if prop>1:
                                 textures, matSettings = export_materials.export(mainfolderpath,ob)
+                                total_textures += len(textures)
                         
                             #WRITTE THE ob to json
                             data = set_data_objects.create(obp)
@@ -197,7 +204,8 @@ def main_scene_export(draco):
                         else:
                             print(ob.name,">>> NOT CHANGED")
                         #Add the objects for extra information
-                        
+                        bpy.context.scene.totalTex = total_textures
+                        bpy.context.scene.fileSize += file_size_mb
                         bpy.context.scene.obCount = obcount
 
                 else:
@@ -279,7 +287,7 @@ def main_scene_export(draco):
                             if prop>0:
                                 if (count == 0):
                                     # Export the first model
-                                    obcount = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
+                                    obcount, file_size_mb = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
 
                                     #Export the image and return the texture objects
                                     textures, matSettings = export_materials.export(mainfolderpath,ob)
