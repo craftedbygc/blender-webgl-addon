@@ -43,6 +43,8 @@ def main_scene_export(draco,fullScene):
             jsonObject = json.load(json_file)
             f = open(filepath, "w")
 
+            #------------ SPACER ---------------------
+            #Check what path method is in use
             if bpy.context.scene.camPaths == False:
                 target_objects = [{"key": "cam-path"}, {"key": "tgt-path"}]
                 for target in target_objects:
@@ -53,8 +55,12 @@ def main_scene_export(draco,fullScene):
                 for target in target_objects:
                     if target in jsonObject:
                         jsonObject.remove(target)
-
-
+            
+            #------------ SPACER ---------------------
+            #Reset the Json For Full Export 
+            if fullScene:
+                f = open(filepath, "w")
+                jsonObject = {}
     except:
         f = open(filepath, "w")
         jsonObject = {}
@@ -75,41 +81,40 @@ def main_scene_export(draco,fullScene):
         for cc in childColls:
             childCollName = cc.name
             childCov = functions.namingConvention(childCollName)
-            childCovTweak = childCov 
             
             #------------ SPACER ---------------------
             #Check if the current sellect collection is usable and create an object from it
             collist = ("objects","camera","paths","empties","instances-manual","instances-nodes")
-            if childCovTweak in collist:
-                if childCovTweak not in jsonObject:
-                    if "instances" in childCovTweak:
+            if childCov in collist:
+                if childCov not in jsonObject:
+                    if "instances" in childCov:
                         if "instances" not in jsonObject:
                             jsonObject["instances"] = {}
                     else:
-                        jsonObject[childCovTweak] = {}
+                        jsonObject[childCov] = {}
             
             #------------ SPACER ---------------------
             # CAMERA !!!!!!!!!
             #Target the Camera to add data to json
-            if(childCovTweak == "camera"):
+            if(childCov == "camera"):
                 bpy.data.collections[childCollName].color_tag = 'COLOR_03'
                 for ccc in cc.children:
                     bpy.data.collections[ccc.name].color_tag = 'COLOR_02'
-                camJsonObject = jsonObject[childCovTweak]
+                camJsonObject = jsonObject[childCov]
                 # set_data_camera.create(camJsonObject,cc)
 
 
             #------------ SPACER ---------------------
             # PATHS !!!!!!!!!
             #Target the paths to add data to json
-            if(childCovTweak == "paths"):
+            if(childCov == "paths"):
                 bpy.data.collections[childCollName].color_tag = 'COLOR_07'
                 if len(cc.all_objects) > 0:
                     oblist = [obj.name for obj in cc.all_objects]
                     oblist = sorted(oblist)
                     for name in oblist:
                         ob = cc.all_objects[name]
-                        pathJsonObject = jsonObject[childCovTweak]
+                        pathJsonObject = jsonObject[childCov]
                         set_data_obpaths.create(pathJsonObject,ob)
                 else:
                     print("NO PATHS TO ADD TO DATA JSON")
@@ -117,7 +122,7 @@ def main_scene_export(draco,fullScene):
             #------------ SPACER ---------------------
             # INTERFACE !!!!!!!!!
             #Target the Objects collection to add data to json
-            if(childCovTweak == "empties"):
+            if(childCov == "empties"):
                 bpy.data.collections[childCollName].color_tag = 'COLOR_05'
                 for ccc in cc.children:
                     if len(ccc.all_objects) > 0:
@@ -130,72 +135,63 @@ def main_scene_export(draco,fullScene):
                         for name in oblist:
                             ob = ccc.all_objects[name]
                             data = set_data_objects.create(ob)
-                            jsonObject[childCovTweak][conName] = data
+                            jsonObject[childCov][conName] = data
 
                     else:
                         print("NO EMPTIES TO ADD TO DATA JSON")             
                     
-            #------------ NEW COLL TYPE ---------------------  
-            #------------ NEW COLL TYPE ---------------------
-            #------------ NEW COLL TYPE ---------------------
-            #------------ NEW COLL TYPE ---------------------
+            #------------ NEW BLOCK ---------------------  
+            #------------ NEW BLOCK ---------------------
+            #------------ NEW BLOCK ---------------------
+            #------------ NEW BLOCK ---------------------
             # Do export action to the current select collection
-            if(childCovTweak == "objects" or childCovTweak == "rigged-objects"):
+            if(childCov == "objects" or childCov == "rigged-objects"):
                 bpy.data.collections[childCollName].color_tag = 'COLOR_06'
+
                 if len(cc.all_objects) > 0:
                     oblist = [obj.name for obj in cc.all_objects]
                     oblist = sorted(oblist)
+
                     for name in oblist:
                         ob = cc.all_objects[name]
                         obname = functions.namingConvention(ob.name)
                         
-                        #------------ SPACER ---------------------
-                        # Check if object changed
+                        # Check if object changed -----------------------------
                         bpy.context.view_layer.update()
-                        try:
-                            prop = functions.getproperty(ob,"updated")
-                        except:
-                            functions.createProp(ob,"updated",0)
+                        prop = functions.checkForUpdates(ob)
+                        prop = 2 if fullScene else prop
 
-                        if fullScene:
-                            prop = 2
-
-                        #------------ SPACER ---------------------
-                        # Check if rigged
+                        # Check if rigged -----------------------------
                         obp = ob
-                        if "rigged-" in childCovTweak:
+                        if "rigged-" in childCov:
                             obp = ob.parent
-                            childCovTweak = childCovTweak.replace("rigged-", "") 
+                            childCov = childCov.replace("rigged-", "") 
 
-                        #------------ SPACER ---------------------
-                        # Export the selected object
-                            
+                        # Export the selected object -----------------------------
                         if prop>0:
-                            obcount, file_size_mb = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
-
-                            #Export the image and return the texture objects
+                            #Variables
                             textures =  None
                             matSettings = None
-
+                            
+                            #Objet export 
+                            obcount, file_size_mb = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
+                            
+                            #Texture Export
                             if prop>1:
                                 textures, matSettings = export_materials.export(mainfolderpath,ob)
                                 total_textures += len(textures)
-                        
-                            #WRITTE THE ob to json
-                            data = set_data_objects.create(obp)
 
-                            #------------ SPACER ---------------------
                             #Add settings to objects
                             settings = {}
-                            if textures !=None and matSettings !=None:
+                            if all((textures,matSettings)):
                                 settings["material"] = matSettings
                                 settings["textures"] = textures
 
                             #------------ SPACER ---------------------
                             #Add object info to main object
+                            data = set_data_objects.create(obp)
                             data.append(settings)
-                            jsonObject[childCovTweak][obname] = data
-
+                            jsonObject[childCov][obname] = data
                             
                             #------------ SPACER ---------------------
                             #Reset Updater and print
@@ -203,7 +199,9 @@ def main_scene_export(draco,fullScene):
                             print(ob.name,">>> EXPORTED !!!!")
                         else:
                             print(ob.name,">>> NOT CHANGED")
-                        #Add the objects for extra information
+                        
+                        #------------ SPACER ---------------------
+                        #Export Summary
                         bpy.context.scene.totalTex = total_textures
                         bpy.context.scene.fileSize += file_size_mb
                         bpy.context.scene.obCount = obcount
@@ -211,12 +209,18 @@ def main_scene_export(draco,fullScene):
                 else:
                     print("NO OBJECTS TO ADD TO DATA JSON")
 
-            # --------- INSTANCES MANUAL ---------- 
-            if(childCovTweak == "instances-manual"):
-                bpy.data.collections[childCollName].color_tag = 'COLOR_06'
 
+
+            #------------ NEW BLOCK ---------------------  
+            #------------ NEW BLOCK ---------------------
+            #------------ NEW BLOCK ---------------------
+            #------------ NEW BLOCK ---------------------
+            # Do export action to the current select collection
+            if(childCov == "instances-manual"):
+                bpy.data.collections[childCollName].color_tag = 'COLOR_06'
+                childCov = "instances"
+            
                 for instanceCol in cc.children: 
-                    # Go through all instances in that collection
                     if len(instanceCol.all_objects) > 0:
 
                         # Get all the instanced objects in the collection
@@ -226,13 +230,12 @@ def main_scene_export(draco,fullScene):
                         toUpdate = False
 
                         for name in oblist:
-                            ob = instanceCol.all_objects[name] # Get the instanced object
+                            ob = instanceCol.all_objects[name]
                             obname = functions.namingConvention(ob.name)
 
                             #JSON data structure for instances 'instance name'; [ [positions], {material, textures} ]
-                            if (count == 0):
+                            if count == 0:
                                 jsonName = obname
-                                # Create empty data
                                 data = [] # Create master data
                                 transforms = [] # Create transforms data (position, scale, rotation)
                                 settings = {} # Create empty settings object for material and textures
@@ -240,14 +243,13 @@ def main_scene_export(draco,fullScene):
                                 #------------ SPACER ---------------------
                                 # Check if object changed
                                 bpy.context.view_layer.update()
-                                try:
-                                    prop = functions.getproperty(ob,"updated")
-                                except:
-                                    functions.createProp(ob,"updated",0)
-                                
+                                prop = functions.checkForUpdates(ob)
+                                prop = 2 if fullScene else prop
+
+                                #------------ SPACER ---------------------
+                                #Check if object changed
                                 if prop>0:
                                     toUpdate = True
-                                    # Export the first model if it has changes
                                     obcount = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
 
                                     #Export the image and return the texture objects
@@ -266,30 +268,30 @@ def main_scene_export(draco,fullScene):
                                 else:
                                     print(ob.name,">>> NOT CHANGED")
                         
-                            transforms.append(set_data_objects.create(ob)) # Append the transfroms data
-                            count += 1 # Iterate
+                            transforms.append(set_data_objects.create(ob))
+                            count += 1
 
                         # Add to JSON object
                         if (toUpdate == True):
                             # Check if object has been updated -> overwrite everything
                             data.append(transforms)
                             data.append(settings)
-                            jsonObject["instances"][jsonName] = data
+                            jsonObject[childCov][jsonName] = data
                         else:
                             # Change only transforms data
-                            if jsonName in jsonObject["instances"]:
+                            if jsonName in jsonObject[childCov]:
                                 # Data is present -> override
-                                jsonObject["instances"][jsonName][0] = transforms
+                                jsonObject[childCov][jsonName][0] = transforms
                             else:
                                 # No previous data -> append
                                 # Occurs also when you keep the blend file open and no changes are detected, but we don't have existing data -> create data without settings
-                                jsonObject["instances"][jsonName] = []
-                                jsonObject["instances"][jsonName].append(transforms)
+                                jsonObject[childCov][jsonName] = []
+                                jsonObject[childCov][jsonName].append(transforms)
                     else: 
                         print(f'No instances in {instanceCol.name}')
             
             # ----------- INSTANCES NODES ------------- 
-            if(childCovTweak == "instances-nodes"):
+            if(childCov == "instances-nodes"):
                 # Create temp json object to prevent override of variables
                 tempJson = {}
 

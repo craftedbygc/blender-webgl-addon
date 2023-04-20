@@ -375,3 +375,16 @@ def getAnimationValues(ob,type,prop):
                 data.append(val)   
     return data  
                  
+
+
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+
+def checkIfUpdate(ob):
+    try:
+        prop = getproperty(ob,"updated")
+        return prop
+    except:
+        prop = createProp(ob,"updated",0)
+        return prop
