@@ -36,7 +36,18 @@ def glbExpOp(folderpath,format,ob,draco,obcount,skinned):
 
     #------------ SPACER ---------------------
     functions.forceselect(ob)
-    bpy.ops.export_scene.gltf(filepath=target_path, check_existing=True, export_format=format, ui_tab='GENERAL', export_copyright='', export_image_format='AUTO', export_texture_dir='', export_keep_originals=False, export_texcoords=True, export_normals=True, export_draco_mesh_compression_enable=draco, export_draco_mesh_compression_level=6, export_draco_position_quantization=14, export_draco_normal_quantization=10, export_draco_texcoord_quantization=12, export_draco_color_quantization=10, export_draco_generic_quantization=12, export_tangents=False, export_materials=mat, export_original_specular=False, export_colors=True, use_mesh_edges=False, use_mesh_vertices=False, export_cameras=False, use_selection=True, use_visible=False, use_renderable=False, use_active_collection=False, use_active_scene=False, export_extras=False, export_yup=True, export_apply=False, export_animations=skinned, export_frame_range=False, export_frame_step=1, export_force_sampling=False, export_nla_strips=skinned, export_nla_strips_merged_animation_name='Animation', export_def_bones=False, export_anim_single_armature=skinned, export_current_frame=False, export_skins=skinned, export_all_influences=False, export_morph=False, export_morph_normal=False, export_morph_tangent=False, export_lights=False, will_save_settings=False, filter_glob='*.glb;*.gltf')
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.context.view_layer.objects.active = None
+    ob.select_set(True)
+    
+    if(skinned):
+        parent = ob.parent
+        parent.select_set(True)
+
+    bpy.context.view_layer.objects.active = bpy.data.objects[ob.name]
+
+    print("TBA-6",skinned)
+    bpy.ops.export_scene.gltf(filepath=target_path,export_format=format, export_texcoords=True, export_normals=True, export_draco_mesh_compression_enable=draco, export_materials=mat,export_colors=True, export_attributes=True, use_selection=True, export_yup=True, export_animations=skinned, export_frame_range=skinned,export_skins=skinned)
     
     file_name = file_name+".glb"
     load_path =os.path.join(modelFolder, file_name)
@@ -54,7 +65,7 @@ def glbExpOp(folderpath,format,ob,draco,obcount,skinned):
         ob.location = prevLoc
         ob.rotation_euler = prevRot
         ob.scale = prevSac
-    
+        
     obcount += 1
     return obcount, file_size_mb
 

@@ -37,8 +37,10 @@ def main_scene_export(draco,fullScene):
     # Open Json File and check if it exists
     filepath = os.path.join(mainfolderpath, dataName)
     global jsonObject
+
     try:
         with open(filepath, "r") as json_file:
+            print("TBA_3")
             # Load the JSON content
             jsonObject = json.load(json_file)
             f = open(filepath, "w")
@@ -46,22 +48,24 @@ def main_scene_export(draco,fullScene):
             #------------ SPACER ---------------------
             #Check what path method is in use
             if bpy.context.scene.camPaths == False:
-                target_objects = [{"key": "cam-path"}, {"key": "tgt-path"}]
+                target_objects = ["cam-path", "tgt-path"]
                 for target in target_objects:
                     if target in jsonObject:
-                        jsonObject.remove(target)
+                        del jsonObject[target]
             else:
-                target_objects = [{"key": "cam-positions"}, {"key": "tgt-positions"}]
+                target_objects = ["cam-positions", "tgt-positions"]
                 for target in target_objects:
                     if target in jsonObject:
-                        jsonObject.remove(target)
-            
+                        del jsonObject[target]
+                
             #------------ SPACER ---------------------
             #Reset the Json For Full Export 
             if fullScene:
+                print("TBA_1")
                 f = open(filepath, "w")
                 jsonObject = {}
-    except:
+    except Exception as e:
+        print("Exception:", e)
         f = open(filepath, "w")
         jsonObject = {}
    
@@ -101,7 +105,7 @@ def main_scene_export(draco,fullScene):
                 for ccc in cc.children:
                     bpy.data.collections[ccc.name].color_tag = 'COLOR_02'
                 camJsonObject = jsonObject[childCov]
-                # set_data_camera.create(camJsonObject,cc)
+                set_data_camera.create(camJsonObject,cc)
 
 
             #------------ SPACER ---------------------
@@ -124,6 +128,18 @@ def main_scene_export(draco,fullScene):
             #Target the Objects collection to add data to json
             if(childCov == "empties"):
                 bpy.data.collections[childCollName].color_tag = 'COLOR_05'
+                
+                if len(cc.all_objects) > 0:
+                    oblist = [obj.name for obj in cc.all_objects]
+                    oblist = sorted(oblist)
+                    
+
+                    for name in oblist:
+                        ob = cc.all_objects[name]
+                        obname = functions.namingConvention(ob.name)
+                        data = set_data_objects.create(ob)
+                        jsonObject[childCov][obname] = data
+
                 for ccc in cc.children:
                     if len(ccc.all_objects) > 0:
                         bpy.data.collections[ccc.name].color_tag = 'COLOR_04'
@@ -149,7 +165,7 @@ def main_scene_export(draco,fullScene):
                 bpy.data.collections[childCollName].color_tag = 'COLOR_06'
 
                 if len(cc.all_objects) > 0:
-                    oblist = [obj.name for obj in cc.all_objects]
+                    oblist = [obj.name for obj in cc.all_objects if obj.type == 'MESH']
                     oblist = sorted(oblist)
 
                     for name in oblist:
@@ -163,9 +179,12 @@ def main_scene_export(draco,fullScene):
 
                         # Check if rigged -----------------------------
                         obp = ob
+                        skinned = False 
                         if "rigged-" in childCov:
                             obp = ob.parent
-                            childCov = childCov.replace("rigged-", "") 
+                            childCov = childCov.replace("rigged-", "")
+                            skinned = True 
+
 
                         # Export the selected object -----------------------------
                         if prop>0:
@@ -174,12 +193,12 @@ def main_scene_export(draco,fullScene):
                             matSettings = None
                             
                             #Objet export 
-                            obcount, file_size_mb = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
+                            obcount, file_size_mb = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=skinned)
                             
                             #Texture Export
                             if prop>1:
                                 textures, matSettings = export_materials.export(mainfolderpath,ob)
-                                total_textures += len(textures)
+                                total_textures += len(textures) if textures is not None else 0
 
                             #Add settings to objects
                             settings = {}
@@ -215,7 +234,7 @@ def main_scene_export(draco,fullScene):
             #------------ NEW BLOCK ---------------------
             #------------ NEW BLOCK ---------------------
             #------------ NEW BLOCK ---------------------
-            # Do export action to the current select collection
+            
             if(childCov == "instances-manual"):
                 bpy.data.collections[childCollName].color_tag = 'COLOR_06'
                 childCov = "instances"
@@ -250,7 +269,7 @@ def main_scene_export(draco,fullScene):
                                 #Check if object changed
                                 if prop>0:
                                     toUpdate = True
-                                    obcount = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
+                                    obcount, file_size_mb = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
 
                                     #Export the image and return the texture objects
                                     textures, matSettings = export_materials.export(mainfolderpath,ob)
@@ -290,7 +309,14 @@ def main_scene_export(draco,fullScene):
                     else: 
                         print(f'No instances in {instanceCol.name}')
             
-            # ----------- INSTANCES NODES ------------- 
+
+
+
+            #------------ NEW BLOCK ---------------------  
+            #------------ NEW BLOCK ---------------------
+            #------------ NEW BLOCK ---------------------
+            #------------ NEW BLOCK ---------------------
+
             if(childCov == "instances-nodes"):
                 # Create temp json object to prevent override of variables
                 tempJson = {}
@@ -327,7 +353,7 @@ def main_scene_export(draco,fullScene):
                     # Export the instanced object and get material data
                     if prop>0:
                         tempJson[obname]["toUpdate"] = True # Set to True to check later
-                        obcount = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
+                        obcount, file_size_mb = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=False)
 
                         #Export the image and return the texture objects
                         textures, matSettings = export_materials.export(mainfolderpath,ob)

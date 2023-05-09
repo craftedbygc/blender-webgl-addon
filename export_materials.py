@@ -87,6 +87,3 @@ def set_image(folder_path,ob,img,socket_name):
     new_img.save()
     
     return file_name
-    
-    
-

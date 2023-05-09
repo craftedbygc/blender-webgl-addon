@@ -137,6 +137,7 @@ def namingConvention(string):
 def geoCleaner(ob,skinned):
 
     forceselect(ob)
+    print("TBA-5",ob.name)
     prevLoc = ob.location.copy()
     prevRot = ob.rotation_euler.copy()
     prevSac = ob.scale.copy()
@@ -159,15 +160,16 @@ def geoCleaner(ob,skinned):
     if(skinned):
         parent = ob.parent
         forceselect(parent)
-        parentprevLoc = ob.parent.location.copy()
-        parentprevRot = ob.parent.rotation_euler.copy()
+        parentprevLoc = parent.location.copy()
+        parentprevRot = parent.rotation_euler.copy()
+        parentprevSac = parent.scale.copy()
         parent.location = (0,0,0)
         parent.rotation_euler =(0,0,0)
         parent.scale = (1,1,1)
         bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
-        forceselect(ob)
         prevLoc = parentprevLoc
         prevRot = parentprevRot
+        prevSac = parentprevSac
 
     return prevLoc,prevRot,prevSac
 
@@ -381,7 +383,7 @@ def getAnimationValues(ob,type,prop):
 #------------ SPACER ---------------------
 #------------ SPACER ---------------------
 
-def checkIfUpdate(ob):
+def checkForUpdates(ob):
     try:
         prop = getproperty(ob,"updated")
         return prop
