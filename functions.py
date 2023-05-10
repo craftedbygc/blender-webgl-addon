@@ -37,13 +37,9 @@ def getproperty(object,property):
         get = object[property]
     except:
         check = False
-        
+    
     if(check):
-        if(object.type == 'MESH'):    
-            value = rd(object[property])
-        else:
-            value = rd(object[property])
-        
+        value = rd(object[property])
         return  value
     else:
         return False
@@ -247,35 +243,10 @@ def getNamedChildCollections(string, collParent):
 #def isObjectupdated(ob):
     #dep = bpy.context.evaluated_depsgraph_get()
 
-    
-#------------ Get Property ---------------------    
-def getproperty(object,property):
-    check = True
-    try:
-        get = object[property]
-    except:
-        check = False
-        
-    if(check):
-        if(object.type == 'MESH'):    
-            value = object[property]
-        else:
-            value = object[property]
-        
-        return  value
-    else:
-        return False
 
 
-def createProp(ob,propName,val): 
-    ob.select_set(True)
-    bpy.context.view_layer.objects.active = bpy.data.objects[ob.name]
-    current_mode = bpy.context.mode
-    if current_mode == "OBJECT":
-        bpy.props.FloatProperty(name=propName)
-        bpy.context.object[propName] = val
 
-#------------ SPACER ---------------------    
+#------------ SPACER ---------------------  
 
 def reload_textures():
     print("UPDATING TEXTURES")
@@ -285,7 +256,6 @@ def reload_textures():
                 if node.type == 'TEX_IMAGE':
                     if node.image:
                         node.image.reload()
-
 
 #------------ SPACER ---------------------
 #------------ SPACER ---------------------
@@ -383,10 +353,68 @@ def getAnimationValues(ob,type,prop):
 #------------ SPACER ---------------------
 #------------ SPACER ---------------------
 
-def checkForUpdates(ob):
+def createProp(ob,propName,val): 
+    ob.select_set(True)
+    bpy.context.view_layer.objects.active = bpy.data.objects[ob.name]
+    current_mode = bpy.context.mode
+    if current_mode == "OBJECT":
+        bpy.props.FloatProperty(name=propName)
+        bpy.context.object[propName] = val
+    return val
+
+def createWorldProp(e,propName,val): 
+    bpy.props.FloatProperty(name=propName)
+    e[propName] = val
+    return val
+  
+def getproperty(object,property):
+    check = True
     try:
-        prop = getproperty(ob,"updated")
-        return prop
+        get = object[property]
     except:
-        prop = createProp(ob,"updated",0)
-        return prop
+        check = False
+        
+    if(check):
+        if(object.type == 'MESH'):    
+            value = object[property]
+        else:
+            value = object[property]
+        
+        return  value
+    else:
+        return False
+
+def getworldProperty(e,property):
+    check = True
+    
+    try:
+        get = e[property]
+    except:
+        check = False
+        
+    if(check):
+        value = e[property]
+        return  value
+    else:
+        return False
+
+
+
+def checkForUpdates(e):
+    if isinstance(e, bpy.types.World):
+        print("CHECK-WORLD:")
+        try:
+            prop = getworldProperty(e,"updated")
+            return prop
+        except:
+            prop = createWorldProp(e,"updated",0)
+            return prop
+    else:
+        print("CHECK-OBJECT:")
+        try:
+            prop = getproperty(e,"updated")
+            return prop
+        except:
+            prop = createProp(e,"updated",0)
+            return prop
+

@@ -82,6 +82,10 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         row.scale_y = 1.5
         #------------
         row = layout.row()
+        row.prop(sce,'custEnvMap')
+        row.scale_y = 1.5
+        #------------
+        row = layout.row()
         row.prop(sce,'minify')
         row.scale_y = 1.5
         #------------
@@ -178,6 +182,9 @@ def register():
 
     des = "Check If Objects were edited before export, improves performance"
     bpy.types.Scene.checkUpdates = bpy.props.BoolProperty(name="Export Only Edited Geometry",description=des, default = True)
+
+    des = "Set this scene to export a custom enviroment map"
+    bpy.types.Scene.custEnvMap = bpy.props.BoolProperty(name="Export Dedicated Enviroment Map",description=des, default = False)
 
     des = "Website Preview Version Is Open - Untick if you need open a new tab and Preview Scene Site Again"
     bpy.types.Scene.previewOn = bpy.props.BoolProperty(name="Site Preview On",description=des, default = False)

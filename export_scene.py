@@ -17,8 +17,8 @@ def main_scene_export(draco,fullScene):
     c = functions.findCollectionWithString(cNameTarget)
     dataName = c.name.replace(cNameTarget, "")
     dataName = dataName.replace(" ", "")
-    dataName = functions.namingConvention(dataName)
-    dataName = dataName + ".unseen"
+    sceneName = functions.namingConvention(dataName)
+    dataName = sceneName + ".unseen"
 
     #------------ SPACER ---------------------
     # Initial Setup and Variables
@@ -61,9 +61,9 @@ def main_scene_export(draco,fullScene):
             #------------ SPACER ---------------------
             #Reset the Json For Full Export 
             if fullScene:
-                print("TBA_1")
                 f = open(filepath, "w")
                 jsonObject = {}
+
     except Exception as e:
         print("Exception:", e)
         f = open(filepath, "w")
@@ -78,7 +78,35 @@ def main_scene_export(draco,fullScene):
     print("========================= #")
     print("========================= #") 
 
+    #------------ SPACER ---------------------
+    # Global secene propreties
+    scene = {}
 
+    # Check if world changed -----------------------------
+    bpy.context.view_layer.update()
+    world = bpy.context.scene.world
+    prop = functions.checkForUpdates(world)
+    prop = 2 if fullScene else prop
+
+    if prop > 1:
+        textures, matSettings = export_materials.exportWorld(mainfolderpath,sceneName)
+        total_textures += len(textures) if textures is not None else 0
+
+        #Add settings to objects
+        if all((textures,matSettings)):
+            scene["material"] = matSettings
+            scene["textures"] = textures
+        
+        jsonObject["scene"] = scene
+
+        bpy.context.scene.world["updated"] = 0
+        print(bpy.context.scene.world["updated"])
+        print("WORLD >>> EXPORTED !!!!")
+    else:
+        print("WORLD >>> NOT CHANGED")
+    
+
+   
     #------------ SPACER ---------------------
     # Transverse the scene and go over each collection
     if len(childColls) > 0:
@@ -97,6 +125,7 @@ def main_scene_export(draco,fullScene):
                     else:
                         jsonObject[childCov] = {}
             
+            
             #------------ SPACER ---------------------
             # CAMERA !!!!!!!!!
             #Target the Camera to add data to json
@@ -106,6 +135,8 @@ def main_scene_export(draco,fullScene):
                     bpy.data.collections[ccc.name].color_tag = 'COLOR_02'
                 camJsonObject = jsonObject[childCov]
                 set_data_camera.create(camJsonObject,cc)
+
+        
 
 
             #------------ SPACER ---------------------
@@ -123,6 +154,7 @@ def main_scene_export(draco,fullScene):
                 else:
                     print("NO PATHS TO ADD TO DATA JSON")
             
+        
             #------------ SPACER ---------------------
             # INTERFACE !!!!!!!!!
             #Target the Objects collection to add data to json
@@ -154,7 +186,8 @@ def main_scene_export(draco,fullScene):
                             jsonObject[childCov][conName] = data
 
                     else:
-                        print("NO EMPTIES TO ADD TO DATA JSON")             
+                        print("NO EMPTIES TO ADD TO DATA JSON")
+                     
                     
             #------------ NEW BLOCK ---------------------  
             #------------ NEW BLOCK ---------------------
@@ -229,7 +262,7 @@ def main_scene_export(draco,fullScene):
                     print("NO OBJECTS TO ADD TO DATA JSON")
 
 
-
+        
             #------------ NEW BLOCK ---------------------  
             #------------ NEW BLOCK ---------------------
             #------------ NEW BLOCK ---------------------
@@ -414,7 +447,6 @@ def main_scene_export(draco,fullScene):
     else:
         print("NO COLLECTIONS IN SCENE")
 
-
     #------------ SPACER ---------------------  
     #------------ SPACER ---------------------
     #------------ SPACER ---------------------
@@ -432,7 +464,6 @@ def main_scene_export(draco,fullScene):
     bpy.context.scene.frame_set(1)
     bpy.context.scene.exportState = False
     functions.forceselect(currentSelectedOb)
-
     #------------ SPACER ---------------------
     print("========================= #") 
     print("========================= #")
