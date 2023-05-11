@@ -109,13 +109,14 @@ def setFolderStructure():
 
 
 def pollcheckExport():
-    check = ["Objects","Instances"]
+    check = ["Objects","Instances","Empties","Rigged Objects"]
     for name in check:
         coll = findCollectionWithString(name)
         if(coll):
             collName = coll.name
             path = bpy.context.scene.saveFolderPath
-            if(name in collName and len(coll.objects) != 0 and path !=""):
+            #len(coll.objects) != 0
+            if(name in collName and path !=""):
                 return True
         return False    
 
@@ -250,13 +251,16 @@ def getNamedChildCollections(string, collParent):
 
 def reload_textures():
     print("UPDATING TEXTURES")
-    for mat in bpy.data.materials:
-        if mat.node_tree:
-            for node in mat.node_tree.nodes:
-                if node.type == 'TEX_IMAGE':
-                    if node.image:
-                        node.image.reload()
-
+    ob = bpy.context.view_layer.objects.active
+    if ob is not None and ob.type == "MESH":
+        if len(ob.material_slots) > 0:
+            mat = ob.material_slots[0].material
+            if mat.node_tree:
+                for node in mat.node_tree.nodes:
+                    if node.type == 'TEX_IMAGE':
+                        if node.image:
+                            node.image.reload()
+       
 #------------ SPACER ---------------------
 #------------ SPACER ---------------------
 #------------ SPACER ---------------------
