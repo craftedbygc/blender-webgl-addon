@@ -17,7 +17,7 @@ bl_info = {
     "name" : "Unseen BWE",
     "author" : "Tiago Andrade",
     "description" : "",
-    "blender" : (3, 4, 1),
+    "blender" : (3, 5, 1),
     "version" : (1, 7, 7),
     "location" : "Topbar",
     "warning" : "",
