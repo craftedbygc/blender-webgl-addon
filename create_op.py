@@ -93,6 +93,22 @@ class TBA_OT_Update(Operator):
     def execute(self, context):
         functions.reload_textures()
         return {"FINISHED"}
+
+
+#------------ SPACER ---------------------
+class TBA_OT_UpdateMesh(Operator):
+    bl_idname = "object.updatemesh"
+    bl_label ="Update Object"
+    bl_description = "Update Selected Object"
+
+    @classmethod
+    def poll(cls,context):
+        return functions.pollcheckExport()
+
+    def execute(self, context):
+        export_import.update_mesh()
+        return {"FINISHED"}
+    
     
 class TBA_OT_Import_c4d(Operator):
     bl_idname = "object.importc4d"
@@ -134,5 +150,7 @@ class TBA_OT_Docs(Operator):
     def execute(self, context):
         functions.openDocumentation()
         return {"FINISHED"}
-    
+
+
+
     

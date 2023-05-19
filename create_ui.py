@@ -21,6 +21,9 @@ class TOPBAR_MT_custom_menu(Menu):
         row.operator("object.update",icon="NODE_TEXTURE")
         row.scale_y = 2
         row = layout.row()
+        row.operator("object.updatemesh",icon="MESH_CUBE")
+        row.scale_y = 2
+        row = layout.row()
         row.separator()
         row = layout.row()
         row.label(text="Development",icon ="TOOL_SETTINGS")

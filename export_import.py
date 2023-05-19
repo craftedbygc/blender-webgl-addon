@@ -100,7 +100,33 @@ def c4d_export():
     else:
         print("No Objects Collections To export")
 
-    
+
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+#------------ SPACER --------------------- 
+def update_mesh():
+    meshsfolder = bpy.context.scene.updateMeshFolder
+    selected_objects = bpy.context.selected_objects
+    for obj in selected_objects:
+        if obj.type == 'MESH':
+            formats = (".abc",".obj",".fbx")
+            for format in formats:
+                file = os.path.join(meshsfolder, obj.name + format)
+                if os.path.isfile(file):
+                    obj_material = obj.data.materials[0]
+                    if("abc" in format):
+                        bpy.ops.wm.alembic_import(filepath=file)
+                    if("obj" in format):
+                        bpy.ops.import_scene.obj(filepath=file)
+                    if("fbx" in format):
+                        bpy.ops.import_scene.fbx(filepath=file)
+                    imported_obj = bpy.context.active_object
+                    obj.data = imported_obj.data
+                    obj.data.materials.clear()
+                    obj.data.materials.append(obj_material)
+                    bpy.ops.object.select_all(action='DESELECT')
+                    imported_obj.select_set(True)
+                    bpy.ops.object.delete()
 
 
 
