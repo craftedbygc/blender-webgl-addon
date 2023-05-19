@@ -422,3 +422,11 @@ def checkForUpdates(e):
             prop = createProp(e,"updated",0)
             return prop
 
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+
+def openDocumentation():
+    url = "https://www.notion.so/unseenstudio/UNSEEN-BWE-ADDON-3db2fe9c730b48a1a8b587054845eb3f?pvs=4"
+    os.system(f"start {url}")  # For Windows
+    

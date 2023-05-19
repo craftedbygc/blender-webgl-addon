@@ -108,12 +108,12 @@ class TBA_OT_save_dialog(bpy.types.Operator):
 #------------ SPACER ---------------------
 
 #Import classes
-from .create_op import TBA_OT_INFO,TBA_OT_Update,TBA_OT_Export_Updates,TBA_OT_Export_Full_Scene,TBA_OT_Export_Full_Comp,TBA_OT_open_chrome_preview
+from .create_op import TBA_OT_Docs,TBA_OT_INFO,TBA_OT_Update,TBA_OT_Export_Updates,TBA_OT_Export_Full_Scene,TBA_OT_Export_Full_Comp,TBA_OT_open_chrome_preview
 from .create_ui import TBA_INFO_PANEL,TOPBAR_MT_custom_menu         
 
 #Classes list for register
 #List of all classes that will be registered
-classes = (TBA_INFO_PANEL,TBA_OT_INFO,TBA_OT_Update,TOPBAR_MT_custom_menu,TBA_OT_Export_Full_Scene,TBA_OT_Export_Full_Comp,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_Export_Updates)
+classes = (TBA_OT_Docs,TBA_INFO_PANEL,TBA_OT_INFO,TBA_OT_Update,TOPBAR_MT_custom_menu,TBA_OT_Export_Full_Scene,TBA_OT_Export_Full_Comp,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_Export_Updates)
 
 
 #------------ SPACER ---------------------
