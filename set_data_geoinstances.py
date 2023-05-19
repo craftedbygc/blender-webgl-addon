@@ -17,9 +17,9 @@ def find(depsgraph, evalOb, json):
                 data = addCustomProp(evalOb, data)
                 
                 if(insname in json):
-                    json[insname].append(data)
+                    json[insname]["transforms"].append(data) # Append to the transforms data
                 else:
-                    print(f"NO JSON OBJECT FOR INSTANCE {insname}")
+                    print(f"NO TEMP JSON OBJECT FOR INSTANCE {insname}")
                    
 def create(instance):
     data = []

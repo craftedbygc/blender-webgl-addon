@@ -37,13 +37,9 @@ def getproperty(object,property):
         get = object[property]
     except:
         check = False
-        
+    
     if(check):
-        if(object.type == 'MESH'):    
-            value = rd(object[property])
-        else:
-            value = rd(object[property])
-        
+        value = rd(object[property])
         return  value
     else:
         return False
@@ -80,6 +76,15 @@ def findObject(obName):
     for ob in bpy.data.objects:
         if (ob.name == obName):
             return ob
+        
+def findObjects(names):
+    matching_objects = [None] * len(names)
+    for obj in bpy.context.scene.objects:
+        if obj.name in names:
+            index = names.index(obj.name)
+            matching_objects[index] = obj
+    return matching_objects
+
 
 def findCollectionWithString(string):
     for coll in bpy.data.collections:
@@ -104,13 +109,14 @@ def setFolderStructure():
 
 
 def pollcheckExport():
-    check = ["Objects","Instances"]
+    check = ["Objects","Instances","Empties","Rigged Objects"]
     for name in check:
         coll = findCollectionWithString(name)
         if(coll):
             collName = coll.name
             path = bpy.context.scene.saveFolderPath
-            if(name in collName and len(coll.objects) != 0 and path !=""):
+            #len(coll.objects) != 0
+            if(name in collName and path !=""):
                 return True
         return False    
 
@@ -128,6 +134,7 @@ def namingConvention(string):
 def geoCleaner(ob,skinned):
 
     forceselect(ob)
+    print("TBA-5",ob.name)
     prevLoc = ob.location.copy()
     prevRot = ob.rotation_euler.copy()
     prevSac = ob.scale.copy()
@@ -150,15 +157,16 @@ def geoCleaner(ob,skinned):
     if(skinned):
         parent = ob.parent
         forceselect(parent)
-        parentprevLoc = ob.parent.location.copy()
-        parentprevRot = ob.parent.rotation_euler.copy()
+        parentprevLoc = parent.location.copy()
+        parentprevRot = parent.rotation_euler.copy()
+        parentprevSac = parent.scale.copy()
         parent.location = (0,0,0)
         parent.rotation_euler =(0,0,0)
         parent.scale = (1,1,1)
         bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
-        forceselect(ob)
         prevLoc = parentprevLoc
         prevRot = parentprevRot
+        prevSac = parentprevSac
 
     return prevLoc,prevRot,prevSac
 
@@ -171,46 +179,6 @@ def getunic(mylist):
     srtDupes = sorted(list(set(dupes)))
     revDup = list(dict.fromkeys(mylist))
     return revDup
-
-
-#------------ SPACER ---------------------
-def getAniAtt(cam):
-    sce = bpy.data.scenes["Scene"]
-    frame_start = sce.frame_start
-    frame_end = sce.frame_end
-    #------------ SPACER ---------------------
-    camLens = []
-    cam_stops = []
-    tgt_stops = []
-    prevLens = -1
-    prevCam = -1
-    prevTgt = -1
-    #------------ SPACER ---------------------
-    for f in range(frame_start, frame_end+1):
-        sce.frame_set(f)
-        getCamStop = bpy.data.objects["cam_pos"].constraints["Follow Path"].offset_factor
-        getTgtStop = bpy.data.objects["cam_tgt"].constraints["Follow Path"].offset_factor
-        getLens = cam.lens
-        #------------ SPACER ---------------------
-        if(prevLens == getLens):
-            camLens.append(getLens)
-            
-        if(prevCam == getCamStop):
-            cam_stops.append(crd(getCamStop,5))
-
-        if(prevTgt == getTgtStop):
-            tgt_stops.append(crd(getTgtStop,5))
-        #------------ SPACER ---------------------
-        prevLens = getLens
-        prevCam = getCamStop
-        prevTgt = getTgtStop
-
-        
-    cam_stops = getunic(cam_stops)
-    tgt_stops = getunic(tgt_stops)
-    camLens = getunic(camLens)
-    
-    return cam_stops, tgt_stops, camLens
 
 
 #------------ SPACER ---------------------
@@ -276,46 +244,23 @@ def getNamedChildCollections(string, collParent):
 #def isObjectupdated(ob):
     #dep = bpy.context.evaluated_depsgraph_get()
 
-    
-#------------ Get Property ---------------------    
-def getproperty(object,property):
-    check = True
-    try:
-        get = object[property]
-    except:
-        check = False
-        
-    if(check):
-        if(object.type == 'MESH'):    
-            value = object[property]
-        else:
-            value = object[property]
-        
-        return  value
-    else:
-        return False
 
 
-def createProp(ob,propName,val): 
-    ob.select_set(True)
-    bpy.context.view_layer.objects.active = bpy.data.objects[ob.name]
-    current_mode = bpy.context.mode
-    if current_mode == "OBJECT":
-        bpy.props.FloatProperty(name=propName)
-        bpy.context.object[propName] = val
 
-#------------ SPACER ---------------------    
+#------------ SPACER ---------------------  
 
 def reload_textures():
     print("UPDATING TEXTURES")
-    for mat in bpy.data.materials:
-        if mat.node_tree:
-            for node in mat.node_tree.nodes:
-                if node.type == 'TEX_IMAGE':
-                    if node.image:
-                        node.image.reload()
-
-
+    ob = bpy.context.view_layer.objects.active
+    if ob is not None and ob.type == "MESH":
+        if len(ob.material_slots) > 0:
+            mat = ob.material_slots[0].material
+            if mat.node_tree:
+                for node in mat.node_tree.nodes:
+                    if node.type == 'TEX_IMAGE':
+                        if node.image:
+                            node.image.reload()
+       
 #------------ SPACER ---------------------
 #------------ SPACER ---------------------
 #------------ SPACER ---------------------
@@ -343,3 +288,137 @@ def restUpdateState():
                     for ob in coll.objects:
                         if(ob.type == 'MESH'):
                             createProp(ob,"updated",1)
+
+
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+
+def fitTo01(value, min_value, max_value):
+    return (value - min_value) / (max_value - min_value)
+
+def flipAxis(coords):
+    x, y, z, t = coords
+    return [x, z, -y, t]
+
+def getAnimationValues(ob,type,prop):
+    
+    data = []
+    name = ob.name
+    prop = prop.replace("'", '"')
+
+    if ob.animation_data.action:
+        print(name,"HAS ANIMATION DATA")
+        fcurves = [fcurve for fcurve in ob.animation_data.action.fcurves if fcurve.data_path == prop]
+        ftotal = len(fcurves)+1
+        end = bpy.context.scene.frame_end
+
+        # Create a list of lists for keyframe_points coordinates
+        keyframe_points = [[] for _ in range(ftotal)]
+        for fcurve in fcurves:
+            index = fcurve.array_index
+            for keyframe in fcurve.keyframe_points:
+                frame = keyframe.co.x
+                frame = fitTo01(frame,0,end)
+                value = keyframe.co.y
+                if type == "vector":
+                     keyframe_points[index].append(rd(value))
+                     if(index>1):
+                        keyframe_points[index+1].append(rd(frame))
+                         
+                else:
+                     value = [rd(value),rd(frame)]
+                     data.append(value)
+                   
+
+        # Transpose the list of lists to get the desired output format
+        seen = set()
+        if type == "vector":
+            data = [[keyframe_points[i][j] for i in range(ftotal)] for j in range(len(keyframe_points[0]))]
+            data = [flipAxis(coords) for coords in data]
+
+        # Remove repeated values
+       
+ 
+    else:
+        print(name,"NO ANIMATION DATA")
+        if type == "vector":
+            loc = ob.location.copy()
+            data.append(loc)
+        else:
+            if prop == 'lens':
+                val = [rd(ob.lens),0.0]
+                data.append(val)   
+    return data  
+                 
+
+
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+
+def createProp(ob,propName,val): 
+    ob.select_set(True)
+    bpy.context.view_layer.objects.active = bpy.data.objects[ob.name]
+    current_mode = bpy.context.mode
+    if current_mode == "OBJECT":
+        bpy.props.FloatProperty(name=propName)
+        bpy.context.object[propName] = val
+    return val
+
+def createWorldProp(e,propName,val): 
+    bpy.props.FloatProperty(name=propName)
+    e[propName] = val
+    return val
+  
+def getproperty(object,property):
+    check = True
+    try:
+        get = object[property]
+    except:
+        check = False
+        
+    if(check):
+        if(object.type == 'MESH'):    
+            value = object[property]
+        else:
+            value = object[property]
+        
+        return  value
+    else:
+        return False
+
+def getworldProperty(e,property):
+    check = True
+    
+    try:
+        get = e[property]
+    except:
+        check = False
+        
+    if(check):
+        value = e[property]
+        return  value
+    else:
+        return False
+
+
+
+def checkForUpdates(e):
+    if isinstance(e, bpy.types.World):
+        print("CHECK-WORLD:")
+        try:
+            prop = getworldProperty(e,"updated")
+            return prop
+        except:
+            prop = createWorldProp(e,"updated",0)
+            return prop
+    else:
+        print("CHECK-OBJECT:")
+        try:
+            prop = getproperty(e,"updated")
+            return prop
+        except:
+            prop = createProp(e,"updated",0)
+            return prop
+
