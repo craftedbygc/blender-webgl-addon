@@ -121,3 +121,18 @@ class TBA_OT_INFO(Operator):
     def execute(self, context):
         return {"FINISHED"}
     
+
+class TBA_OT_Docs(Operator):
+    bl_idname = "object.docs"
+    bl_label ="Open Notion Docs"
+    bl_description = "Documentation on the use of the Addon"
+
+    @classmethod
+    def poll(cls,context):
+        return functions.pollcheckExport()
+
+    def execute(self, context):
+        functions.openDocumentation()
+        return {"FINISHED"}
+    
+    

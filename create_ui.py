@@ -42,6 +42,14 @@ class TOPBAR_MT_custom_menu(Menu):
         row = layout.row()
         row.operator("object.chromepreview",icon='URL')
         row.scale_y = 2
+        row = layout.row()
+        row.separator()
+        row = layout.row()
+        row.label(text="Documentation",icon ="DOCUMENTS")
+        row.scale_y = 1.25
+        row = layout.row()
+        row.operator("object.docs",icon='URL')
+        row.scale_y = 2
         
 
     def menu_draw(self, context):
