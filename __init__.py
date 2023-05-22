@@ -52,7 +52,12 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         #------------
         row = layout.row()
         ver = functions.tupleToString(bl_info["version"])
+        blend = functions.tupleToString(bl_info["blender"])
         row.label(text="Addon v"+ver+" Installed",icon ="SCRIPT")
+        row.scale_y = spacer*1
+        row = layout.row()
+        row.label(text="Blender v" +blend ,icon ="BLENDER")
+        row.scale_y = spacer*1
         external_addon_updater_ops.check_for_update_background()
         external_addon_updater_ops.update_notice_box_ui(self, context,ver)
         row = layout.row()
@@ -65,41 +70,57 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         row = layout.row()
         row.prop(sce,'saveFolderPath')
         row.scale_y = 1.5
+        #------------  
+        row = layout.row()
+        row.label(text="")
+        row.scale_y = spacer*1
+        #------------
+        row = layout.row()
+        row.label(text="Update Mesh Folder",icon ="FOLDER_REDIRECT")
+        #------------
+        row = layout.row()
+        row.prop(sce,'updateMeshFolder')
+        row.scale_y = 1.5
         #------------
         row = layout.row()
         row.label(text="")
-        row.scale_y = spacer*0.5
+        row.scale_y = spacer*1
         #------------
         row = layout.row()
         row.label(text="Data File Options",icon ="OPTIONS")
         #------------
         row = layout.row()
+        row.label(text="")
+        row.scale_y = spacer*0.15
+        #------------
+        row = layout.row()
         row.prop(sce,'precision')
-        row.scale_y = 1.5
+        row.scale_y = 1
         #------------
         row = layout.row()
         row.prop(sce,'camPaths')
-        row.scale_y = 1.5
+        row.scale_y = 1
         #------------
         row = layout.row()
         row.prop(sce,'custEnvMap')
-        row.scale_y = 1.5
+        row.scale_y = 1
         #------------
         row = layout.row()
         row.prop(sce,'minify')
-        row.scale_y = 1.5
+        row.scale_y = 1
         #------------
         row = layout.row()
         row.prop(sce,'expOnSave')
-        row.scale_y = 1.5
+        row.scale_y = 1
         #------------
         row = layout.row()
         row.prop(sce,'checkUpdates')
-        row.scale_y = 1.5
+        row.scale_y = 1
         #------------
         row = layout.row()
         row.label(text="")
         row.scale_y = spacer*2
+
 
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
@@ -108,12 +129,12 @@ class TBA_OT_save_dialog(bpy.types.Operator):
 #------------ SPACER ---------------------
 
 #Import classes
-from .create_op import TBA_OT_Docs,TBA_OT_INFO,TBA_OT_Update,TBA_OT_Export_Updates,TBA_OT_Export_Full_Scene,TBA_OT_Export_Full_Comp,TBA_OT_open_chrome_preview
+from .create_op import TBA_OT_UpdateMesh,TBA_OT_Docs,TBA_OT_INFO,TBA_OT_Update,TBA_OT_Export_Updates,TBA_OT_Export_Full_Scene,TBA_OT_Export_Full_Comp,TBA_OT_open_chrome_preview
 from .create_ui import TBA_INFO_PANEL,TOPBAR_MT_custom_menu         
 
 #Classes list for register
 #List of all classes that will be registered
-classes = (TBA_OT_Docs,TBA_INFO_PANEL,TBA_OT_INFO,TBA_OT_Update,TOPBAR_MT_custom_menu,TBA_OT_Export_Full_Scene,TBA_OT_Export_Full_Comp,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_Export_Updates)
+classes = (TBA_OT_UpdateMesh,TBA_OT_Docs,TBA_INFO_PANEL,TBA_OT_INFO,TBA_OT_Update,TOPBAR_MT_custom_menu,TBA_OT_Export_Full_Scene,TBA_OT_Export_Full_Comp,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_Export_Updates)
 
 
 #------------ SPACER ---------------------
@@ -167,6 +188,9 @@ def register():
 
     des = "Folder path to export scene assets to"
     bpy.types.Scene.saveFolderPath = bpy.props.StringProperty(name="", description=des, default="", subtype = 'DIR_PATH')
+
+    des = "Folder path to refresh objects"
+    bpy.types.Scene.updateMeshFolder = bpy.props.StringProperty(name="", description=des, default="", subtype = 'DIR_PATH')
 
     des = "Define precision of data file - higher values will increase the data file size but match position better"
     bpy.types.Scene.precision = bpy.props.IntProperty(name="Precision",description=des,default=4)
@@ -226,6 +250,7 @@ def unregister():
         bpy.app.handlers.load_post.remove(executeOnLoad)
 
     del bpy.types.Scene.saveFolderPath
+    del bpy.types.Scene.updateMeshFolder
     del bpy.types.Scene.precision
     del bpy.types.Scene.minify
     del bpy.types.Scene.previewOn
