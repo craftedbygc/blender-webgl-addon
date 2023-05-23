@@ -87,6 +87,17 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         row.scale_y = spacer*1
         #------------
         row = layout.row()
+        row.label(text="Materials Textures Folder",icon ="FOLDER_REDIRECT")
+        #------------
+        row = layout.row()
+        row.prop(sce,'textureFolder')
+        row.scale_y = 1.5
+        #------------
+        row = layout.row()
+        row.label(text="")
+        row.scale_y = spacer*1
+        #------------
+        row = layout.row()
         row.label(text="Data File Options",icon ="OPTIONS")
         #------------
         row = layout.row()
@@ -129,12 +140,12 @@ class TBA_OT_save_dialog(bpy.types.Operator):
 #------------ SPACER ---------------------
 
 #Import classes
-from .create_op import TBA_OT_UpdateMesh,TBA_OT_Docs,TBA_OT_INFO,TBA_OT_Update,TBA_OT_Export_Updates,TBA_OT_Export_Full_Scene,TBA_OT_Export_Full_Comp,TBA_OT_open_chrome_preview
+from .create_op import TBA_OT_CreateMaterials,TBA_OT_UpdateMesh,TBA_OT_Docs,TBA_OT_INFO,TBA_OT_Update,TBA_OT_Export_Updates,TBA_OT_Export_Full_Scene,TBA_OT_Export_Full_Comp,TBA_OT_open_chrome_preview
 from .create_ui import TBA_INFO_PANEL,TOPBAR_MT_custom_menu         
 
 #Classes list for register
 #List of all classes that will be registered
-classes = (TBA_OT_UpdateMesh,TBA_OT_Docs,TBA_INFO_PANEL,TBA_OT_INFO,TBA_OT_Update,TOPBAR_MT_custom_menu,TBA_OT_Export_Full_Scene,TBA_OT_Export_Full_Comp,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_Export_Updates)
+classes = (TBA_OT_CreateMaterials,TBA_OT_UpdateMesh,TBA_OT_Docs,TBA_INFO_PANEL,TBA_OT_INFO,TBA_OT_Update,TOPBAR_MT_custom_menu,TBA_OT_Export_Full_Scene,TBA_OT_Export_Full_Comp,TBA_OT_save_dialog,TBA_OT_open_chrome_preview,TBA_OT_Export_Updates)
 
 
 #------------ SPACER ---------------------
@@ -191,6 +202,9 @@ def register():
 
     des = "Folder path to refresh objects"
     bpy.types.Scene.updateMeshFolder = bpy.props.StringProperty(name="", description=des, default="", subtype = 'DIR_PATH')
+
+    des = "Folder path to incoming texture"
+    bpy.types.Scene.textureFolder = bpy.props.StringProperty(name="", description=des, default="", subtype = 'DIR_PATH')
 
     des = "Define precision of data file - higher values will increase the data file size but match position better"
     bpy.types.Scene.precision = bpy.props.IntProperty(name="Precision",description=des,default=4)
@@ -251,6 +265,7 @@ def unregister():
 
     del bpy.types.Scene.saveFolderPath
     del bpy.types.Scene.updateMeshFolder
+    del bpy.types.Scene.textureFolder
     del bpy.types.Scene.precision
     del bpy.types.Scene.minify
     del bpy.types.Scene.previewOn

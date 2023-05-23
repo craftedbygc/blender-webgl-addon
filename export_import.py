@@ -113,7 +113,8 @@ def update_mesh():
             for format in formats:
                 file = os.path.join(meshsfolder, obj.name + format)
                 if os.path.isfile(file):
-                    obj_material = obj.data.materials[0]
+                    if len(obj.material_slots) > 0:
+                        obj_material = obj.data.materials[0]
                     if("abc" in format):
                         bpy.ops.wm.alembic_import(filepath=file)
                     if("obj" in format):
@@ -122,13 +123,53 @@ def update_mesh():
                         bpy.ops.import_scene.fbx(filepath=file)
                     imported_obj = bpy.context.active_object
                     obj.data = imported_obj.data
-                    obj.data.materials.clear()
-                    obj.data.materials.append(obj_material)
+                    if len(obj.material_slots) > 0:
+                        obj.data.materials.clear()
+                        obj.data.materials.append(obj_material)
                     bpy.ops.object.select_all(action='DESELECT')
                     imported_obj.select_set(True)
                     bpy.ops.object.delete()
 
 
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+#------------ SPACER --------------------- 
+def update_create_material():
+    textureFolder = bpy.context.scene.textureFolder
+    selected_objects = bpy.context.selected_objects
+    for obj in selected_objects:
+        print("CREATE MATERIAL FOR:",obj.name)
+        if obj.type == 'MESH':
+            formats = (".png",".jpeg",".tiff")
+            material = bpy.data.materials.new(name="PrincipledMaterial")
+            material.use_nodes = True
+            node_tree = material.node_tree
+            principled_node = node_tree.nodes.get('Principled BSDF')
+            principled_node.location = (0, 0)
+            material.name = obj.name + "-active-mat"
+            output_node = node_tree.nodes['Material Output']
+            output_node.location = (300, 0)
+            for format in formats:
+                maps = ("-color","-roughness","-normal")
+                for map in maps:
+                    file = os.path.join(textureFolder, obj.name + map + format)
+                    print("Creating:",file)
+                    if os.path.isfile(file):
+                        image_texture_node = node_tree.nodes.new('ShaderNodeTexImage')
+                        image_texture_node.image = bpy.data.images.load(file)
+                        if "color" in map:
+                            node_tree.links.new(image_texture_node.outputs['Color'], principled_node.inputs['Base Color'])
+                            image_texture_node.location = (-300, 0)
+                        if "roughness" in map:
+                            node_tree.links.new(image_texture_node.outputs['Color'], principled_node.inputs['Roughness'])
+                            image_texture_node.image.colorspace_settings.name = 'Raw'
+                            image_texture_node.location = (-300, -300)
+                        if "normal" in map:
+                            node_tree.links.new(image_texture_node.outputs['Color'], principled_node.inputs['Normal'])
+                            image_texture_node.image.colorspace_settings.name = 'Raw'
+                            image_texture_node.location = (-300, -600)
 
-
-
+            if obj.data.materials:
+                obj.data.materials[0] = material
+            else:
+                obj.data.materials.append(material)

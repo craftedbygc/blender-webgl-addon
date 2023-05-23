@@ -109,6 +109,20 @@ class TBA_OT_UpdateMesh(Operator):
         export_import.update_mesh()
         return {"FINISHED"}
     
+#------------ SPACER ---------------------
+class TBA_OT_CreateMaterials(Operator):
+    bl_idname = "object.creatematerial"
+    bl_label ="Create Materials"
+    bl_description = "Create Materials based on the textures available on the texture folder"
+
+    @classmethod
+    def poll(cls,context):
+        return functions.pollcheckExport()
+
+    def execute(self, context):
+        export_import.update_create_material()
+        return {"FINISHED"} 
+    
     
 class TBA_OT_Import_c4d(Operator):
     bl_idname = "object.importc4d"
