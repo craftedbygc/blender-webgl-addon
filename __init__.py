@@ -224,6 +224,9 @@ def register():
     des = "Set this scene to export a custom enviroment map"
     bpy.types.Scene.custEnvMap = bpy.props.BoolProperty(name="Export Dedicated Enviroment Map",description=des, default = False)
 
+    des = "Override Material export"
+    bpy.types.Scene.custEnvMap = bpy.props.BoolProperty(name="Export Dedicated Enviroment Map",description=des, default = False)
+
     des = "Website Preview Version Is Open - Untick if you need open a new tab and Preview Scene Site Again"
     bpy.types.Scene.previewOn = bpy.props.BoolProperty(name="Site Preview On",description=des, default = False)
     

@@ -42,7 +42,7 @@ def export(folder_path,ob):
                                     node.image = original_image
                                     node.image.filepath = original_image_path 
                                 if link.to_node.type == "NORMAL_MAP" and link.from_node == node:
-                                    socket_name = "normals"
+                                    socket_name = "normal"
                                     tex = set_image(folder_path,ob,img,socket_name)
                                     texObject[socket_name] = tex
                                     node.image = original_image
