@@ -17,7 +17,7 @@ bl_info = {
     "name" : "Unseen BWE",
     "author" : "Tiago Andrade",
     "description" : "",
-    "blender" : (3, 5, 1),
+    "blender" : (3, 6, 1),
     "version" : (1, 8, 1),
     "location" : "Topbar",
     "warning" : "",
@@ -125,6 +125,10 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         row.scale_y = 1
         #------------
         row = layout.row()
+        row.prop(sce,'noMatExp')
+        row.scale_y = 1
+        #------------
+        row = layout.row()
         row.prop(sce,'checkUpdates')
         row.scale_y = 1
         #------------
@@ -224,8 +228,8 @@ def register():
     des = "Set this scene to export a custom enviroment map"
     bpy.types.Scene.custEnvMap = bpy.props.BoolProperty(name="Export Dedicated Enviroment Map",description=des, default = False)
 
-    des = "Override Material export"
-    bpy.types.Scene.custEnvMap = bpy.props.BoolProperty(name="Export Dedicated Enviroment Map",description=des, default = False)
+    des = "No Material export"
+    bpy.types.Scene.noMatExp = bpy.props.BoolProperty(name="No Material export",description=des, default = False)
 
     des = "Website Preview Version Is Open - Untick if you need open a new tab and Preview Scene Site Again"
     bpy.types.Scene.previewOn = bpy.props.BoolProperty(name="Site Preview On",description=des, default = False)

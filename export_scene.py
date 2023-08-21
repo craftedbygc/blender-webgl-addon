@@ -86,7 +86,9 @@ def main_scene_export(draco,fullScene):
     bpy.context.view_layer.update()
     world = bpy.context.scene.world
     prop = functions.checkForUpdates(world)
-    prop = 2 if fullScene else prop
+    nomat = bpy.context.scene.noMatExp
+    prop = 1 if nomat == True else (2 if fullScene else prop)
+    print("TBA-TEST-PROP",prop)
 
     if prop > 1:
         textures, matSettings = export_materials.exportWorld(mainfolderpath,sceneName)
@@ -208,7 +210,7 @@ def main_scene_export(draco,fullScene):
                         # Check if object changed -----------------------------
                         bpy.context.view_layer.update()
                         prop = functions.checkForUpdates(ob)
-                        prop = 2 if fullScene else prop
+                        prop = 1 if nomat == True else (2 if fullScene else prop)
 
                         # Check if rigged -----------------------------
                         obp = ob
@@ -296,7 +298,7 @@ def main_scene_export(draco,fullScene):
                                 # Check if object changed
                                 bpy.context.view_layer.update()
                                 prop = functions.checkForUpdates(ob)
-                                prop = 2 if fullScene else prop
+                                prop = 1 if nomat == True else (2 if fullScene else prop)
 
                                 #------------ SPACER ---------------------
                                 #Check if object changed

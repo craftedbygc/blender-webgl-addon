@@ -319,7 +319,7 @@ def getAnimationValues(ob,type,prop):
             index = fcurve.array_index
             for keyframe in fcurve.keyframe_points:
                 frame = keyframe.co.x
-                frame = fitTo01(frame,0,end)
+                frame = fitTo01(frame,1,end)
                 value = keyframe.co.y
                 if type == "vector":
                      keyframe_points[index].append(rd(value))

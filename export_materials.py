@@ -14,7 +14,7 @@ def export(folder_path,ob):
             except:
                 print('NO NODES USED')   
 
-            if mat.use_nodes:
+            if mat is not None and mat.use_nodes:
                 #Create the texture object to save the file name too
                 texObject = {}
                 matSettingsObject = {}
@@ -89,12 +89,12 @@ def set_image(folder_path,ob,img,socket_name):
     new_img = img
     new_img.name = new_name
     
-    if "envmap" in socket_name:
+    if "envmap" in socket_name or "bgmap" in socket_name:
         tex_size = 2048
         scale_factor = tex_size/new_img.size[0]
         new_img.scale(tex_size,int(new_img.size[1]*scale_factor))
 
-    if width > 2048 and "envmap" not in socket_name:
+    if width > 2048 and ("envmap" not in socket_name and "bgmap" not in socket_name):
         tex_size = 2048
         new_img.scale(tex_size,tex_size)
 
@@ -126,16 +126,31 @@ def exportWorld(folder_path,sceneName):
                     socket_name = None
                     for link in world.node_tree.links:
                         if link.to_node.type == "BACKGROUND" and link.from_node == node:
-                            #Create a custom enviroment map
-                            socket_name = "envmap"
-                            if check:
-                                socket_name = socket_name +'-'+ sceneName
+                            # Check if the background node's name is "BG"
+                            print("TBA-NAME:",link.to_node.name)
+                            if link.to_node.label == "BG":
+                                print("TBA-FOUND CUSTOM BG")
+                                #Create a custom enviroment map
+                                socket_name = "bgmap"
+                                if check:   
+                                    socket_name = socket_name +'-'+ sceneName
 
-                            ob = None
-                            tex = set_image(folder_path,ob,img,socket_name)
-                            texObject[socket_name] = tex
-                            node.image = original_image
-                            node.image.filepath = original_image_path 
+                                ob = None
+                                tex = set_image(folder_path,ob,img,socket_name)
+                                texObject[socket_name] = tex
+                                node.image = original_image
+                                node.image.filepath = original_image_path
+                            else:
+                                #Create a custom enviroment map
+                                socket_name = "envmap"
+                                if check:   
+                                    socket_name = socket_name +'-'+ sceneName
+
+                                ob = None
+                                tex = set_image(folder_path,ob,img,socket_name)
+                                texObject[socket_name] = tex
+                                node.image = original_image
+                                node.image.filepath = original_image_path 
                 else:
                     print("NO WORLD IMAGE DATA TO EXPORT")
             if node.type == "BACKGROUND":

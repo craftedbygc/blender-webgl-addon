@@ -5,7 +5,7 @@ from . import functions
 def create(camJsonObject,coll):
 
     #Objects needed
-    names = ("cam_pos","cam_tgt","Camera")
+    names = ("cam_pos","cam_tgt","cam_ui","Camera")
     cam = bpy.data.cameras["Camera"]
     objects = functions.findObjects(names)
 
@@ -18,13 +18,20 @@ def create(camJsonObject,coll):
     if bpy.context.scene.camPaths:
         cpath = functions.findObject("cam-path")
         tpath = functions.findObject("tgt-path")  
+        
+        if names[0] in bpy.data.objects:
+            cam_marker = functions.getAnimationValues(bpy.data.objects[names[0]],type="float",prop="constraints['Follow Path'].offset_factor")
+            camJsonObject["cam-marker"] = cam_marker
+        if names[1] in bpy.data.objects:
+            tgt_marker = functions.getAnimationValues(bpy.data.objects[names[1]],type="float",prop="constraints['Follow Path'].offset_factor")
+            camJsonObject["tgt-marker"] = tgt_marker
+        
+        if names[2] in bpy.data.objects:
+            ui_marker = functions.getAnimationValues(bpy.data.objects[names[2]],type="float",prop="constraints['Follow Path'].offset_factor")
+            camJsonObject["ui-marker"] = ui_marker
 
-        cam_stops = functions.getAnimationValues(bpy.data.objects[names[0]],type="float",prop="constraints['Follow Path'].offset_factor")
-        tgt_stops = functions.getAnimationValues(bpy.data.objects[names[1]],type="float",prop="constraints['Follow Path'].offset_factor")
         camJsonObject["cam-path"] = functions.getPathPoints(cpath)
-        camJsonObject["cam-stops"] = cam_stops
         camJsonObject["tgt-path"] = functions.getPathPoints(tpath)
-        camJsonObject["tgt-stops"] = tgt_stops
 
     else:
         cam_pos = functions.getAnimationValues(objects[0],type="vector",prop="location")
