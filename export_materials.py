@@ -35,6 +35,27 @@ def export(folder_path,ob):
                                     texObject[socket_name] = tex
                                     node.image = original_image
                                     node.image.filepath = original_image_path
+
+                                    custom = node.label
+                                    socket_name = custom
+                                    socket_name = functions.namingConvention(socket_name)
+
+                                    # Check if the image uses UDIM tiles
+                                    if node.image.source == 'TILED':
+                                        # Get the list of tiles for the image
+                                        for tile in node.image.tiles:
+                                            # Use tile.label or tile.number to get specific tile information if needed
+                                            tex = set_image(folder_path, ob, tile.image, socket_name)
+                                            texObject[socket_name] = tex
+                                            # Additional logic for each UDIM tile if needed
+                                    else:
+                                        tex = set_image(folder_path, ob, img, socket_name)
+                                        texObject[socket_name] = tex
+
+                                    node.image = original_image
+                                    node.image.filepath = original_image_path
+
+                                    
                                 if link.to_node.type == "BSDF_PRINCIPLED" and link.from_node == node:
                                     socket_name = functions.namingConvention(link.to_socket.name)
                                     tex = set_image(folder_path,ob,img,socket_name)
