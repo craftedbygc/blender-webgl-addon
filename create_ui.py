@@ -26,7 +26,7 @@ class TOPBAR_MT_custom_menu(Menu):
         row = layout.row()
         row.operator("object.creatematerial",icon="SHADING_RENDERED")
         row.scale_y = 2
-        row = layout.row()
+        row = layout.row()  
         row.separator()
         row = layout.row()
         row.label(text="Development",icon ="TOOL_SETTINGS")
