@@ -21,51 +21,70 @@ def export(folder_path,ob):
                 mat.name = ob.name + "-active-mat"
                 for node in mat.node_tree.nodes:
                     if node.type == "TEX_IMAGE":
-                        img = node.image
-                        original_image = img
-                        original_image_path = img.filepath
-                        if img is not None and len(img.pixels) > 0:
+                        if node.image is not None and len(node.image.pixels) > 0:
+                            img = node.image
+                            original_image = img
+                            original_image_path = img.filepath
+                            print("original_image_path:",original_image_path)
                             socket_name = None
                             for link in mat.node_tree.links:
                                 if link.to_node.type == "BSDF_DIFFUSE" and link.from_node == node:
                                     custom = node.label
                                     socket_name = custom
                                     socket_name = functions.namingConvention(socket_name)
-                                    tex = set_image(folder_path,ob,img,socket_name)
-                                    texObject[socket_name] = tex
-                                    node.image = original_image
-                                    node.image.filepath = original_image_path
-
-                                    custom = node.label
-                                    socket_name = custom
-                                    socket_name = functions.namingConvention(socket_name)
-
-                                    # Check if the image uses UDIM tiles
                                     if node.image.source == 'TILED':
-                                        # Get the list of tiles for the image
+                                        print("TILED IMAGE:",socket_name)
+                                        # Collect the UDIM tiles' file paths into a list
+                                        udim_filepaths = []
                                         for tile in node.image.tiles:
-                                            # Use tile.label or tile.number to get specific tile information if needed
-                                            tex = set_image(folder_path, ob, tile.image, socket_name)
-                                            texObject[socket_name] = tex
-                                            # Additional logic for each UDIM tile if needed
+                                            # Append the UDIM tile number to the socket name
+                                            print("TILE NUMBDER",tile.number)
+                                            tileNumber = tile.number
+                                            tex = set_image(folder_path, ob, img, socket_name,tiles = tileNumber)
+                                            udim_filepaths.append(tex)
+                                        texObject[socket_name] = udim_filepaths
                                     else:
-                                        tex = set_image(folder_path, ob, img, socket_name)
+                                        print("SIMPLE IMAGE:",socket_name)
+                                        tex = set_image(folder_path, ob, img, socket_name,tiles = None)
                                         texObject[socket_name] = tex
-
                                     node.image = original_image
                                     node.image.filepath = original_image_path
-
-                                    
                                 if link.to_node.type == "BSDF_PRINCIPLED" and link.from_node == node:
                                     socket_name = functions.namingConvention(link.to_socket.name)
-                                    tex = set_image(folder_path,ob,img,socket_name)
-                                    texObject[socket_name] = tex
+                                    if node.image.source == 'TILED':
+                                        print("TILED IMAGE:",socket_name)
+                                        # Collect the UDIM tiles' file paths into a list
+                                        udim_filepaths = []
+                                        for tile in node.image.tiles:
+                                            # Append the UDIM tile number to the socket name
+                                            print("TILE NUMBDER",tile.number)
+                                            tileNumber = tile.number
+                                            tex = set_image(folder_path, ob, img, socket_name,tiles = tileNumber)
+                                            udim_filepaths.append(tex)
+                                        texObject[socket_name] = udim_filepaths
+                                    else:
+                                        print("SIMPLE IMAGE:",socket_name)
+                                        tex = set_image(folder_path, ob, img, socket_name,tiles = None)
+                                        texObject[socket_name] = tex
                                     node.image = original_image
-                                    node.image.filepath = original_image_path 
+                                    node.image.filepath = original_image_path
                                 if link.to_node.type == "NORMAL_MAP" and link.from_node == node:
                                     socket_name = "normal"
-                                    tex = set_image(folder_path,ob,img,socket_name)
-                                    texObject[socket_name] = tex
+                                    if node.image.source == 'TILED':
+                                        print("TILED IMAGE:",socket_name)
+                                        # Collect the UDIM tiles' file paths into a list
+                                        udim_filepaths = []
+                                        for tile in node.image.tiles:
+                                            # Append the UDIM tile number to the socket name
+                                            print("TILE NUMBDER",tile.number)
+                                            tileNumber = tile.number
+                                            tex = set_image(folder_path, ob, img, socket_name,tiles = tileNumber)
+                                            udim_filepaths.append(tex)
+                                        texObject[socket_name] = udim_filepaths
+                                    else:
+                                        print("SIMPLE IMAGE:",socket_name)
+                                        tex = set_image(folder_path, ob, img, socket_name,tiles = None)
+                                        texObject[socket_name] = tex
                                     node.image = original_image
                                     node.image.filepath = original_image_path
                         else:
@@ -89,26 +108,30 @@ def export(folder_path,ob):
 #------------ SPACER ---------------------
 
      
-def set_image(folder_path,ob,img,socket_name):
+def set_image(folder_path,ob,img,socket_name,tiles):
     width, height = img.size
         
     folder_path = os.path.join(folder_path, "textures")
 
     if ob is not None:
         if socket_name:
-            new_name = ob.name +"-"+ socket_name 
+            obNameCorrect = functions.namingConvention(ob.name)
+            if tiles is not None:
+                jsonName = obNameCorrect +"-"+ socket_name + "<UDIM>" + ".png"
+                file_name = obNameCorrect +"-"+ socket_name + "." + f"{tiles}" + ".png"
+                new_file_path = os.path.join(folder_path,jsonName)
+            else:
+                file_name = obNameCorrect +"-"+ socket_name+".png"
+                new_file_path = os.path.join(folder_path,file_name)
+                
         else:
             print(ob.name," - texture not connected to socket")
     else: 
-       new_name = socket_name
-
-        
-    covName = functions.namingConvention(new_name)
-    file_name = covName + ".png"
-    new_file_path = os.path.join(folder_path,file_name)
+       file_name = socket_name
+       new_file_path = os.path.join(folder_path,file_name)
 
     new_img = img
-    new_img.name = new_name
+    new_img.name = file_name
     
     if "envmap" in socket_name or "bgmap" in socket_name:
         tex_size = 2048
@@ -157,7 +180,8 @@ def exportWorld(folder_path,sceneName):
                                     socket_name = socket_name +'-'+ sceneName
 
                                 ob = None
-                                tex = set_image(folder_path,ob,img,socket_name)
+                                print("SIMPLE IMAGE:",socket_name)
+                                tex = set_image(folder_path, ob, img, socket_name,tiles = None)
                                 texObject[socket_name] = tex
                                 node.image = original_image
                                 node.image.filepath = original_image_path
@@ -168,7 +192,8 @@ def exportWorld(folder_path,sceneName):
                                     socket_name = socket_name +'-'+ sceneName
 
                                 ob = None
-                                tex = set_image(folder_path,ob,img,socket_name)
+                                print("SIMPLE IMAGE:",socket_name)
+                                tex = set_image(folder_path, ob, img, socket_name,tiles = None)
                                 texObject[socket_name] = tex
                                 node.image = original_image
                                 node.image.filepath = original_image_path 
