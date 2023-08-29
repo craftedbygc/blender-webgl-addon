@@ -120,18 +120,24 @@ def set_image(folder_path,ob,img,socket_name,tiles):
                 jsonName = obNameCorrect +"-"+ socket_name + "<UDIM>" + ".png"
                 file_name = obNameCorrect +"-"+ socket_name + "." + f"{tiles}" + ".png"
                 new_file_path = os.path.join(folder_path,jsonName)
+                mat = ob.material_slots[0].material
+                nodes = mat.node_tree.nodes
+                
             else:
                 file_name = obNameCorrect +"-"+ socket_name+".png"
                 new_file_path = os.path.join(folder_path,file_name)
+                new_img = img
+                new_img.name = file_name
                 
         else:
             print(ob.name," - texture not connected to socket")
     else: 
        file_name = socket_name
        new_file_path = os.path.join(folder_path,file_name)
-
+       
+    
     new_img = img
-    new_img.name = file_name
+    #new_img.name = file_name
     
     if "envmap" in socket_name or "bgmap" in socket_name:
         tex_size = 2048
@@ -148,7 +154,7 @@ def set_image(folder_path,ob,img,socket_name,tiles):
     
     return file_name
 
-
+ 
 def exportWorld(folder_path,sceneName):
     world = bpy.context.scene.world
 
