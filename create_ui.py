@@ -35,10 +35,13 @@ class TOPBAR_MT_custom_menu(Menu):
         row.operator("object.exportupdates",icon="FILE_REFRESH")
         row.scale_y = 2
         row = layout.row()
-        row.operator("object.exportfullscene",icon="SCENE_DATA")
+        row.operator("object.exportscenedata",icon="SCENE_DATA")
         row.scale_y = 2
         row = layout.row()
-        row.operator("object.exportfullcomp",icon="MESH_UVSPHERE")
+        row.operator("object.exportsceneplustextures",icon="SHADING_TEXTURE")
+        row.scale_y = 2
+        row = layout.row()
+        row.operator("object.exportdracocomp",icon="MOD_REMESH")
         row.scale_y = 2
         row = layout.row()
         row.separator()

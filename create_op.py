@@ -28,14 +28,14 @@ class TBA_OT_Export_Updates(Operator):
 
     def execute(self, context):
         functions.setFolderStructure()
-        export_scene.main_scene_export(draco=False,fullScene = False)
+        export_scene.main_scene_export(draco=False,fullScene = False, dataOnly = False)
         return {"FINISHED"}
-    
+
 #------------ SPACER ---------------------
 
-class TBA_OT_Export_Full_Scene(Operator):
-    bl_idname = "object.exportfullscene"
-    bl_label ="Export Full Scene"
+class TBA_OT_Export_Scene_Data(Operator):
+    bl_idname = "object.exportscenedata"
+    bl_label ="Export Scene Data"
     bl_description = "Export Scene Uncompressed With Materials\n\n"+warn
 
     @classmethod
@@ -44,14 +44,30 @@ class TBA_OT_Export_Full_Scene(Operator):
 
     def execute(self, context):
         functions.setFolderStructure()
-        export_scene.main_scene_export(draco=False,fullScene = True)
+        export_scene.main_scene_export(draco=False,fullScene = False, dataOnly= True)
+        return {"FINISHED"}
+    
+#------------ SPACER ---------------------
+
+class TBA_OT_Export_Scene_Plus_Textures(Operator):
+    bl_idname = "object.exportsceneplustextures"
+    bl_label ="Export Data And Textures"
+    bl_description = "Export Scene Uncompressed With Materials\n\n"+warn
+
+    @classmethod
+    def poll(cls,context):
+        return functions.pollcheckExport()
+
+    def execute(self, context):
+        functions.setFolderStructure()
+        export_scene.main_scene_export(draco=False,fullScene = True, dataOnly=False)
         return {"FINISHED"}
 
 #------------ SPACER ---------------------
 
-class TBA_OT_Export_Full_Comp(Operator):
-    bl_idname = "object.exportfullcomp"
-    bl_label ="Export Full Draco Scene"
+class TBA_OT_Export_Draco_Comp(Operator):
+    bl_idname = "object.exportdracocomp"
+    bl_label ="Export Meshes Draco Compressed"
     bl_description = "Export Scene With Draco Compression \n\n"+warn
 
     @classmethod
@@ -60,7 +76,7 @@ class TBA_OT_Export_Full_Comp(Operator):
 
     def execute(self, context):
         functions.setFolderStructure()
-        export_scene.main_scene_export(draco=False,fullScene = True)
+        export_scene.main_scene_export(draco=False,fullScene = True, dataOnly=False)
         return {"FINISHED"}
 
 #------------ SPACER ---------------------
