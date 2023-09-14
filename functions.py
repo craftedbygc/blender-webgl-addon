@@ -3,7 +3,7 @@ import time
 import json
 import math
 import os
-from mathutils import Quaternion
+from mathutils import Quaternion, Euler
 
 def arrayToString(ar):
     str1 = ''
@@ -301,6 +301,10 @@ def flipAxis(coords):
     x, y, z, t = coords
     return [x, z, -y, t]
 
+def flipScale(coords):
+    x, y, z, t = coords
+    return [x, z, y, t]
+
 def getAnimationValues(ob,type,prop):
     
     data = []
@@ -308,10 +312,12 @@ def getAnimationValues(ob,type,prop):
     prop = prop.replace("'", '"')
 
     if ob.animation_data.action:
-        print(name,"HAS ANIMATION DATA")
+        print(name,prop,"HAS ANIMATION DATA")
         fcurves = [fcurve for fcurve in ob.animation_data.action.fcurves if fcurve.data_path == prop]
+        print("TBA-ANITEST-0",fcurves)
         ftotal = len(fcurves)+1
         end = bpy.context.scene.frame_end
+
 
         # Create a list of lists for keyframe_points coordinates
         keyframe_points = [[] for _ in range(ftotal)]
@@ -325,17 +331,42 @@ def getAnimationValues(ob,type,prop):
                      keyframe_points[index].append(rd(value))
                      if(index>1):
                         keyframe_points[index+1].append(rd(frame))
-                         
                 else:
                      value = [rd(value),rd(frame)]
                      data.append(value)
                    
 
-        # Transpose the list of lists to get the desired output format
-        seen = set()
-        if type == "vector":
+        if type == "vector" and prop == "location":
             data = [[keyframe_points[i][j] for i in range(ftotal)] for j in range(len(keyframe_points[0]))]
             data = [flipAxis(coords) for coords in data]
+        
+        if type == "vector" and prop == "scale":
+            data = [[keyframe_points[i][j] for i in range(ftotal)] for j in range(len(keyframe_points[0]))]
+            data = [flipScale(coords) for coords in data]
+        
+
+        if type == "vector" and prop == "rotation_euler":
+            print("TBA-ANITEST-1")
+             # Convert the list of keyframe points
+            data = [[keyframe_points[i][j] for i in range(ftotal)] for j in range(len(keyframe_points[0]))]
+            
+            # Convert rotation to quaternions and adjust the order
+            new_data = []
+            print("TBA-ANITEST-2",data)
+            for coords in data:
+                # Extracting the x, y, z rotation values from coords
+                x, y, z, t = coords
+                euler_rotation = Euler((x, y, z), 'XYZ')
+                rot = euler_rotation.to_quaternion()
+                rot.normalize()
+                rot = Quaternion((rot[0], rot[1], rot[3], -rot[2]))
+                # Adjusting the quaternion order and appending 't' at the end
+                quat_data = [rd(rot[1]), rd(rot[2]), rd(rot[3]), rd(rot[0]), t]
+                new_data.append(quat_data)
+                print("TBA-ANITEST-3")
+            
+            data = new_data 
+
 
         # Remove repeated values
        
@@ -430,3 +461,13 @@ def openDocumentation():
     url = "https://www.notion.so/unseenstudio/UNSEEN-BWE-ADDON-3db2fe9c730b48a1a8b587054845eb3f?pvs=4"
     os.system(f"start {url}")  # For Windows
     
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+
+def isTransformAni(obj):
+    if obj.animation_data:
+        for fcurve in obj.animation_data.action.fcurves:
+            if any(x in fcurve.data_path for x in ("location", "rotation", "scale")):
+                return True
+    return False
