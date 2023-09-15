@@ -471,3 +471,26 @@ def isTransformAni(obj):
             if any(x in fcurve.data_path for x in ("location", "rotation", "scale")):
                 return True
     return False
+
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+
+def traverse_hierarchy(obj, result):
+    entry = {
+        "location": (obj.location.x, obj.location.y, obj.location.z),
+        "scale": (obj.scale.x, obj.scale.y, obj.scale.z)
+    }
+
+    children = []
+    childName = None
+    if obj.type == 'EMPTY':
+        entry["children"] = {}
+    
+    for child in obj.children:
+        print(child.name)
+        childName = child.name
+        entry["children"][childName] = traverse_hierarchy(child, result)
+
+
+    return entry

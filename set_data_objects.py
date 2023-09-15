@@ -22,7 +22,8 @@ def create(object):
                 data.append(rot)
                 data.append(sac)
                 #------------ SPACER ---------------------
-                return data       
+                return data   
+                
             else: 
                 pos = object.location.copy()
                 sac = object.scale.copy()
