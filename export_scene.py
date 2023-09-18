@@ -267,7 +267,7 @@ def main_scene_export(draco,fullScene,dataOnly):
             #------------ NEW BLOCK ---------------------
             #------------ NEW BLOCK ---------------------
             # Export Grouped Objects
-            if(childCov == "groupedobjects"):
+            if(childCov == "grouped-objects"):
                 bpy.data.collections[childCollName].color_tag = 'COLOR_06'
 
                 #Function to loop over each parent
