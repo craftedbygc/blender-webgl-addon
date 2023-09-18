@@ -18,7 +18,7 @@ bl_info = {
     "author" : "Tiago Andrade",
     "description" : "",
     "blender" : (3, 6, 1),
-    "version" : (1, 8, 4),
+    "version" : (1, 8, 6),
     "location" : "Topbar",
     "warning" : "",
     "category" : "Object"
@@ -106,6 +106,10 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         #------------
         row = layout.row()
         row.prop(sce,'precision')
+        row.scale_y = 1
+        #------------
+        row = layout.row()
+        row.prop(sce,'aniExport')
         row.scale_y = 1
         #------------
         row = layout.row()
@@ -230,6 +234,9 @@ def register():
 
     des = "No Material export"
     bpy.types.Scene.noMatExp = bpy.props.BoolProperty(name="No Material export",description=des, default = False)
+
+    des = "If the assets are Animated it will export it"
+    bpy.types.Scene.aniExport = bpy.props.BoolProperty(name="Animation Export",description=des, default = False)
 
     des = "Website Preview Version Is Open - Untick if you need open a new tab and Preview Scene Site Again"
     bpy.types.Scene.previewOn = bpy.props.BoolProperty(name="Site Preview On",description=des, default = False)
