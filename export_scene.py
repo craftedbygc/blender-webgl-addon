@@ -117,7 +117,7 @@ def main_scene_export(draco,fullScene,dataOnly):
             
             #------------ SPACER ---------------------
             #Check if the current sellect collection is usable and create an object from it
-            collist = ("groupedobjects","objects","camera","paths","empties","instances-manual","instances-nodes")
+            collist = ("grouped-objects","objects","camera","paths","empties","instances-manual","instances-nodes")
             if childCov in collist:
                 if childCov not in jsonObject:
                     if "instances" in childCov:
@@ -266,41 +266,45 @@ def main_scene_export(draco,fullScene,dataOnly):
             #------------ NEW BLOCK ---------------------
             #------------ NEW BLOCK ---------------------
             #------------ NEW BLOCK ---------------------
-            # Export 
+            # Export Grouped Objects
             if(childCov == "groupedobjects"):
                 bpy.data.collections[childCollName].color_tag = 'COLOR_06'
+
+                #Function to loop over each parent
+                def traverse_hierarchy(ob,result,prop,mainfolderpath,format,draco,skinned,obcount,file_size_mb,total_textures):
+                    
+                    # Add object info to main object
+                    data = set_data_objects.create(ob)
+
+                    settings = {}
+
+                    if ob.type == 'EMPTY':
+                        settings["children"] = {}
+                    else:
+                        #Objet export 
+                        print("TBA-TEST-2",ob)
+                        obcount, file_size_mb = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=skinned)
+
+                        #Texture Export
+                        textures, matSettings = export_materials.export(mainfolderpath,ob,prop)
+                        total_textures += len(textures) if textures is not None else 0
+
+                        if all((textures,matSettings)):
+                            settings["material"] = matSettings
+                            settings["textures"] = textures
+
+                    for child in ob.children:
+                        settings["children"][child.name],obcount,file_size_mb,total_textures = traverse_hierarchy(child,result,prop,mainfolderpath,format,draco,skinned,obcount,file_size_mb,total_textures)
+                    
+                    data.append(settings)
+                    return data,obcount,file_size_mb,total_textures
+                                        
 
                 if len(cc.all_objects) > 0:
                     oblist = [obj.name for obj in cc.all_objects if obj.type == 'EMPTY' and obj.parent == None]
                     oblist = sorted(oblist)
                     
-                    #Function to loop over each parent
-                    def traverse_hierarchy(obj,result,obcount,file_size_mb,total_textures):
-                        
-                        # Add object info to main object
-                        data = set_data_objects.create(obp)
-
-                        settings = {}
-                        if obj.type == 'EMPTY':
-                            settings["children"] = {}
-                        else:
-                            #Objet export 
-                            obcount, file_size_mb = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=skinned)
-
-                            #Texture Export
-                            textures, matSettings = export_materials.export(mainfolderpath,ob,prop)
-                            total_textures += len(textures) if textures is not None else 0
-
-                            if all((textures,matSettings)):
-                                settings["material"] = matSettings
-                                settings["textures"] = textures
-
-                        for child in obj.children:
-                            settings["children"][child.name] = traverse_hierarchy(child, result)
-
-
-                        return data,obcount,file_size_mb,total_textures
-                                        
+                    
                     for name in oblist:
                         ob = cc.all_objects[name]
                         obname = functions.namingConvention(ob.name)
@@ -309,14 +313,7 @@ def main_scene_export(draco,fullScene,dataOnly):
                         bpy.context.view_layer.update()
                         prop = functions.checkForUpdates(ob)
                         prop = 1 if dataOnly == True else (2 if fullScene else prop)
-
-                        # Check if rigged -----------------------------
-                        obp = ob
                         skinned = False 
-                        if "rigged-" in childCov:
-                            obp = ob.parent
-                            childCov = childCov.replace("rigged-", "")
-                            skinned = True
                         
                         # Export the selected object -----------------------------
                         if prop>0:
@@ -325,7 +322,7 @@ def main_scene_export(draco,fullScene,dataOnly):
                             matSettings = None
 
                             #------------ SPACER ---------------------
-                            data,obcount,file_size_mb,total_textures = traverse_hierarchy(ob, {})
+                            data,obcount,file_size_mb,total_textures = traverse_hierarchy(ob,{},prop,mainfolderpath,format,draco,skinned,obcount,file_size_mb,total_textures)
                             jsonObject[childCov][obname] = data
                             
                             #------------ SPACER ---------------------

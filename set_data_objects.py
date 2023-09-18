@@ -8,10 +8,10 @@ def create(object):
             data = []
 
             #------------ SPACER ---------------------
-
+            checkUserAni = bpy.context.scene.aniExport
             checkAni = functions.isTransformAni(object)
             
-            if(checkAni):
+            if(checkAni and checkUserAni):
                 pos = functions.getAnimationValues(object,type="vector",prop="location")
                 sac = functions.getAnimationValues(object,type="vector",prop="scale")
                 rot = functions.getAnimationValues(object,type="vector",prop="rotation_euler")
