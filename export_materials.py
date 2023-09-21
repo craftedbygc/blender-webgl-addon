@@ -91,11 +91,15 @@ def export(folder_path,ob,prop):
                             print(ob.name,"NO IMAGE DATA TO EXPORT")
 
                     if node.type == "BSDF_PRINCIPLED":
-                        setlist = ("Roughness","Metallic","Emission Strength")
+                        setlist = ("Roughness","Metallic","IOR","Specular","Emission Strength","Alpha")
                         for set in setlist:
-                            val = node.inputs[set].default_value
-                            set = functions.namingConvention(set)
-                            matSettingsObject[set] = val
+                            if node.inputs[set].is_linked:
+                                set = functions.namingConvention(set)
+                                matSettingsObject[set] = 1.0
+                            else:
+                                val = node.inputs[set].default_value
+                                set = functions.namingConvention(set)
+                                matSettingsObject[set] = functions.rd(val)
                 return texObject, matSettingsObject
             
         else:
@@ -116,6 +120,8 @@ def set_image(prop,folder_path,ob,img,socket_name,tiles):
     if ob is not None:
         if socket_name:
             obNameCorrect = functions.namingConvention(ob.name)
+            if '-low' in obNameCorrect:
+                obNameCorrect = obNameCorrect.replace('-low', '')
             if tiles is not None:
                 jsonName = obNameCorrect +"-"+ socket_name + "." + "<UDIM>" + ".png"
                 file_name = obNameCorrect +"-"+ socket_name + "." + f"{tiles}" + ".png"
@@ -209,7 +215,7 @@ def exportWorld(folder_path,sceneName,prop):
                 set = "Strength"
                 val = node.inputs[set].default_value
                 set = functions.namingConvention(set)
-                matSettingsObject[set] = val
+                matSettingsObject[set] = functions.rd(val)
         return texObject, matSettingsObject
 
     else:

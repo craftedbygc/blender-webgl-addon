@@ -298,12 +298,32 @@ def fitTo01(value, min_value, max_value):
     return (value - min_value) / (max_value - min_value)
 
 def flipAxis(coords):
-    x, y, z, t = coords
-    return [x, z, -y, t]
+    x, y, z, t, c = coords
+    return [x, z, -y, t, c]
 
 def flipScale(coords):
-    x, y, z, t = coords
-    return [x, z, y, t]
+    x, y, z, t, c = coords
+    return [x, z, y, t, c]
+
+def interpolation_to_gsap(interpolation_method: str) -> str:
+
+    interpolation_mapping = {
+        'LINEAR': 'None',
+        'SINE': 'Sine',
+        'BEZIER': 'Sine',
+        'QUAD': 'Power1',
+        'CUBIC': 'Power2',
+        'QUART': 'Power3',
+        'QUINT': 'Power4',
+        'EXPO': 'EXPO',
+        'CIRC': 'CIRC',
+        'BACK': 'BACK',
+        'BOUNCE': 'BOUNCE',
+        'ELASTIC': 'ELASTIC'
+    }
+
+    return interpolation_mapping.get(interpolation_method, interpolation_method)
+
 
 def getAnimationValues(ob,type,prop):
     
@@ -320,50 +340,94 @@ def getAnimationValues(ob,type,prop):
 
 
         # Create a list of lists for keyframe_points coordinates
-        keyframe_points = [[] for _ in range(ftotal)]
+        keyframe_points = [[] for _ in range(ftotal+1)]
         for fcurve in fcurves:
             index = fcurve.array_index
-            for keyframe in fcurve.keyframe_points:
+            keyframe_points_len = len(fcurve.keyframe_points)
+            for idx, keyframe in enumerate(fcurve.keyframe_points):
                 frame = keyframe.co.x
-                frame = fitTo01(frame,1,end)
+                frame = fitTo01(frame, 1, end)
                 value = keyframe.co.y
+
+                # Get Next Frame interpolation type, so it's easir to read
+                interpolation_type = fcurve.keyframe_points[idx + 1].interpolation if idx + 1 < keyframe_points_len else "NONE"
+                interpolation_type = interpolation_to_gsap(interpolation_type)
+                interpolation_type = interpolation_type.lower()  
                 if type == "vector":
-                     keyframe_points[index].append(rd(value))
-                     if(index>1):
+                    keyframe_points[index].append(rd(value))
+                    if index > 1:
                         keyframe_points[index+1].append(rd(frame))
+                        keyframe_points[index+2].append(interpolation_type)
                 else:
-                     value = [rd(value),rd(frame)]
-                     data.append(value)
+                    value = [rd(value), rd(frame)]
+                    data.append(value)
                    
 
         if type == "vector" and prop == "location":
-            data = [[keyframe_points[i][j] for i in range(ftotal)] for j in range(len(keyframe_points[0]))]
-            data = [flipAxis(coords) for coords in data]
+            if(len(fcurves)>0):
+                # Adjusting data assembly to ensure interpolation is appended
+                data = [
+                    [
+                        keyframe_points[i][j] if i < ftotal-2 else keyframe_points[i][j]
+                        for i in range(ftotal + 1)  # +1 to account for interpolation
+                    ] for j in range(len(keyframe_points[0]))
+                ]
+                data = [flipAxis(coords) for coords in data]
+            else:
+                pos = ob.location.copy()
+                apos = [rd(pos.x),rd(pos.z),rd(-pos.y)]
+                data = apos
+
         
         if type == "vector" and prop == "scale":
-            data = [[keyframe_points[i][j] for i in range(ftotal)] for j in range(len(keyframe_points[0]))]
-            data = [flipScale(coords) for coords in data]
+            if(len(fcurves)>0):
+                # Adjusting data assembly to ensure interpolation is appended
+                data = [
+                    [
+                        keyframe_points[i][j] if i < ftotal-2 else keyframe_points[i][j]
+                        for i in range(ftotal + 1)  # +1 to account for interpolation
+                    ] for j in range(len(keyframe_points[0]))
+                ]
+                data = [flipScale(coords) for coords in data]
+            else:
+                sac = ob.scale.copy()
+                asac = [rd(sac.x),rd(sac.z),rd(sac.y)]
+                data = asac
         
 
         if type == "vector" and prop == "rotation_euler":
-            print("TBA-ANITEST-1")
-             # Convert the list of keyframe points
-            data = [[keyframe_points[i][j] for i in range(ftotal)] for j in range(len(keyframe_points[0]))]
-            
-            # Convert rotation to quaternions and adjust the order
-            new_data = []
-            print("TBA-ANITEST-2",data)
-            for coords in data:
-                # Extracting the x, y, z rotation values from coords
-                x, y, z, t = coords
-                euler_rotation = Euler((x, y, z), 'XYZ')
-                rot = euler_rotation.to_quaternion()
-                rot.normalize()
-                rot = Quaternion((rot[0], rot[1], rot[3], -rot[2]))
-                # Adjusting the quaternion order and appending 't' at the end
-                quat_data = [rd(rot[1]), rd(rot[2]), rd(rot[3]), rd(rot[0]), t]
-                new_data.append(quat_data)
-                print("TBA-ANITEST-3")
+            if(len(fcurves)>0):
+                print("TBA-ANITEST-1")
+                # Convert the list of keyframe points
+                # Adjusting data assembly to ensure interpolation is appended
+                data = [
+                    [
+                        keyframe_points[i][j] if i < ftotal-2 else keyframe_points[i][j]
+                        for i in range(ftotal + 1)  # +1 to account for interpolation
+                    ] for j in range(len(keyframe_points[0]))
+                ]
+                
+                # Convert rotation to quaternions and adjust the order
+                new_data = []
+                print("TBA-ANITEST-2",data)
+                for coords in data:
+                    # Extracting the x, y, z rotation values from coords
+                    x, y, z, t, c = coords
+                    euler_rotation = Euler((x, y, z), 'XYZ')
+                    rot = euler_rotation.to_quaternion()
+                    rot.normalize()
+                    rot = Quaternion((rot[0], rot[1], rot[3], -rot[2]))
+                    # Adjusting the quaternion order and appending 't' at the end
+                    quat_data = [rd(rot[1]), rd(rot[2]), rd(rot[3]), rd(rot[0]), t, c]
+                    new_data.append(quat_data)
+                    print("TBA-ANITEST-3")
+            else:
+                 rot = ob.rotation_euler.to_quaternion()
+                 rot.normalize()
+                 rot = Quaternion((rot[0], rot[1], rot[3], -rot[2]))
+                 rot = [rd(rot[1]), rd(rot[2]), rd(rot[3]), rd(rot[0])]
+                 data = rot
+
             
             data = new_data 
 
@@ -466,7 +530,7 @@ def openDocumentation():
 #------------ SPACER ---------------------
 
 def isTransformAni(obj):
-    if obj.animation_data:
+    if obj.animation_data and obj.animation_data.action:
         for fcurve in obj.animation_data.action.fcurves:
             if any(x in fcurve.data_path for x in ("location", "rotation", "scale")):
                 return True
