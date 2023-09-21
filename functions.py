@@ -421,6 +421,8 @@ def getAnimationValues(ob,type,prop):
                     quat_data = [rd(rot[1]), rd(rot[2]), rd(rot[3]), rd(rot[0]), t, c]
                     new_data.append(quat_data)
                     print("TBA-ANITEST-3")
+                
+                data = new_data 
             else:
                  rot = ob.rotation_euler.to_quaternion()
                  rot.normalize()
@@ -429,7 +431,7 @@ def getAnimationValues(ob,type,prop):
                  data = rot
 
             
-            data = new_data 
+           
 
 
         # Remove repeated values
