@@ -295,6 +295,8 @@ def main_scene_export(draco,fullScene,dataOnly):
 
                     for child in ob.children:
                         childName = functions.namingConvention(child.name)
+                        if ob.type == 'EMPTY':
+                            childName = childName+"-emp"
                         settings["children"][childName],obcount,file_size_mb,total_textures = traverse_hierarchy(child,result,prop,mainfolderpath,format,draco,skinned,obcount,file_size_mb,total_textures)
                     
                     data.append(settings)
@@ -309,6 +311,9 @@ def main_scene_export(draco,fullScene,dataOnly):
                     for name in oblist:
                         ob = cc.all_objects[name]
                         obname = functions.namingConvention(ob.name)
+                        if ob.type == 'EMPTY':
+                            obname = obname+"-emp"
+                            print("TBA-TESTING", obname)
                         
                         # Check if object changed -----------------------------
                         bpy.context.view_layer.update()
