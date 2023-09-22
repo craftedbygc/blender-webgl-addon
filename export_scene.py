@@ -295,7 +295,7 @@ def main_scene_export(draco,fullScene,dataOnly):
 
                     for child in ob.children:
                         childName = functions.namingConvention(child.name)
-                        if ob.type == 'EMPTY':
+                        if child.type == 'EMPTY':
                             childName = childName+"-emp"
                         settings["children"][childName],obcount,file_size_mb,total_textures = traverse_hierarchy(child,result,prop,mainfolderpath,format,draco,skinned,obcount,file_size_mb,total_textures)
                     
