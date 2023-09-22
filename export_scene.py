@@ -294,7 +294,8 @@ def main_scene_export(draco,fullScene,dataOnly):
                             settings["textures"] = textures
 
                     for child in ob.children:
-                        settings["children"][child.name],obcount,file_size_mb,total_textures = traverse_hierarchy(child,result,prop,mainfolderpath,format,draco,skinned,obcount,file_size_mb,total_textures)
+                        childName = functions.namingConvention(child.name)
+                        settings["children"][childName],obcount,file_size_mb,total_textures = traverse_hierarchy(child,result,prop,mainfolderpath,format,draco,skinned,obcount,file_size_mb,total_textures)
                     
                     data.append(settings)
                     return data,obcount,file_size_mb,total_textures
