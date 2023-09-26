@@ -128,9 +128,9 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         row.prop(sce,'expOnSave')
         row.scale_y = 1
         #------------
-        # row = layout.row()
-        # row.prop(sce,'noMatExp')
-        # row.scale_y = 1
+        row = layout.row()
+        row.prop(sce,'noMatExp')
+        row.scale_y = 1
         #------------
         row = layout.row()
         row.prop(sce,'checkUpdates')
