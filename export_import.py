@@ -28,6 +28,7 @@ def glbExpOp(folderpath,format,ob,draco,obcount,skinned):
         return
         
     file_name = ob.name
+    file_name = functions.tagsRemoval(file_name)
     file_name = functions.namingConvention(file_name)
     target_path =os.path.join(modelFolder, file_name)
 

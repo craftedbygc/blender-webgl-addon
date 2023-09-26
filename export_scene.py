@@ -277,16 +277,20 @@ def main_scene_export(draco,fullScene,dataOnly):
                     data = set_data_objects.create(ob)
 
                     settings = {}
-
-                    if ob.type == 'EMPTY':
-                        settings["children"] = {}
-                    else:
+                    settings["children"] = {}
+                    if ob.type != 'EMPTY':
                         #Objet export 
                         print("TBA-TEST-2",ob)
                         obcount, file_size_mb = export_import.glbExpOp(mainfolderpath,format,ob,draco,obcount,skinned=skinned)
 
                         #Texture Export
-                        textures, matSettings = export_materials.export(mainfolderpath,ob,prop)
+                        obn = ob
+                        propn = prop
+                        if "-pmat" in ob.name:
+                            obn = ob.parent
+                            propn = 0
+
+                        textures, matSettings = export_materials.export(mainfolderpath,obn,propn)
                         total_textures += len(textures) if textures is not None else 0
 
                         if all((textures,matSettings)):
@@ -295,6 +299,7 @@ def main_scene_export(draco,fullScene,dataOnly):
 
                     for child in ob.children:
                         childName = functions.namingConvention(child.name)
+                        childName = functions.tagsRemoval(childName)
                         if child.type == 'EMPTY':
                             childName = childName+"-emp"
                         settings["children"][childName],obcount,file_size_mb,total_textures = traverse_hierarchy(child,result,prop,mainfolderpath,format,draco,skinned,obcount,file_size_mb,total_textures)
@@ -314,6 +319,7 @@ def main_scene_export(draco,fullScene,dataOnly):
                         if ob.type == 'EMPTY':
                             obname = obname+"-emp"
                             print("TBA-TESTING", obname)
+                        obname = functions.tagsRemoval(obname)
                         
                         # Check if object changed -----------------------------
                         bpy.context.view_layer.update()

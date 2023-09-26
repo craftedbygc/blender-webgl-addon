@@ -560,3 +560,18 @@ def traverse_hierarchy(obj, result):
 
 
     return entry
+
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+
+def tagsRemoval(name):
+    array = ["-pmat"]
+    for e in array:
+        if e in name:
+            name = name.replace(e, "")
+            return name
+        else:
+            return name
+
+
