@@ -86,6 +86,7 @@ def glbExpOp(folderpath,format,ob,draco,obcount,skinned):
             nob.scale = prevSac
     else:
         functions.delete_object(nob.name)
+        
     obcount += 1
     return obcount, file_size_mb
 
