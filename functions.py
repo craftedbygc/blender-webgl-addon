@@ -573,5 +573,29 @@ def tagsRemoval(name):
             return name
         else:
             return name
+        
 
 
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+
+
+def delete_object(object_name):
+    ob = bpy.data.objects.get(object_name)
+    
+    if ob is not None:
+        # Unlink the object from the collection
+        #bpy.context.collection.objects.unlink(ob)
+        
+        # Remove the object from the data-blocks
+        bpy.data.objects.remove(ob)
+    else:
+        print(f"No object found with the name: {object_name}")
+
+
+def get_first_collection_name(obj):
+    if obj is not None and obj.users_collection:
+        return obj.users_collection[0].name  
+    else:
+        return None 

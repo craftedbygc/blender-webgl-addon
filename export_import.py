@@ -22,7 +22,7 @@ def glbExpOp(folderpath,format,ob,draco,obcount,skinned):
     #------------ SPACER ---------------------
 
     functions.forceSelectable(ob)
-
+    pobject = False
     is_empty = ob.type == 'EMPTY'
     if(is_empty):
         return
@@ -32,20 +32,37 @@ def glbExpOp(folderpath,format,ob,draco,obcount,skinned):
     file_name = functions.namingConvention(file_name)
     target_path =os.path.join(modelFolder, file_name)
 
-    #------------ SPACER ---------------------
-    prevLoc, prevRot, prevSac = functions.geoCleaner(ob,skinned)
+    nob = ob
+    nobName =ob.name
+    #collection = functions.get_first_collection_name(nob)
+    if nob.parent and nob.parent.type != 'ARMATURE' and nob.type == 'MESH' :
+        nobName = "TEMPGEO"
+        pobject = True
+        print("PRE-DUPLICATION", nob.name)
+        functions.forceselect(nob)
+        bpy.ops.object.duplicate()
+        nob = bpy.context.active_object
+        print("POST-DUPLICATION", nob.name)
+        nob.name = nobName
+        nob.parent = None
+        print(nob.name)
+        # Unparent the object
+        #nob.parent = None
 
     #------------ SPACER ---------------------
-    functions.forceselect(ob)
+    prevLoc, prevRot, prevSac = functions.geoCleaner(nob,skinned)
+
+    #------------ SPACER ---------------------
+    functions.forceselect(nob)
     bpy.ops.object.select_all(action='DESELECT')
     bpy.context.view_layer.objects.active = None
-    ob.select_set(True)
+    nob.select_set(True)
     
     if(skinned):
-        parent = ob.parent
+        parent = nob.parent
         parent.select_set(True)
 
-    bpy.context.view_layer.objects.active = bpy.data.objects[ob.name]
+    bpy.context.view_layer.objects.active = bpy.data.objects[nobName]
 
     print("TBA-6",skinned)
     bpy.ops.export_scene.gltf(filepath=target_path,export_format=format, export_texcoords=True, export_normals=True, export_draco_mesh_compression_enable=draco, export_materials=mat,export_colors=True, export_attributes=True, use_selection=True, export_yup=True, export_animations=skinned, export_frame_range=skinned,export_skins=skinned)
@@ -57,16 +74,18 @@ def glbExpOp(folderpath,format,ob,draco,obcount,skinned):
 
     print("HERE",file_size_mb)
     #------------ SPACER ---------------------
-    if(skinned):
-        parent = ob.parent
-        parent.location = prevLoc
-        parent.rotation_euler = prevRot
-        parent.scale = prevSac
+    if(pobject == False):
+        if(skinned):
+            parent = nob.parent
+            parent.location = prevLoc
+            parent.rotation_euler = prevRot
+            parent.scale = prevSac
+        else:
+            nob.location = prevLoc
+            nob.rotation_euler = prevRot
+            nob.scale = prevSac
     else:
-        ob.location = prevLoc
-        ob.rotation_euler = prevRot
-        ob.scale = prevSac
-        
+        functions.delete_object(nob.name)
     obcount += 1
     return obcount, file_size_mb
 
