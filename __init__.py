@@ -113,6 +113,10 @@ class TBA_OT_save_dialog(bpy.types.Operator):
         row.scale_y = 1
         #------------
         row = layout.row()
+        row.prop(sce,'eulerRot')
+        row.scale_y = 1
+        #------------
+        row = layout.row()
         row.prop(sce,'camPaths')
         row.scale_y = 1
         #------------
@@ -240,6 +244,9 @@ def register():
 
     des = "Website Preview Version Is Open - Untick if you need open a new tab and Preview Scene Site Again"
     bpy.types.Scene.previewOn = bpy.props.BoolProperty(name="Site Preview On",description=des, default = False)
+
+    des = "Euler Rotation Will be used For Animations"
+    bpy.types.Scene.eulerRot = bpy.props.BoolProperty(name="Rotation Set To Euler",description=des, default = False)
     
     des = "Folder path to export scene assets to"
     bpy.types.Scene.progressPopup = bpy.props.StringProperty(default="EXPORT STARTED")

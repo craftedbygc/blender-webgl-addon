@@ -396,6 +396,7 @@ def getAnimationValues(ob,type,prop):
         
 
         if type == "vector" and prop == "rotation_euler":
+            checkEulerRot = bpy.context.scene.eulerRot
             if(len(fcurves)>0):
                 print("TBA-ANITEST-1")
                 # Convert the list of keyframe points
@@ -413,24 +414,60 @@ def getAnimationValues(ob,type,prop):
                 for coords in data:
                     # Extracting the x, y, z rotation values from coords
                     x, y, z, t, c = coords
-                    euler_rotation = Euler((x, y, z), 'XYZ')
-                    rot = euler_rotation.to_quaternion()
-                    rot.normalize()
-                    rot = Quaternion((rot[0], rot[1], rot[3], -rot[2]))
-                    # Adjusting the quaternion order and appending 't' at the end
-                    quat_data = [rd(rot[1]), rd(rot[2]), rd(rot[3]), rd(rot[0]), t, c]
-                    new_data.append(quat_data)
-                    print("TBA-ANITEST-3")
+                    if(checkEulerRot):
+                        rot = Euler((x, y, z), 'XYZ')
+                        euler_data = [rd(rot.x),rd(rot.z),rd(-rot.y), t, c]
+                        new_data.append(euler_data)
+                    else:
+                        euler_rotation = Euler((x, y, z), 'XYZ')
+                        rot = euler_rotation.to_quaternion()
+                        rot.normalize()
+                        rot = Quaternion((rot[0], rot[1], rot[3], -rot[2]))
+                        quat_data = [rd(rot[1]), rd(rot[2]), rd(rot[3]), rd(rot[0]), t, c]
+                        new_data.append(quat_data)
                 
                 data = new_data 
             else:
-                 rot = ob.rotation_euler.to_quaternion()
+                if(checkEulerRot):
+                    rot = Euler((x, y, z), 'XYZ')
+                    euler_data = [rd(rot.x),rd(rot.z),rd(-rot.y)]
+                    data.append(euler_data)
+                else:
+                    rot = ob.rotation_euler.to_quaternion()
+                    rot.normalize()
+                    rot = Quaternion((rot[0], rot[1], rot[3], -rot[2]))
+                    rot = [rd(rot[1]), rd(rot[2]), rd(rot[3]), rd(rot[0])]
+                    data = rot
+        
+        if type == "vector" and prop == "rotation_quaternion":
+            if len(fcurves) > 0:
+                print("TBA-ANITEST-1")
+
+                # Adjusting data assembly to ensure interpolation is appended
+                data = [
+                    [
+                        keyframe_points[i][j] if i < ftotal - 2 else keyframe_points[i][j]
+                        for i in range(ftotal + 1)  # +1 to account for interpolation
+                    ] for j in range(len(keyframe_points[0]))
+                ]
+                
+                # Directly adjusting the quaternion components and order
+                new_data = []
+                print("TBA-ANITEST-2", data)
+                for coords in data:
+                    w, x, y, z, t, c = coords  # Directly destructure quaternion components from coords
+                    rot = Quaternion((w, x, y, z))
+                    rot.normalize()
+                    rot = Quaternion((rot[0], rot[1], rot[3], -rot[2]))  # Adjust components
+                    quat_data = [rd(rot[1]), rd(rot[2]), rd(rot[3]), rd(rot[0]), t, c]
+                    new_data.append(quat_data)
+                    print("TBA-ANITEST-3")
+            else:
                  rot.normalize()
                  rot = Quaternion((rot[0], rot[1], rot[3], -rot[2]))
                  rot = [rd(rot[1]), rd(rot[2]), rd(rot[3]), rd(rot[0])]
                  data = rot
-
-            
+    
            
 
 
@@ -594,8 +631,19 @@ def delete_object(object_name):
         print(f"No object found with the name: {object_name}")
 
 
-def get_first_collection_name(obj):
-    if obj is not None and obj.users_collection:
-        return obj.users_collection[0].name  
+def get_first_collection_name(ob):
+    if ob is not None and ob.users_collection:
+        return ob.users_collection[0].name  
     else:
         return None 
+
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+#------------ SPACER ---------------------
+
+
+def check_quaternion_rotation(ob):
+    if ob:
+        return ob.rotation_mode == 'QUATERNION'
+    else:
+        raise ValueError("No object provided!")
