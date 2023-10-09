@@ -414,7 +414,8 @@ def getAnimationValues(ob,type,prop):
                 for coords in data:
                     # Extracting the x, y, z rotation values from coords
                     x, y, z, t, c = coords
-                    if(checkEulerRot):
+                    print("TEST_360",ob.name)
+                    if(checkEulerRot or "-rot360" in ob.name):
                         rot = Euler((x, y, z), 'XYZ')
                         euler_data = [rd(rot.x),rd(rot.z),rd(-rot.y), t, c]
                         new_data.append(euler_data)
