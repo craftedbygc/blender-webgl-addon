@@ -38,4 +38,8 @@ def create(camJsonObject,coll):
         cam_tgt = functions.getAnimationValues(objects[1],type="vector",prop="location")
         camJsonObject["cam-positions"] = cam_pos
         camJsonObject["tgt-positions"] = cam_tgt
+        
+        if "cam_ui" in bpy.data.objects:
+            ui_marker = functions.getAnimationValues(bpy.data.objects["cam_ui"],type="float",prop="constraints['Follow Path'].offset_factor")
+            camJsonObject["ui-marker"] = ui_marker
 
