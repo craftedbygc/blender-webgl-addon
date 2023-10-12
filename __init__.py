@@ -18,7 +18,7 @@ bl_info = {
     "author" : "Tiago Andrade",
     "description" : "",
     "blender" : (3, 6, 1),
-    "version" : (1, 9, 4),
+    "version" : (1, 9, 5),
     "location" : "Topbar",
     "warning" : "",
     "category" : "Object"
@@ -184,8 +184,15 @@ def executeOnLoad(dummy):
     print("NEW SCENE - RESET UPDATE")
     #functions.restUpdateState()
     bpy.context.scene.previewOn = False
+    functions.add_custom_properties_to_camera()
     depsgraph_update_post.append(checkers.on_depsgraph_update)
     external_addon_updater_ops.check_for_update_onload()
+
+
+@persistent
+def execute_on_file_load(dummy):
+    print("File loaded or created")
+    functions.add_custom_properties_to_camera()
 
 
 #------------ SPACER ---------------------
@@ -265,6 +272,8 @@ def register():
         bpy.app.handlers.save_post.append(save_hanfler)
     if not executeOnLoad in bpy.app.handlers.load_post:
         bpy.app.handlers.load_post.append(executeOnLoad)
+    if not execute_on_file_load in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.append(execute_on_file_load)
 
 def unregister():
     external_addon_updater_ops.unregister()

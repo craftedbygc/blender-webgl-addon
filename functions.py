@@ -326,41 +326,61 @@ def interpolation_to_gsap(interpolation_method: str) -> str:
 
 
 def getAnimationValues(ob,type,prop):
-    
+
     data = []
     name = ob.name
+    print("TBA_DATA_NAME",ob,name)
     prop = prop.replace("'", '"')
 
+    def setSingleVal(ob):
+        if type == "vector":
+            loc = ob.location.copy()
+            return loc
+        else:
+            if prop == 'lens':
+                val = rd(ob.lens)
+                return val
+
     if ob.animation_data.action:
-        print(name,prop,"HAS ANIMATION DATA")
-        fcurves = [fcurve for fcurve in ob.animation_data.action.fcurves if fcurve.data_path == prop]
-        print("TBA-ANITEST-0",fcurves)
-        ftotal = len(fcurves)+1
-        end = bpy.context.scene.frame_end
+        fcurves = [fcurve for fcurve in ob.animation_data.action.fcurves if fcurve.data_path == prop or fcurve.data_path == '['+ '"' + prop +'"'+']']
+        
+        if len(fcurves) == 0:
+            data = setSingleVal(ob)           
+        else:
+            ftotal = len(fcurves)+1
+            end = bpy.context.scene.frame_end
 
 
-        # Create a list of lists for keyframe_points coordinates
-        keyframe_points = [[] for _ in range(ftotal+1)]
-        for fcurve in fcurves:
-            index = fcurve.array_index
-            keyframe_points_len = len(fcurve.keyframe_points)
-            for idx, keyframe in enumerate(fcurve.keyframe_points):
-                frame = keyframe.co.x
-                frame = fitTo01(frame, 1, end)
-                value = keyframe.co.y
+            # Create a list of lists for keyframe_points coordinates
+            keyframe_points = [[] for _ in range(ftotal+1)]
+            for fcurve in fcurves:
 
-                # Get Next Frame interpolation type, so it's easir to read
-                interpolation_type = fcurve.keyframe_points[idx + 1].interpolation if idx + 1 < keyframe_points_len else "NONE"
-                interpolation_type = interpolation_to_gsap(interpolation_type)
-                interpolation_type = interpolation_type.lower()  
-                if type == "vector":
-                    keyframe_points[index].append(rd(value))
-                    if index > 1:
-                        keyframe_points[index+1].append(rd(frame))
-                        keyframe_points[index+2].append(interpolation_type)
-                else:
-                    value = [rd(value), rd(frame)]
-                    data.append(value)
+                index = fcurve.array_index
+                keyframe_points_len = len(fcurve.keyframe_points)
+                for idx, keyframe in enumerate(fcurve.keyframe_points):
+                    frame = keyframe.co.x
+                    frame = fitTo01(frame, 1, end)
+                    value = keyframe.co.y
+
+                    # Get Next Frame interpolation type, so it's easir to read
+                    interpolation_type = fcurve.keyframe_points[idx + 1].interpolation if idx + 1 < keyframe_points_len else "NONE"
+                    interpolation_type = interpolation_to_gsap(interpolation_type)
+                    interpolation_type = interpolation_type.lower()  
+                    
+                    if type == "vector":
+                        keyframe_points[index].append(rd(value))
+                        if index > 1:
+                            keyframe_points[index+1].append(rd(frame))
+                            keyframe_points[index+2].append(interpolation_type)
+                    else:
+                        if "UI Markers" in prop or "Key Stops" in prop:
+                            value = rd(frame)
+                            data.append(value)
+                        else:
+                            value = [rd(value), rd(frame)]
+                            data.append(value)
+                        
+
                    
 
         if type == "vector" and prop == "location":
@@ -473,17 +493,9 @@ def getAnimationValues(ob,type,prop):
 
 
         # Remove repeated values
-       
- 
     else:
-        print(name,"NO ANIMATION DATA")
-        if type == "vector":
-            loc = ob.location.copy()
-            data.append(loc)
-        else:
-            if prop == 'lens':
-                val = [rd(ob.lens),0.0]
-                data.append(val)   
+       setSingleVal(ob)
+
     return data  
                  
 
@@ -648,3 +660,16 @@ def check_quaternion_rotation(ob):
         return ob.rotation_mode == 'QUATERNION'
     else:
         raise ValueError("No object provided!")
+    
+
+
+def add_custom_properties_to_camera():
+    obj = bpy.context.active_object
+    if obj and obj.type == 'CAMERA':
+        camera_data = obj.data
+
+        if "UI Markers" not in camera_data:
+            camera_data["UI Markers"] = 0.0
+        
+        if "Key Stops" not in camera_data:
+            camera_data["Key Stops"] = 0.0

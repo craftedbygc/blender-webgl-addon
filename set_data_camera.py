@@ -5,15 +5,25 @@ from . import functions
 def create(camJsonObject,coll):
 
     #Objects needed
-    names = ("cam_pos","cam_tgt","cam_ui","Camera")
+    names = ("cam_pos","cam_tgt","Camera")
     cam = bpy.data.cameras["Camera"]
     objects = functions.findObjects(names)
 
     camLens = functions.getAnimationValues(cam,type="float",prop="lens")
+    print("HERE_camLens",camLens)
     camFilm = cam.sensor_width
+    
+    uimarkers = functions.getAnimationValues(cam,type="float",prop="UI Markers")
+    keystops = functions.getAnimationValues(cam,type="float",prop="Key Stops")
+
+
 
     camJsonObject["focal-length"] = camLens
     camJsonObject["film-gauge"] = camFilm
+    camJsonObject["ui-markers"] = uimarkers
+    camJsonObject["key-stops"] = keystops
+
+
 
     if bpy.context.scene.camPaths:
         cpath = functions.findObject("cam-path")
@@ -30,6 +40,10 @@ def create(camJsonObject,coll):
             ui_marker = functions.getAnimationValues(bpy.data.objects[names[2]],type="float",prop="constraints['Follow Path'].offset_factor")
             camJsonObject["ui-marker"] = ui_marker
 
+        if names[3] in bpy.data.objects:
+            stops_marker = functions.getAnimationValues(bpy.data.objects[names[2]],type="float",prop="constraints['Follow Path'].offset_factor")
+            camJsonObject["stops-marker"] = stops_marker
+
         camJsonObject["cam-path"] = functions.getPathPoints(cpath)
         camJsonObject["tgt-path"] = functions.getPathPoints(tpath)
 
@@ -42,4 +56,8 @@ def create(camJsonObject,coll):
         if "cam_ui" in bpy.data.objects:
             ui_marker = functions.getAnimationValues(bpy.data.objects["cam_ui"],type="float",prop="constraints['Follow Path'].offset_factor")
             camJsonObject["ui-marker"] = ui_marker
+        
+        if "cam_stops" in bpy.data.objects:
+            stops_marker = functions.getAnimationValues(bpy.data.objects["cam_stops"],type="float",prop="constraints['Follow Path'].offset_factor")
+            camJsonObject["stops-marker"] = stops_marker
 
