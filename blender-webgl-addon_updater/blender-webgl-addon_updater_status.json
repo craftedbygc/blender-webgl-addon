@@ -1,20 +1,9 @@
 {
-<<<<<<< Updated upstream
     "last_check": "2023-10-12 14:16:48.671047",
-=======
-    "last_check": "2023-10-17 09:18:00.563612",
->>>>>>> Stashed changes
     "backup_date": "",
-    "update_ready": true,
+    "update_ready": false,
     "ignore": false,
     "just_restored": false,
     "just_updated": false,
-    "version_text": {
-        "link": "https://api.github.com/repos/craftedbygc/blender-webgl-addon/zipball/refs/tags/v.1.9.4",
-        "version": [
-            1,
-            9,
-            4
-        ]
-    }
+    "version_text": {}
 }
