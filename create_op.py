@@ -76,7 +76,7 @@ class TBA_OT_Export_Draco_Comp(Operator):
 
     def execute(self, context):
         functions.setFolderStructure()
-        export_scene.main_scene_export(draco=False,fullScene = True, dataOnly=False)
+        export_scene.main_scene_export(draco=True ,fullScene = True, dataOnly=False)
         return {"FINISHED"}
 
 #------------ SPACER ---------------------
