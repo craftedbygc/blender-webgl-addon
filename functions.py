@@ -145,12 +145,16 @@ def geoCleaner(ob,skinned):
     ob.scale = (1,1,1)
 
     #------------ SPACER ---------------------
+    
+    mesh = ob.data
     bpy.ops.object.shade_smooth()
+    mesh.use_auto_smooth = True
+    mesh.auto_smooth_angle = 70 * (3.14159265 / 180)
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
     bpy.ops.object.editmode_toggle()
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.remove_doubles()
-    bpy.ops.mesh.average_normals(average_type='FACE_AREA')
+    #bpy.ops.mesh.average_normals(average_type='FACE_AREA')
     bpy.ops.object.editmode_toggle()
 
     #------------ SPACER ---------------------
