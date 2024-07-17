@@ -333,7 +333,7 @@ def getAnimationValues(ob,type,prop):
 
     data = []
     name = ob.name
-    print("TBA_DATA_NAME",ob,name)
+    # print("TBA_DATA_NAME",ob,name)
     prop = prop.replace("'", '"')
 
     def setSingleVal(ob):
