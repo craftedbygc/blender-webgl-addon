@@ -190,6 +190,7 @@ def getPathPoints(ob):
     for subcurve in ob.data.splines:
         curvetype = subcurve.type
         points = []
+
         #------------------------
         if curvetype == 'NURBS':
             count = 0
@@ -202,7 +203,12 @@ def getPathPoints(ob):
             for bezpoint in subcurve.bezier_points:
                 points.append([rd(bezpoint.co[0]),rd(bezpoint.co[2]),-rd(bezpoint.co[1])])
                 count += 1  
-
+        #------------------------
+        if curvetype == 'POLY':
+            count = 0
+            for polypoint in subcurve.points:
+                points.append([rd(polypoint.co[0]),rd(polypoint.co[2]),-rd(polypoint.co[1])])
+                count += 1
     return points
 
 
